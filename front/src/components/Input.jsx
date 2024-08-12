@@ -9,6 +9,7 @@ import React, { useRef, useState } from "react";
  * @param {string} value
  * @param {function} onChange
  * @param {object} styles
+ * @param {object} innerButton
  * @param  {...any} rest
  * @returns {ReactNode}
  * @example
@@ -24,6 +25,27 @@ import React, { useRef, useState } from "react";
  * value=""
  * onChange={() => {}}
  * />
+ *
+ * <Input
+ * label="Label"
+ * placeholder="Place holder"
+ * value={inputValue}
+ * onChange={handleInputChange}
+ * />
+ *
+ * <Input
+ * label="Label"
+ * placeholder="Place holder"
+ * value={inputValue}
+ * onChange={handleInputChange}
+ * innerButton={{
+ * text: "Button",
+ * onClick: () => {
+ * console.log("Button clicked");
+ * },
+ * }}
+ * />
+ *
  */
 
 export const Input = ({
@@ -31,15 +53,18 @@ export const Input = ({
   placeholder,
   value,
   onChange,
+  innerButton,
   styles,
   ...rest
 }) => {
   const input = useRef();
 
-  const baseDivClasses = "w-full h-fit flex flex-col space-y-1";
+  const baseDivClasses = "w-full h-fit flex flex-col space-y-1 relative";
   const labelClasses = "text-sm px-2 text-textGray";
   const inputClasses =
     "w-full min-h-12 text-md px-4 border border-grayBorder rounded-xl focus:outline-none focus:border-green";
+  const innerButtonClasses =
+    "absolute text-sm text-green z-2 top-9 right-4 w-fit h-fit rounded-xl z-2 active:outline-none active:opacity-50";
 
   return (
     <div className={baseDivClasses}>
@@ -52,6 +77,11 @@ export const Input = ({
         onChange={onChange}
         {...rest}
       />
+      {innerButton && (
+        <button className={innerButtonClasses} onClick={innerButton.onClick}>
+          {innerButton.text}
+        </button>
+      )}
     </div>
   );
 };

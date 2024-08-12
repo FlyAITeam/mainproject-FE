@@ -1,4 +1,4 @@
-# Verssist : 반려견 헬스케어 솔루션
+# Vetssist : 반려견 헬스케어 솔루션
 
 ![Cover](https://github.com/user-attachments/assets/d2b398ae-672f-4233-9375-7266d23110c1)
 

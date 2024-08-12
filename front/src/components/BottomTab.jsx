@@ -1,6 +1,8 @@
 "use client";
 
+import classNames from "classnames";
 import { useRouter, usePathname } from "next/navigation";
+import { Icon } from ".";
 
 /**
  * BottomTab
@@ -28,7 +30,8 @@ import { useRouter, usePathname } from "next/navigation";
 
 const navList = [
   { name: "메인", path: "main", icon: "home" },
-  { name: "마이", path: "mypage", icon: "profile" },
+  { name: "병원찾기", path: "find", icon: "location" },
+  { name: "마이", path: "mypage", icon: "setting" },
 ];
 
 const Nav = ({ name, path, icon, active }) => {
@@ -37,23 +40,24 @@ const Nav = ({ name, path, icon, active }) => {
   return (
     <div
       onClick={() => router.replace("/" + path)}
-      className={`active:opacity-50 ${active ? "opacity-100" : "opacity-50"}`}
+      className={`active:opacity-50 ${active ? "text-green" : "text-grayText"}`}
+      alt={name}
     >
-      {name},{active ? "활성화" : "비활성화"}
+      <Icon icon={icon} size={28} />
     </div>
   );
 };
 
 export const BottomTab = () => {
   const pathname = usePathname();
+  const baseBottomTabClasses =
+    "fixed z-10 left-0 bottom-0 w-full h-fit pb-8 flex flex-row bg-white";
+  const actionAreaClasses = "flex-1 flex h-16 justify-center items-center";
 
   return (
-    <div className="fixed z-10 left-0 bottom-0 w-full h-fit pb-8 flex flex-row">
+    <div className={baseBottomTabClasses}>
       {navList.map((nav) => (
-        <div
-          key={nav.name}
-          className="flex-1 flex h-16 justify-center items-center"
-        >
+        <div key={nav.name} className={actionAreaClasses}>
           <Nav {...nav} active={pathname === "/" + nav.path} />
         </div>
       ))}

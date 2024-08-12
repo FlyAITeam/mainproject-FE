@@ -31,6 +31,8 @@ export default function Page() {
     setSelectedOption(event.target.value);
   };
 
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
+
   return (
     <Screen
       header={{
@@ -92,6 +94,18 @@ export default function Page() {
                   placeholder="여기에 입력하세요"
                   value={inputValue}
                   onChange={handleInputChange}
+                />
+                <Input
+                  label="Input"
+                  placeholder="여기에 입력하세요"
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  innerButton={{
+                    text: "중복체크",
+                    onClick: () => {
+                      console.log("중복체크 버튼을 눌렀습니다!");
+                    },
+                  }}
                 />
                 <Select
                   label="Select"

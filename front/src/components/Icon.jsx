@@ -102,7 +102,7 @@ export const iconRegistry = {
   remove: IoRemove,
   resize: IoResize,
   search: IoSearch,
-  settings: IoSettings,
+  setting: IoSettings,
   share: IoShare,
   chart: IoStatsChart,
   time: IoTime,
@@ -122,11 +122,7 @@ export const Icon = ({ icon, color, size = 20, style, onClick, ...rest }) => {
   if (!IconComponent) return null;
 
   return (
-    <div
-      className={`focus:opacity-50 active:opacity-50`}
-      onClick={onClick}
-      {...rest}
-    >
+    <div className={classNames(baseIconClasses)} onClick={onClick} {...rest}>
       <IconContext.Provider value={{ color, size, className: style }}>
         <IconComponent />
       </IconContext.Provider>
