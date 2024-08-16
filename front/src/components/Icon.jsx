@@ -19,6 +19,8 @@ import {
   IoChatboxEllipses,
   IoCheckboxOutline,
   IoSquareOutline,
+  IoEye,
+  IoEyeOff,
   IoHome,
   IoImage,
   IoLocation,
@@ -43,8 +45,11 @@ import {
   IoBatteryDead,
   IoBatteryFull,
   IoBatteryHalf,
+  IoCheckmark,
+  IoHappyOutline,
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
+import { check } from "prettier";
 
 /**
  * Icon
@@ -84,6 +89,7 @@ export const iconRegistry = {
   bluetooth: IoBluetooth,
   call: IoCall,
   copy: IoCopy,
+  check: IoCheckmark,
   camera: IoCamera,
   chatbox: IoChatboxEllipses,
   checkboxChecked: IoCheckboxOutline,
@@ -94,7 +100,7 @@ export const iconRegistry = {
   lockClosed: IoLockClosed,
   lockOpen: IoLockOpen,
   menu: IoMenu,
-  pencil: IoPencil,
+  edit: IoPencil,
   foot: IoPaw,
   pulse: IoPulse,
   refresh: IoRefresh,
@@ -112,6 +118,9 @@ export const iconRegistry = {
   batteryDead: IoBatteryDead,
   batteryFull: IoBatteryFull,
   batteryHalf: IoBatteryHalf,
+  eye: IoEye,
+  eyeOff: IoEyeOff,
+  happy: IoHappyOutline,
 };
 
 export const Icon = ({ icon, color, size = 20, style, onClick, ...rest }) => {

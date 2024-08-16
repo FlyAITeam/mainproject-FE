@@ -24,10 +24,13 @@ module.exports = {
         grayText: "#909090",
         grayBackground: "#F7F7F7",
         white: "#FFFFFF",
+        lightgreen: "#80E5BA",
         green: "#00CB76",
         deepgreen: "#0BA263",
+        red: "#FF4E4E",
         yellow: "#FFC700",
         orange: "#FF4E00",
+        blue: "#00A0FF",
       },
       animation: {
         "step-in": "stepIn 0.6s ease-in infinite alternate",

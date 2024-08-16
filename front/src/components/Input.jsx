@@ -1,40 +1,26 @@
 "use client";
 import React, { useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from ".";
 
 /**
  * Input
  * - Input 컴포넌트는 input 태그를 렌더링합니다.
- * @param {string} label
- * @param {string} placeholder
- * @param {string} value
- * @param {function} onChange
- * @param {object} styles
- * @param {object} innerButton
- * @param  {...any} rest
- * @returns {ReactNode}
+ * @param {string} label - Input의 라벨
+ * @param {string} placeholder - Input의 placeholder
+ * @param {string} value - Input의 value
+ * @param {function} onChange - Input의 onChange 이벤트
+ * @param {ReactNode} actionComponent - Input의 액션 컴포넌트
+ * @param {ReactNode} guideComponent - Input의 가이드 컴포넌트
+ * @returns {ReactNode} Input 컴포넌트를 반환합니다.
  * @example
- *
- * const [inputValue, setInputValue] = useState("");
- * const handleInputChange = (e) => {
- * setInputValue(e.target.value);
- * };
- *
  * <Input
- * label="Label"
- * placeholder="Place holder"
+ * label="Input"
+ * placeholder="여기에 입력하세요"
  * value={inputValue}
  * onChange={handleInputChange}
- * />
- *
- * <Input
- * label="Label"
- * placeholder="Place holder"
- * value={inputValue}
- * onChange={handleInputChange}
- * innerActionComponent={
- * <Icon icon="IoSearch" color="green" size={5} />
- * }
+ * actionComponent={<Button>버튼</Button>}
+ * guideComponent={<Icon icon="search" size={16} />}
  * />
  */
 
@@ -43,33 +29,54 @@ export const Input = ({
   placeholder,
   value,
   onChange,
-  innerActionComponent,
-  styles,
+  actionComponent,
+  guideComponent,
   ...rest
 }) => {
   const input = useRef();
 
-  const baseDivClasses = "w-full h-fit flex flex-col space-y-1 relative";
-  const labelClasses = "text-sm px-2 text-textGray";
+  const baseDivClasses = "w-full h-fit flex flex-col space-y-1";
+  const labelClasses = "text-xl px-2 mb-2 text-deepgreen font-semibold";
+  const inputDivClasses =
+    "w-full h-fit flex flex-col justify-center items-start space-y-2 relative";
   const inputClasses =
     "w-full min-h-12 text-md px-4 border border-grayBorder rounded-xl focus:outline-none focus:border-green";
-  const innerActionClasses =
-    "absolute text-sm text-green z-2 top-9 right-4 w-fit h-fit rounded-xl z-2 active:outline-none active:border-none active:opacity-50";
+  const guideDivClasses =
+    "text-xs font-regular w-fit h-4 flex flex-row px-2 rounded-xl active:outline-none active:border-none active:opacity-50";
+  const guideClasses = "flex flex-row items-center";
 
   return (
     <div className={baseDivClasses}>
       {label && <label className={labelClasses}>{label}</label>}
-      <input
-        ref={input}
-        className={inputClasses}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        {...rest}
-      />
-      {innerActionComponent && (
-        <div className={innerActionClasses}>{innerActionComponent}</div>
-      )}
+      <div className={inputDivClasses}>
+        <input
+          ref={input}
+          className={inputClasses}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          {...rest}
+        />
+        {actionComponent && (
+          <div className="absolute right-4 top-0 w-fit h-8 flex justify-center items-center active:opacity-50">
+            {actionComponent}
+          </div>
+        )}
+        <div className={guideDivClasses}>
+          <AnimatePresence>
+            {guideComponent && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className={guideClasses}
+              >
+                {guideComponent}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 };

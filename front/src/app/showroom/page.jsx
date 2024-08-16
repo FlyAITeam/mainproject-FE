@@ -31,8 +31,6 @@ export default function Page() {
     setSelectedOption(event.target.value);
   };
 
-  const [showBottomSheet, setShowBottomSheet] = useState(false);
-
   return (
     <Screen
       header={{
@@ -100,7 +98,7 @@ export default function Page() {
                   placeholder="여기에 입력하세요"
                   value={inputValue}
                   onChange={handleInputChange}
-                  innerActionComponent={<Icon icon="search" size={16} />}
+                  guideComponent={<Icon icon="search" size={16} />}
                 />
                 <Select
                   label="Select"
