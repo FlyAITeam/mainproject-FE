@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <Screen nav>
       <div className="flex flex-col items-center space-y-2">
-        <p className="text-lg text-center text-grayText">Find Screen</p>
+        <p className="text-lg text-center text-grayText">Login Screen</p>
       </div>
     </Screen>
   );

@@ -30,7 +30,7 @@ import { Icon } from ".";
 
 const navList = [
   { name: "메인", path: "main", icon: "home" },
-  { name: "병원찾기", path: "find", icon: "location" },
+  { name: "병원찾기", path: "map", icon: "location" },
   { name: "마이", path: "mypage", icon: "setting" },
 ];
 
