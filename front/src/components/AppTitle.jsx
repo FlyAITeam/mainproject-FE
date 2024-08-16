@@ -16,7 +16,7 @@ export const AppTitle = () => {
           반려견 헬스 케어 서비스 플랫폼
         </p>
         <div className="flex space-x-2">
-          <h1 className="text-6xl font-bold text-center">Vetssist</h1>
+          <h1 className="text-6xl font-bold text-center">Petssist</h1>
           <Image
             src="svgs/logo.svg"
             alt="logo"

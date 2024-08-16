@@ -1,11 +1,10 @@
 export const APP_INFO = {
-  name: "Vetssist",
-  title: "Vetssist",
-  titleTemplate: "%s - Vetssist",
-  description:
-    "Vetssist는 반려동물을 가족 구성원으로 여기는 펫팸족을 위해 설계된 반려견 헬스 케어 솔루션입니다.",
+  name: "Petssist",
+  title: "Petssist",
+  titleTemplate: "%s - Petssist",
+  description: "Petssist - 반려동물 건강 지킴이",
   keywords: [
-    "vetssist",
+    "petssist",
     "vet",
     "animal",
     "pet",

@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
+import { Icon } from ".";
 
 /**
  * Input
@@ -22,13 +23,6 @@ import React, { useRef, useState } from "react";
  * <Input
  * label="Label"
  * placeholder="Place holder"
- * value=""
- * onChange={() => {}}
- * />
- *
- * <Input
- * label="Label"
- * placeholder="Place holder"
  * value={inputValue}
  * onChange={handleInputChange}
  * />
@@ -38,14 +32,10 @@ import React, { useRef, useState } from "react";
  * placeholder="Place holder"
  * value={inputValue}
  * onChange={handleInputChange}
- * innerButton={{
- * text: "Button",
- * onClick: () => {
- * console.log("Button clicked");
- * },
- * }}
+ * innerActionComponent={
+ * <Icon icon="IoSearch" color="green" size={5} />
+ * }
  * />
- *
  */
 
 export const Input = ({
@@ -53,7 +43,7 @@ export const Input = ({
   placeholder,
   value,
   onChange,
-  innerButton,
+  innerActionComponent,
   styles,
   ...rest
 }) => {
@@ -63,8 +53,8 @@ export const Input = ({
   const labelClasses = "text-sm px-2 text-textGray";
   const inputClasses =
     "w-full min-h-12 text-md px-4 border border-grayBorder rounded-xl focus:outline-none focus:border-green";
-  const innerButtonClasses =
-    "absolute text-sm text-green z-2 top-9 right-4 w-fit h-fit rounded-xl z-2 active:outline-none active:opacity-50";
+  const innerActionClasses =
+    "absolute text-sm text-green z-2 top-9 right-4 w-fit h-fit rounded-xl z-2 active:outline-none active:border-none active:opacity-50";
 
   return (
     <div className={baseDivClasses}>
@@ -77,10 +67,8 @@ export const Input = ({
         onChange={onChange}
         {...rest}
       />
-      {innerButton && (
-        <button className={innerButtonClasses} onClick={innerButton.onClick}>
-          {innerButton.text}
-        </button>
+      {innerActionComponent && (
+        <div className={innerActionClasses}>{innerActionComponent}</div>
       )}
     </div>
   );

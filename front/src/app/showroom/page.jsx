@@ -100,12 +100,7 @@ export default function Page() {
                   placeholder="여기에 입력하세요"
                   value={inputValue}
                   onChange={handleInputChange}
-                  innerButton={{
-                    text: "중복체크",
-                    onClick: () => {
-                      console.log("중복체크 버튼을 눌렀습니다!");
-                    },
-                  }}
+                  innerActionComponent={<Icon icon="search" size={16} />}
                 />
                 <Select
                   label="Select"
