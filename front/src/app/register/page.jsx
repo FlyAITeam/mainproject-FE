@@ -7,7 +7,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Step1, Step2, Step3 } from "./components";
 import { checkDuplicateUserId, registerUser } from "@/libs/authManager";
 
-
 export default function Page() {
   const router = useRouter();
 
@@ -90,7 +89,7 @@ export default function Page() {
       const response = await registerUser(
         userProfile.loginId,
         userProfile.password,
-        userProfile.name
+        userProfile.name,
       );
       console.log("회원가입 성공:", response);
     } catch (error) {

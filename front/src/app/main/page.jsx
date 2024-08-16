@@ -40,10 +40,15 @@ export default function Page() {
 
   // 건강정보2 - 운동량, 심박값 변이, 심박수 변이
   const [exerciseData, setExerciseData] = useState({ target: 100, today: 0 });
-  const [heartData, setHeartData] = useState([{time: 1000, heartRate: 0}]);
+  const [heartData, setHeartData] = useState([{ time: 1000, heartRate: 0 }]);
   const [sequenceData, setSequenceData] = useState([
-    { startTime: 1724524010.631, endTime: 1724524143.424,
-      intensity: 1, heartAnomaly: false, heartRate: 0 }
+    {
+      startTime: 1724524010.631,
+      endTime: 1724524143.424,
+      intensity: 1,
+      heartAnomaly: false,
+      heartRate: 0,
+    },
   ]);
 
   // 건강정보3 - 현재상태
@@ -63,26 +68,26 @@ export default function Page() {
         const response = JSON.parse(event.data);
         console.log("Received from server:", response);
         //1. 심박수
-        try{
+        try {
           setHeartRate(response.heartRate);
           console.log("heartRate", response.heartRate);
-        }catch(e){
+        } catch (e) {
           console.log(e);
         }
 
         //2. 호흡수
-        try{
+        try {
           setRespiration(response.respirationRate);
           console.log("respiration", response.respirationRate);
-        }catch(e){
+        } catch (e) {
           console.log(e);
         }
 
         //3. 이상 심박수
-        try{
+        try {
           setHeartData(response.heartAnomaly);
           console.log("heartAnomaly", response.heartAnomaly);
-        }catch(e){
+        } catch (e) {
           console.log(e);
         }
       };
@@ -117,12 +122,12 @@ export default function Page() {
     console.log("심박값 데이터 불러오기");
     try {
       const data = await getHeartData();
-      console.log('heart data from', data.bcgData);
+      console.log("heart data from", data.bcgData);
       await setHeartData(data.bcgData);
       await setIntensity(data.intensity);
     } catch (error) {
       console.error("심박값 데이터를 불러오는 중 오류 발생:", error);
-      await setHeartData([{time: 0, heartRate: 100}]);
+      await setHeartData([{ time: 0, heartRate: 100 }]);
     }
   };
 
@@ -132,9 +137,9 @@ export default function Page() {
     try {
       const data = await getExerciseData();
       console.log(data);
-      await setExerciseData({ 
-        target: data.target, 
-        today: Math.max(Math.min(data.today, data.target),0) 
+      await setExerciseData({
+        target: data.target,
+        today: Math.max(Math.min(data.today, data.target), 0),
       });
     } catch (error) {
       console.error("운동량 데이터를 불러오는 중 오류 발생:", error);
@@ -152,7 +157,6 @@ export default function Page() {
       console.error("시퀀스 데이터를 불러오는 중 오류 발생:", error);
     }
   };
-
 
   const wsData = {
     bcgData: [
@@ -177,8 +181,8 @@ export default function Page() {
   return (
     <Screen nav>
       <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto}>
-        <DeviceConnector 
-          webSocket={webSocket} 
+        <DeviceConnector
+          webSocket={webSocket}
           setTemperature={setTemperature}
           setHeartRate={setHeartRate}
           setRespiration={setRespiration}
@@ -228,7 +232,7 @@ export default function Page() {
                 getDetail={() => console.log("getDetail")}
               >
                 <div className="w-full h-48">
-                  <SequenceChart sequenceData={sequenceData}/>
+                  <SequenceChart sequenceData={sequenceData} />
                 </div>
               </Module>
             </>
