@@ -10,19 +10,18 @@ export default function Page() {
   const router = useRouter();
   useEffect(() => {
     const checkUser = async () => {
-      try{
+      try {
         const userInfo = await getUserInfo();
         if (userInfo) {
           router.push("/main");
         }
-      }catch(e){
+      } catch (e) {
         // 자동로그인 ㄴㄴ
-        console.log('자동로그인 ㄴㄴ');
+        console.log("자동로그인 ㄴㄴ");
       }
-    }
-    checkUser();    
+    };
+    checkUser();
   });
-  
 
   const topDivClasses =
     "w-full h-3/4 flex flex-col justify-center items-center space-y-4 p-4";
