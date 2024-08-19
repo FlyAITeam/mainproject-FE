@@ -9,8 +9,8 @@ export default function Page() {
 
   return (
     <Screen nav>
-      <div className="flex flex-col items-center space-y-2">
-        <p className="text-lg text-center text-grayText">Main Screen</p>
+      <div className="flex flex-row justify-between items-center space-y-2">
+        <div className="w-24 h-24 bg-grayBackground rounded-full flex"></div>
       </div>
     </Screen>
   );

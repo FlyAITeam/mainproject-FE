@@ -53,11 +53,11 @@ export const Select = ({
   };
 
   const baseDivClasses = "w-full h-fit flex flex-col space-y-1";
-  const labelClasses = "text-sm px-2 text-textGray";
+  const labelClasses = "text-xl px-2 mb-2 text-deepgreen font-semibold";
   const selectClasses =
     "relative w-full min-h-12 flex flex-row justify-between items-center bg-white text-md px-4 border rounded-xl active:outline-none active:border-green";
   const dropdownClasses =
-    "absolute top-12 left-0 w-full bg-white border border-grayBorder rounded-xl z-2 overflow-hidden";
+    "absolute top-12 left-0 w-full bg-white border border-grayBorder rounded-xl z-10 overflow-hidden";
   const optionClasses =
     "px-4 first:pt-3 py-2 last:pb-3 active:bg-grayBackground cursor-pointer";
 

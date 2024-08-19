@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import classNames from "classnames";
+import { motion } from "framer-motion";
 
 /**
  * Button
@@ -35,11 +38,15 @@ export const Button = ({
       "border-green bg-green text-white active:border-green active:bg-white active:text-deepgreen",
     reversed:
       "border-green bg-white text-deepgreen active:border-green active:bg-green active:text-white",
-    disabled: "bg-white border-grayBorder text-grayText cursor-not-allowed",
+    disabled:
+      "border-green border-none bg-green bg-opacity-50 text-white cursor-not-allowed",
   };
 
   return (
-    <button
+    <motion.button
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       className={classNames(
         baseButtonClasses,
         presetClasses[disabled ? "disabled" : preset],
@@ -50,6 +57,6 @@ export const Button = ({
       {...rest}
     >
       {children}
-    </button>
+    </motion.button>
   );
 };

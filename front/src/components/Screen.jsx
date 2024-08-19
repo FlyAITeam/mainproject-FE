@@ -22,16 +22,17 @@ import { Header, BottomTab } from ".";
  * </Screen>
  */
 
-export const Screen = ({ header, nav, children, ...rest }) => {
+export const Screen = ({ header, nav, isFixed, children, ...rest }) => {
   const baseScreenClasses =
-    "w-full h-screen relative overflow-y-scroll flex flex-col justify-start items-center";
+    "w-full h-screen relative flex flex-col  justify-start items-center";
 
   return (
     <div
       className={classNames(
         baseScreenClasses,
-        header ? `pt-10` : ``,
+        header ? `pt-12` : ``,
         nav ? `pb-28` : `pb-8`,
+        isFixed ? `overflow-y-clip` : `overflow-y-scroll`,
       )}
       {...rest}
     >
