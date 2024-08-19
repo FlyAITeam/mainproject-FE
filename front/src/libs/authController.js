@@ -17,6 +17,10 @@ const loginUser = async (loginId, password) => {
 
     const data = await response.json();
     console.log('로그인 성공:', data);
+
+    // Access token을 localStorage에 저장
+    localStorage.setItem('accessToken', data.access_token);
+
     return data;
   } catch (error) {
     console.error('로그인 중 오류:', error);
@@ -76,7 +80,6 @@ const getUserInfo = async () => {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-         // 토큰은 localStorage에서 가져옴
       },
     });
 
@@ -99,4 +102,10 @@ const checkPasswd = (passwd) => {
     return passwdReg.test(passwd);
 };
 
-export { loginUser, checkLoginId, registerUser, getUserInfo, checkPasswd };
+// Access token 존재 여부 확인
+const isTokenAvailable = () => {
+  // token출력  
+  return !!localStorage.getItem('accessToken');
+};
+
+export { loginUser, checkLoginId, registerUser, getUserInfo, checkPasswd, isTokenAvailable };
