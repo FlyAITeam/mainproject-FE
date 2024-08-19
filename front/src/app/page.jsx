@@ -15,7 +15,7 @@ export default function Page() {
         <Button
           preset="default"
           className="w-full"
-          onClick={() => router.push("/main")}
+          onClick={() => router.push("/feature_test")}
         >
           시작하기
         </Button>
