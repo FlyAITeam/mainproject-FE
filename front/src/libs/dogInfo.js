@@ -2,19 +2,17 @@ const API_BASE_URL = 'http://localhost:8000';
 
 // 강아지 정보 등록
 const registerDog = async (dogName, breed, breedCategory, dogAge, sex, weight) => {
-  try {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      throw new Error("No access token found");
-    }
+  const input_data = JSON.stringify({ dogName, breed, breedCategory, dogAge, sex, weight });
+  console.log(input_data);
 
+  try {
     const response = await fetch(`${API_BASE_URL}/dogs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, 
+        'accessToken': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZWNvbWlhMTIiLCJleHAiOjE3MjQxMTY1ODB9.mJAcfcwuMKysOq4cXp7s6lPD_Tg1MiSOWvTI0iP3MOg'//`${localStorage.getItem('accessToken')}`,
       },
-      body: JSON.stringify({ dogName, breed, breedCategory, dogAge, sex, weight }),
+      body: input_data//JSON.stringify({ dogName, breed, breedCategory, dogAge, sex, weight }),
     });
 
     if (!response.ok) {

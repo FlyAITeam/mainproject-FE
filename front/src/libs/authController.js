@@ -12,14 +12,17 @@ const loginUser = async (loginId, password) => {
     });
 
     if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error response:', errorData);
       throw new Error('로그인 실패');
     }
 
     const data = await response.json();
     console.log('로그인 성공:', data);
-
-    // Access token을 localStorage에 저장
-    localStorage.setItem('accessToken', data.access_token);
+    // 헤더에 저장된 Access token을 변수에 넣어 localStorage에 저장
+    const accessToken = response.headers.get('accessToken');
+    console.log('accessToken', accessToken);
+    localStorage.setItem('accessToken', response.headers.get('accessToken'));
 
     return data;
   } catch (error) {
@@ -104,7 +107,8 @@ const checkPasswd = (passwd) => {
 
 // Access token 존재 여부 확인
 const isTokenAvailable = () => {
-  // token출력  
+  // token 출력
+  console.log(localStorage.getItem('accessToken'));  
   return !!localStorage.getItem('accessToken');
 };
 
