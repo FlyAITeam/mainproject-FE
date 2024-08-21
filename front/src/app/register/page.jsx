@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef, createRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Step1, Step2, Step3 } from "./components";
+import { checkDuplicateUserId, registerUser } from "@/libs/authManager";
+
 
 export default function Page() {
   const router = useRouter();
@@ -20,6 +22,7 @@ export default function Page() {
   });
 
   const [step, setStep] = useState(1);
+  const [isIdAvailable, setIsIdAvailable] = useState("none");
 
   const sectionRefs = useRef([createRef(), createRef(), createRef()]);
 
@@ -37,12 +40,27 @@ export default function Page() {
     }
   }, [step]);
 
+  useEffect(() => {
+    if (userProfile.loginId) {
+      const checkId = async () => {
+        const result = await checkFunctions.loginId(userProfile.loginId);
+        setIsIdAvailable(result);
+      };
+      checkId();
+    } else {
+      setIsIdAvailable("none");
+    }
+  }, [userProfile.loginId]);
+
   const checkFunctions = {
-    loginId: (value) => {
+    loginId: async (value) => {
       const id = value.toLowerCase();
       const existingIds = ["user1", "user2", "user3"];
       if (id.length > 1) {
-        return existingIds.includes(id) ? "duplicated" : "checked";
+        // id check - begin
+        const id_valid = await checkDuplicateUserId(id);
+        return id_valid ? "duplicated" : "checked";
+        // id check - end
       }
       return "none";
     },
@@ -68,10 +86,20 @@ export default function Page() {
 
   const handleProfileSubmit = async (userProfile) => {
     console.log("Uploading profile ... ", userProfile);
+    try {
+      const response = await registerUser(
+        userProfile.loginId,
+        userProfile.password,
+        userProfile.name
+      );
+      console.log("회원가입 성공:", response);
+    } catch (error) {
+      console.error("회원가입 중 오류:", error);
+    }
   };
 
   const isStepDisabled = {
-    1: checkFunctions.loginId(userProfile.loginId) !== "checked",
+    1: isIdAvailable !== "checked",
     2: checkFunctions.password(userProfile.password) !== "checked",
     3: checkFunctions.name(userProfile.name) !== "checked",
   }[step];
@@ -91,7 +119,7 @@ export default function Page() {
           <Step1
             userProfile={userProfile}
             setUserProfile={setUserProfile}
-            checkAvailableId={checkFunctions.loginId}
+            isIdAvailable={isIdAvailable}
           />
         </motion.div>
         <motion.div ref={sectionRefs.current[1]}>

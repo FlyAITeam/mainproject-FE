@@ -1,6 +1,6 @@
 import { Input, Icon } from "@/components";
 
-export const Step1 = ({ userProfile, setUserProfile, checkAvailableId }) => {
+export const Step1 = ({ userProfile, setUserProfile, isIdAvailable }) => {
   // 영문, 숫자만 입력가능한 input 이벤트 함수
   const engAndNumberFunc = (e) => {
     var regexp = /[^a-z0-9]/gi;
@@ -18,12 +18,12 @@ export const Step1 = ({ userProfile, setUserProfile, checkAvailableId }) => {
         value={userProfile.loginId}
         onChange={engAndNumberFunc}
         guideComponent={
-          checkAvailableId(userProfile.loginId) === "checked" ? (
+          isIdAvailable === "checked" ? (
             <>
               <Icon icon="check" className="text-green" />
               <span className="text-green">사용 가능한 아이디입니다.</span>
             </>
-          ) : checkAvailableId(userProfile.loginId) === "duplicated" ? (
+          ) : isIdAvailable === "duplicated" ? (
             <>
               <Icon icon="close" className="text-red" />
               <span className="text-red">이미 사용 중인 아이디입니다.</span>
