@@ -57,6 +57,12 @@ const nextConfig = {
       ...config.resolve.extensions,
     ];
 
+    // svg support
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ["@svgr/webpack"],
+    });
+
     return config;
   },
 };

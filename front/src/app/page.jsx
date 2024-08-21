@@ -40,7 +40,7 @@ export default function Page() {
               className="w-full"
               onClick={() => router.push("/register")}
             >
-              시작하기
+              Petssist 시작하기
             </Button>
             <Button
               preset="reversed"

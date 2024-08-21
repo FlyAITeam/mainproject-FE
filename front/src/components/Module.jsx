@@ -8,20 +8,14 @@ import { motion, AnimatePresence } from "framer-motion";
 /**
  * Module
  * - Module 컴포넌트는 제목과 내용을 가지는 모듈을 렌더링합니다.
- * @param {string} title
- * @param {ReactNode} main
- * @param {ReactNode} detail
- * @param {string} className
- * @returns {ReactNode}
- * @example
- * <Module
- * title="제목"
- * main={<div>메인</div>}
- * detail={<div>상세</div>}
- * />
- * */
+ * @param {string} title - 모듈의 제목
+ * @param {ReactNode} children - 모듈의 내용
+ * @param {function} reload - 모듈을 새로고침하는 함수
+ * @param {function} getDetail - 모듈의 내용을 토글하는 함수
+ * @param {string} className - 모듈에 적용할 클래스
+ */
 
-export const Module = ({ title, main, detail, className }) => {
+export const Module = ({ title, children, reload, getDetail, className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [onLoad, setOnLoad] = useState(false);
 
@@ -39,74 +33,56 @@ export const Module = ({ title, main, detail, className }) => {
     "w-full h-fit flex flex-row justify-between items-center";
   const actionDivClasses =
     "w-fit h-fit flex flex-row justify-center items-center space-x-2";
-  const actionButtonClasses = "w-fit h-fit rounded-full p-1 active:bg-green";
-  const hideButtonClasses =
-    "w-full h-fit text-center justify-center flex flex-row gap-1 text-xs text-grayText mt-2 active:opacity-50";
+  const actionButtonClasses = "w-fit h-fit rounded-full p-1 active:opacity-50";
 
   return (
     <div className={classNames(baseDivClasses, className)}>
       <div className={headerDivClasses}>
-        <label className="text-lg font-medium">{title || "제목"}</label>
+        <label className="text-md font-medium text-dimGray">
+          {title || "제목"}
+        </label>
         <div className={actionDivClasses}>
-          <div
-            className={classNames(
-              actionButtonClasses,
-              onLoad ? "bg-green" : "bg-grayText",
-            )}
-          >
-            <Icon
-              icon="sync"
-              size={14}
-              color="white"
-              onClick={() => !onLoad && setOnLoad(true)}
+          {reload && (
+            <div
+              onClick={() => {
+                !onLoad && setOnLoad(true);
+                reload();
+              }}
               className={classNames(
-                "cursor-pointer",
-                onLoad ? "animate-spin" : "animate-none",
+                actionButtonClasses,
+                onLoad ? "bg-green" : "bg-dimGray",
               )}
-            />
-          </div>
-          <div
-            className={classNames(
-              actionButtonClasses,
-              isOpen ? "bg-green" : "bg-grayText",
-            )}
-          >
-            <Icon
-              icon={isOpen ? "up" : "down"}
-              size={14}
-              color="white"
-              onClick={() => setIsOpen(!isOpen)}
-              className="cursor-pointer"
-            />
-          </div>
-        </div>
-      </div>
-      <AnimatePresence initial={false}>
-        <motion.div
-          key="content"
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          style={{ overflow: "hidden" }}
-        >
-          {!isOpen ? (
-            <div className="" onClick={() => setIsOpen(true)}>
-              {main}
-            </div>
-          ) : (
-            <div className="">
-              {detail}
-              <div
-                onClick={() => setIsOpen(false)}
-                className={hideButtonClasses}
-              >
-                닫기
-              </div>
+            >
+              <Icon
+                icon="sync"
+                size={14}
+                color="white"
+                className={classNames(
+                  "cursor-pointer",
+                  onLoad ? "animate-spin" : "animate-none",
+                )}
+              />
             </div>
           )}
-        </motion.div>
-      </AnimatePresence>
+          {getDetail && (
+            <div
+              onClick={() => {
+                setIsOpen(!isOpen);
+                getDetail();
+              }}
+              className={classNames(actionButtonClasses, "bg-dimGray")}
+            >
+              <Icon
+                icon={isOpen ? "up" : "down"}
+                size={14}
+                color="white"
+                className="cursor-pointer"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+      {children && <AnimatePresence>{children}</AnimatePresence>}
     </div>
   );
 };

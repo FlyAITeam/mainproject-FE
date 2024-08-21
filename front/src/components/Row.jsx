@@ -16,7 +16,7 @@ import classNames from "classnames";
  */
 
 export const Row = ({ children, className, padding, gap }) => {
-  const baseColClasses = "flex flex-row w-fit h-fit";
+  const baseColClasses = "flex flex-row w-full h-fit";
   const paddingClasses = {
     2: "p-2",
     4: "p-2",

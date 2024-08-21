@@ -1,3 +1,5 @@
+const { transform } = require("next/dist/build/swc");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -20,6 +22,7 @@ module.exports = {
       },
       colors: {
         black: "#000000",
+        dimGray: "#333333",
         grayBorder: "#DDDDDD",
         grayText: "#909090",
         grayBackground: "#F7F7F7",
@@ -27,7 +30,7 @@ module.exports = {
         lightgreen: "#80E5BA",
         green: "#00CB76",
         deepgreen: "#0BA263",
-        red: "#FF4E4E",
+        red: "#EB4646",
         yellow: "#FFC700",
         orange: "#FF4E00",
         blue: "#00A0FF",
@@ -35,6 +38,8 @@ module.exports = {
       animation: {
         "step-in": "stepIn 0.6s ease-in infinite alternate",
         "step-out": "stepOut 0.6s ease-in infinite alternate",
+        heartbeat: "heartbeat 1.5s ease-in-out infinite",
+        "breathe-tongue": "breatheTongue 1.5s ease-in-out infinite",
       },
       keyframes: {
         stepIn: {
@@ -44,6 +49,19 @@ module.exports = {
         stepOut: {
           "0%": { opacity: "30%", transform: "scale(0.95)" },
           "100%": { opacity: "100%", transform: "scale(1)" },
+        },
+        heartbeat: {
+          "0%": { transform: "scale(0.95)" },
+          "10%": { transform: "scale(1)" },
+          "20%": { transform: "scale(0.95)" },
+          "30%": { transform: "scale(1)" },
+          "40%": { transform: "scale(0.95)" },
+          "100%": { transform: "scale(0.95)" },
+        },
+        breatheTongue: {
+          "0%": { transform: "scaleY(1)" },
+          "50%": { transform: "scaleY(0.9)" },
+          "100%": { transform: "scaleY(1)" },
         },
       },
     },
