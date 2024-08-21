@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef, createRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Step1, Step2, Step3, Step4 } from "./components";
+import { registerDog, uploadDogPhoto } from "@/libs/petInfoManager";
 
 export default function Page() {
   const router = useRouter();
@@ -87,6 +88,26 @@ export default function Page() {
 
   const handleDogProfileSubmit = async (dogProfile) => {
     console.log("Uploading dog profile ... ", dogProfile);
+    try{
+      // 1. 강아지 정보 등록
+      const dogInfo = await registerDog(
+        dogProfile.dogName,
+        dogProfile.breed,
+        parseInt(dogProfile.breedCategory),
+        parseInt(dogProfile.dogAge),
+        dogProfile.sex,
+        parseFloat(dogProfile.weight)
+      );
+
+      console.log('강아지 정보 등록 성공:', dogInfo);
+
+      // 2. 강아지 사진 등록 (일단 보류)
+      // const photoInfo = await uploadDogPhoto(image);
+      // console.log('강아지 사진 등록 성공:', photoInfo);
+
+    }catch(error){
+      console.error('강아지 정보 등록 중 오류:', error);
+    }
   };
 
   const isStepDisabled = {
