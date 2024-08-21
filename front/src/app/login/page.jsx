@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { useState } from "react";
 import { AppTitle, Screen, Input, Button, Icon } from "@/components";
 import { useRouter } from "next/navigation";
+import { loginUser } from "@/libs/authManager";
 
 export default function Page() {
   const router = useRouter();
@@ -24,7 +25,14 @@ export default function Page() {
   /** TODO: 로그인 요청 @안호준 */
   const handleLogin = async (loginInfo) => {
     console.log("Login... ", loginInfo);
-    router.replace("/main");
+    try {
+      const data = await loginUser(loginInfo.id, loginInfo.password);
+      console.log("로그인 성공:", data);
+      router.replace("/main");
+    } catch (error) {
+      console.error("로그인 실패:", error);
+      alert("로그인에 실패했습니다.");
+    }
   };
 
   return (
