@@ -178,6 +178,34 @@ export default function Page() {
   const guideDivClasses =
     "w-full h-48 flex flex-col justify-center items-center px-6 active:opacity-50";
 
+  const
+
+  const userInfo = {
+    loginId: "pelikan",
+    name: "김동욱",
+  };
+
+  const dogInfo = {
+    dogName: "복실이",
+    breed: "치와와",
+    breedCategory: 1,
+    dogAge: 7,
+    sex: "male",
+    weight: 4.5,
+  };
+
+  const wsData = {
+    // 임의로 구성
+    bcgData: [
+      {
+        time: "2021-10-01 12:00:00",
+        heartRate: 60,
+        breathRate: 12,
+        temperature: 36.5,
+      },
+    ],
+  };
+
   return (
     <Screen nav>
       <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto}>
