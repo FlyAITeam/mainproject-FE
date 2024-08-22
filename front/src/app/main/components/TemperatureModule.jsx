@@ -12,7 +12,7 @@ export const TemperatureModule = ({ temperature }) => {
     >
       <div className="w-full h-fit flex flex-row justify-start items-center space-x-4">
         <div className="w-[30px] h-[50px] relative">
-          <Thermometer width="30" height="50" />
+          <Thermometer width="12" height="20" />
         </div>
         <div className="w-fit flex flex-col justify-center items-start space-y-0 text-left">
           <p className="w-full text-xs font-medium text-grayText pl-[1px]">
