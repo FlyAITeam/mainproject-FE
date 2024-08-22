@@ -1,5 +1,3 @@
-const API_BASE_URL = 'http://localhost:8000';
-
 // 강아지 정보 등록
 const registerDog = async (dogName, breed, breedCategory, dogAge, sex, weight) => {
     const fetch_url = `${process.env.NEXT_PUBLIC_API_URL}/dogs`;
@@ -31,7 +29,7 @@ const registerDog = async (dogName, breed, breedCategory, dogAge, sex, weight) =
 // 강아지 정보 수정
 const updateDog = async (dogName, breed, breedCategory, dogAge, sex, weight) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/dogs/me`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dogs/me`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +57,7 @@ const uploadDogPhoto = async (photoFile) => {
   const formData = new FormData();
   formData.append('image', photoFile);
   try {
-    const response = await fetch(`${API_BASE_URL}/dogs/photos`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dogs/photos`, {
       method: 'POST',
       headers: {
         'accessToken': `${localStorage.getItem('accessToken')}`,
@@ -79,7 +77,7 @@ const uploadDogPhoto = async (photoFile) => {
 // 강아지 정보 조회
 const getDogInfo = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/dogs/me`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dogs/me`, {
       method: 'GET',
       headers: {
         'accessToken': `${localStorage.getItem('accessToken')}`,
