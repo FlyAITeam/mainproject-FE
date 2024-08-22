@@ -51,7 +51,7 @@ const updateDog = async (
 ) => {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dogs/me`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         accessToken: `${localStorage.getItem("accessToken")}`,
@@ -85,10 +85,14 @@ const uploadDogPhoto = async (photoFile) => {
   const formData = new FormData();
   formData.append("image", photoFile);
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dogs/photos`, {
-      method: 'POST',
-      headers: {
-        'accessToken': `${localStorage.getItem('accessToken')}`,
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/dogs/photos`,
+      {
+        method: "POST",
+        headers: {
+          accessToken: `${localStorage.getItem("accessToken")}`,
+        },
+        body: formData,
       },
     );
     return response;
@@ -105,7 +109,7 @@ const uploadDogPhoto = async (photoFile) => {
 const getDogInfo = async () => {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dogs/me`, {
-      method: 'GET',
+      method: "GET",
       headers: {
         accessToken: `${localStorage.getItem("accessToken")}`,
       },
