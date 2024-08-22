@@ -36,7 +36,7 @@ export const Input = ({
   const input = useRef();
 
   const baseDivClasses = "w-full h-fit flex flex-col space-y-1";
-  const labelClasses = "text-xl px-2 mb-2 text-deepgreen font-semibold";
+  const labelClasses = "text-lg px-2 mb-2 text-deepgreen font-medium";
   const inputDivClasses =
     "w-full h-fit flex flex-col justify-center items-start space-y-2 relative";
   const inputClasses =

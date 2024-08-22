@@ -128,4 +128,34 @@ const getDogInfo = async () => {
   }
 };
 
-export { registerDog, updateDog, uploadDogPhoto, getDogInfo };
+// 강아지 사진 조회
+const getDogPhoto = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/dogs/photos`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json", // 요청의 Accept 헤더를 설정
+          accessToken: `${localStorage.getItem("accessToken")}`, // accessToken을 헤더에 추가
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("강아지 사진 조회 실패");
+    }
+
+    // 이미지를 Blob 형식으로 받기
+    const blob = await response.blob();
+    const imageUrl = URL.createObjectURL(blob);
+
+    console.log("강아지 사진 조회 성공:", imageUrl);
+    return imageUrl; // 반환된 이미지 URL을 사용하여 이미지를 표시
+  } catch (error) {
+    console.error("강아지 사진 조회 중 오류:", error);
+    throw error;
+  }
+};
+
+export { registerDog, updateDog, uploadDogPhoto, getDogInfo, getDogPhoto };

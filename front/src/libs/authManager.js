@@ -66,13 +66,20 @@ const registerUser = async (loginId, password, name) => {
 // 사용자 정보 조회
 const getUserInfo = async () => {
   try {
-    const fetch_url = `${process.env.NEXT_PUBLIC_API_URL}/users/me`;
-    const response = await fetch(fetch_url, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/users/me`,
+      {
+        method: "GET",
+        headers: {
+          accept: "application/json", // 요청의 Accept 헤더를 설정
+          accessToken: `${localStorage.getItem("accessToken")}`, // accessToken을 헤더에 추가
+        },
+      },
+    );
 
     if (!response.ok) {
+      const errorData = await response.json();
+      console.error("사용자 정보 조회 실패:", errorData);
       throw new Error("사용자 정보 조회 실패");
     }
 

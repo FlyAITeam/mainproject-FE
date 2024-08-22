@@ -56,13 +56,6 @@ export default function Page() {
   };
 
   const handleNextStep = () => {
-    if (step === 2) {
-      handleImageSubmit();
-    }
-    navigateNextStep();
-  };
-
-  const navigateNextStep = () => {
     if (step === 4) {
       handleDogProfileSubmit(dogProfile);
       router.replace("/main");
@@ -82,13 +75,9 @@ export default function Page() {
     }
   };
 
-  const handleImageSubmit = async () => {
-    console.log("Uploading image ... ", image);
-  };
-
   const handleDogProfileSubmit = async (dogProfile) => {
     console.log("Uploading dog profile ... ", dogProfile);
-    try{
+    try {
       // 1. 강아지 정보 등록
       const dogInfo = await registerDog(
         dogProfile.dogName,
@@ -96,17 +85,16 @@ export default function Page() {
         parseInt(dogProfile.breedCategory),
         parseInt(dogProfile.dogAge),
         dogProfile.sex,
-        parseFloat(dogProfile.weight)
+        parseFloat(dogProfile.weight),
       );
 
-      console.log('강아지 정보 등록 성공:', dogInfo);
+      console.log("강아지 정보 등록 성공:", dogInfo);
 
       // 2. 강아지 사진 등록 (일단 보류)
       // const photoInfo = await uploadDogPhoto(image);
       // console.log('강아지 사진 등록 성공:', photoInfo);
-
-    }catch(error){
-      console.error('강아지 정보 등록 중 오류:', error);
+    } catch (error) {
+      console.error("강아지 정보 등록 중 오류:", error);
     }
   };
 

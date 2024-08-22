@@ -9,28 +9,36 @@ import {
   RespirationModule,
 } from "./components";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getUserInfo } from "@/libs/authManager";
+import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
 
 export default function Page() {
   const router = useRouter();
+  const [userInfo, setUserInfo] = useState(null);
+  const [dogInfo, setDogInfo] = useState(null);
+  const [dogPhoto, setDogPhoto] = useState(null);
 
-  const
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const fetchedUserInfo = await getUserInfo();
+        setUserInfo(fetchedUserInfo);
 
-  const userInfo = {
-    loginId: "pelikan",
-    name: "김동욱",
-  };
+        const fetchedDogInfo = await getDogInfo();
+        setDogInfo(fetchedDogInfo);
 
-  const dogInfo = {
-    dogName: "복실이",
-    breed: "치와와",
-    breedCategory: 1,
-    dogAge: 7,
-    sex: "male",
-    weight: 4.5,
-  };
+        const fetchedDogPhoto = await getDogPhoto();
+        setDogPhoto(fetchedDogPhoto);
+      } catch (error) {
+        console.error("데이터를 불러오는 중 오류 발생:", error);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const wsData = {
-    // 임의로 구성
     bcgData: [
       {
         time: "2021-10-01 12:00:00",
@@ -43,7 +51,7 @@ export default function Page() {
 
   return (
     <Screen nav>
-      <MainHeader userInfo={userInfo} dogInfo={dogInfo} />
+      <MainHeader userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto} />
 
       <div className="w-full h-fit flex flex-col px-6 pb-6 space-y-4">
         <DogInfoModule dogInfo={dogInfo} />

@@ -9,7 +9,7 @@
  * <Loading />
  **/
 
-export const Loading = ({ size }) => {
+export const Loading = ({ size, text }) => {
   size = size || 48;
 
   return (
@@ -21,7 +21,11 @@ export const Loading = ({ size }) => {
         <LeftSide className="w-full h-full text-green animate-step-in" />
         <RightSide className="w-1/2 h-1/2 text-deepgreen animate-step-out" />
       </div>
-      <p className="text-center text-grayText text-xs mt-2">불러오는중</p>
+      {text && (
+        <p className="text-center text-grayText text-xs mt-2">
+          {text || "불러오는중..."}
+        </p>
+      )}
     </div>
   );
 };
