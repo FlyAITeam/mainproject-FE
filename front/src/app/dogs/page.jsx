@@ -91,8 +91,10 @@ export default function Page() {
       console.log("강아지 정보 등록 성공:", dogInfo);
 
       // 2. 강아지 사진 등록 (일단 보류)
-      // const photoInfo = await uploadDogPhoto(image);
-      // console.log('강아지 사진 등록 성공:', photoInfo);
+      if (image) {
+        const photoInfo = await uploadDogPhoto(image);
+        console.log("강아지 사진 등록 성공:", photoInfo);
+      }
     } catch (error) {
       console.error("강아지 정보 등록 중 오류:", error);
     }

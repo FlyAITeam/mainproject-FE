@@ -33,6 +33,10 @@ const registerDog = async (
 
     const data = await response.json();
     console.log("강아지 정보 등록 성공:", data);
+    // 수정된 accessToken으로 localStorage 업데이트
+    const accessToken = response.headers.get("accessToken");
+    localStorage.setItem("accessToken", accessToken);
+
     return data;
   } catch (error) {
     console.error("강아지 정보 등록 중 오류:", error);
@@ -72,6 +76,10 @@ const updateDog = async (
 
     const data = await response.json();
     console.log("강아지 정보 수정 성공:", data);
+    // 수정된 accessToken으로 localStorage 업데이트
+    const accessToken = response.headers.get("accessToken");
+    localStorage.setItem("accessToken", accessToken);
+
     return data;
   } catch (error) {
     console.error("강아지 정보 수정 중 오류:", error);
@@ -82,26 +90,40 @@ const updateDog = async (
 // 강아지 사진 등록
 const uploadDogPhoto = async (photoFile) => {
   console.log("photoFile", photoFile);
+
   const formData = new FormData();
-  formData.append("image", photoFile);
+  formData.append("image", photoFile); // 파일을 FormData에 추가
+
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/dogs/photos`,
       {
         method: "POST",
         headers: {
-          accessToken: `${localStorage.getItem("accessToken")}`,
+          accessToken: `${localStorage.getItem("accessToken")}`, // accessToken을 헤더에 포함
         },
-        body: formData,
+        body: formData, // FormData를 body로 전송
       },
     );
-    return response;
-  } catch (error) {
-    if (error.response) {
-      throw new Error(error.response.data.errorMessage || "Server error");
-    } else {
-      throw new Error("Network error");
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("강아지 사진 등록 실패:", errorData);
+      throw new Error(errorData.errorMessage || "강아지 사진 등록 실패");
     }
+
+    // 필요시 응답에서 새로 발급된 토큰을 받아서 localStorage에 저장
+    const newAccessToken = response.headers.get("accessToken");
+    if (newAccessToken) {
+      localStorage.setItem("accessToken", newAccessToken);
+    }
+
+    const responseData = await response.json();
+    console.log("강아지 사진 등록 성공:", responseData);
+    return responseData;
+  } catch (error) {
+    console.error("강아지 사진 등록 중 오류:", error);
+    throw new Error(error.message || "Network error");
   }
 };
 
@@ -111,7 +133,7 @@ const getDogInfo = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dogs/me`, {
       method: "GET",
       headers: {
-        accessToken: `${localStorage.getItem("accessToken")}`,
+        accessToken: `${localStorage.getItem("accessToken")}`, // accessToken을 헤더에 추가
       },
     });
 
@@ -121,6 +143,9 @@ const getDogInfo = async () => {
 
     const data = await response.json();
     console.log("강아지 정보 조회 성공:", data);
+    // 수정된 accessToken으로 localStorage 업데이트
+    const accessToken = response.headers.get("accessToken");
+    localStorage.setItem("accessToken", accessToken);
     return data;
   } catch (error) {
     console.error("강아지 정보 조회 중 오류:", error);
@@ -136,23 +161,30 @@ const getDogPhoto = async () => {
       {
         method: "GET",
         headers: {
-          accept: "application/json", // 요청의 Accept 헤더를 설정
           accessToken: `${localStorage.getItem("accessToken")}`, // accessToken을 헤더에 추가
         },
       },
     );
 
     if (!response.ok) {
+      console.error("강아지 사진 조회 실패", response.statusText);
       throw new Error("강아지 사진 조회 실패");
     }
 
-    // 이미지를 Blob 형식으로 받기
+    // Blob으로 응답 데이터 가져오기
     const blob = await response.blob();
+
+    // Blob을 URL로 변환
     const imageUrl = URL.createObjectURL(blob);
 
-    console.log("강아지 사진 조회 성공:", imageUrl);
-    return imageUrl; // 반환된 이미지 URL을 사용하여 이미지를 표시
-  } catch (error) {
+    // 필요시 응답에서 새로 발급된 토큰을 받아서 localStorage에 저장
+    const accessToken = response.headers.get("accessToken");
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+    }
+
+    return imageUrl;
+  } catch (url) {
     console.error("강아지 사진 조회 중 오류:", error);
     throw error;
   }

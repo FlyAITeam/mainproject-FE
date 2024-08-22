@@ -12,3 +12,4 @@ export * from "./Col";
 export * from "./Row";
 export * from "./Module";
 export * from "./Header";
+export * from "./LazyLoading";

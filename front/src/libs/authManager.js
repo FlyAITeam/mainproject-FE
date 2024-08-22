@@ -18,7 +18,6 @@ const loginUser = async (loginId, password) => {
     console.log("로그인 성공:", data);
     // 헤더에 저장된 Access token을 변수에 넣어 localStorage에 저장
     const accessToken = response.headers.get("accessToken");
-    console.log("accessToken", accessToken);
     localStorage.setItem("accessToken", response.headers.get("accessToken"));
 
     return data;
@@ -71,8 +70,7 @@ const getUserInfo = async () => {
       {
         method: "GET",
         headers: {
-          accept: "application/json", // 요청의 Accept 헤더를 설정
-          accessToken: `${localStorage.getItem("accessToken")}`, // accessToken을 헤더에 추가
+          accessToken: `${localStorage.getItem("accessToken")}`,
         },
       },
     );
@@ -84,7 +82,12 @@ const getUserInfo = async () => {
     }
 
     const data = await response.json();
-    console.log("사용자 정보 조회 성공:", data);
+    console.log("사용자 정보 조회 성공:", response);
+
+    // 수정된 accessToken으로 localStorage 업데이트
+    const accessToken = response.headers.get("accessToken");
+    localStorage.setItem("accessToken", accessToken);
+
     return data;
   } catch (error) {
     console.error("사용자 정보 조회 중 오류:", error);
