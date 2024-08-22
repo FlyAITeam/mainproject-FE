@@ -2,7 +2,6 @@
 
 import React from "react";
 import classNames from "classnames";
-import { motion } from "framer-motion";
 
 /**
  * Button
@@ -43,10 +42,7 @@ export const Button = ({
   };
 
   return (
-    <motion.button
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <button
       className={classNames(
         baseButtonClasses,
         presetClasses[disabled ? "disabled" : preset],
@@ -57,6 +53,6 @@ export const Button = ({
       {...rest}
     >
       {children}
-    </motion.button>
+    </button>
   );
 };

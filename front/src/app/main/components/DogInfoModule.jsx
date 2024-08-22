@@ -6,6 +6,10 @@ import { Module } from "@/components";
 
 export const DogInfoModule = ({ dogInfo }) => {
   const [detailInfo, setDetailInfo] = useState(false);
+  // userInfo나 dogInfo가 null일 경우를 대비하여 안전하게 처리
+  if (!dogInfo) {
+    return <div>Loading...</div>; // 데이터를 로드하는 동안 로딩 상태를 표시
+  }
 
   return (
     <Module

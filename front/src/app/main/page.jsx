@@ -178,24 +178,26 @@ export default function Page() {
   const guideDivClasses =
     "w-full h-48 flex flex-col justify-center items-center px-6 active:opacity-50";
 
-  const
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const fetchedUserInfo = await getUserInfo();
+        setUserInfo(fetchedUserInfo);
 
-  const userInfo = {
-    loginId: "pelikan",
-    name: "김동욱",
-  };
+        const fetchedDogInfo = await getDogInfo();
+        setDogInfo(fetchedDogInfo);
 
-  const dogInfo = {
-    dogName: "복실이",
-    breed: "치와와",
-    breedCategory: 1,
-    dogAge: 7,
-    sex: "male",
-    weight: 4.5,
-  };
+        const fetchedDogPhoto = await getDogPhoto();
+        setDogPhoto(fetchedDogPhoto);
+      } catch (error) {
+        console.error("데이터를 불러오는 중 오류 발생:", error);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const wsData = {
-    // 임의로 구성
     bcgData: [
       {
         time: "2021-10-01 12:00:00",
