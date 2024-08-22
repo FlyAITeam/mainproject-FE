@@ -3,18 +3,26 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Module } from "@/components";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export const DogInfoModule = ({ dogInfo }) => {
   const [detailInfo, setDetailInfo] = useState(false);
-  // userInfo나 dogInfo가 null일 경우를 대비하여 안전하게 처리
-  if (!dogInfo) {
-    return <div>Loading...</div>; // 데이터를 로드하는 동안 로딩 상태를 표시
-  }
+
+  const safeDogInfo = dogInfo || {};
+
+  const overviewDivClasses =
+    "w-full h-fit flex flex-row justify-between items-center";
+  const overviewSpanClasses = "w-fit h-fit font-medium";
+  const detailDivClasses =
+    "flex flex-row justify-between items-center space-y-2";
+  const detailRowClasses =
+    "w-full h-full justify-start flex flex-col space-y-2";
+  const detailSpanClasses = "w-full h-fit font-medium";
 
   return (
     <Module
       title="반려견 정보"
-      reload={() => console.log("reload")}
       getDetail={() => setDetailInfo(!detailInfo)}
       className="w-full"
     >
@@ -24,32 +32,45 @@ export const DogInfoModule = ({ dogInfo }) => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="w-full h-full flex flex-row justify-between items-center"
+            className={overviewDivClasses}
           >
-            <span className="w-fit h-fit font-medium">
-              <p className="text-grayText">{dogInfo.breed}</p>
-            </span>
-            <span className="w-fit h-fit font-medium">
+            <span className={overviewSpanClasses}>
               <p className="text-grayText">
-                {dogInfo.breedCategory === 1
-                  ? "소형견"
-                  : dogInfo.breedCategory === 2
-                    ? "중형견"
-                    : dogInfo.breedCategory === 3 && "대형견"}
+                {safeDogInfo.breed ? dogInfo.breed : <Skeleton width={60} />}
               </p>
             </span>
-            <span className="w-fit h-fit font-medium">
+            <span className={overviewSpanClasses}>
               <p className="text-grayText">
-                {dogInfo.sex === "male"
-                  ? "수컷"
-                  : dogInfo.sex === "female"
-                    ? "암컷"
-                    : "중성화"}{" "}
-                / {dogInfo.dogAge}살
+                {safeDogInfo.breedCategory ? (
+                  safeDogInfo.breedCategory === 1 ? (
+                    "소형견"
+                  ) : safeDogInfo.breedCategory === 2 ? (
+                    "중형견"
+                  ) : (
+                    safeDogInfo.breedCategory === 3 && "대형견"
+                  )
+                ) : (
+                  <Skeleton width={60} />
+                )}
               </p>
             </span>
-            <span className="w-fit h-fit font-medium">
-              <p className="text-grayText">{dogInfo.weight}kg</p>
+            <span className={overviewSpanClasses}>
+              <p className="text-grayText">
+                {safeDogInfo.sex ? (
+                  `${safeDogInfo.sex == "male" ? "수컷" : safeDogInfo.sex == "female" ? "암컷" : "중성화"} / ${safeDogInfo.dogAge}살`
+                ) : (
+                  <Skeleton width={60} />
+                )}
+              </p>
+            </span>
+            <span className={overviewSpanClasses}>
+              <p className="text-grayText">
+                {safeDogInfo.weight ? (
+                  `${safeDogInfo.weight}kg`
+                ) : (
+                  <Skeleton width={60} />
+                )}
+              </p>
             </span>
           </motion.div>
         ) : (
@@ -57,39 +78,52 @@ export const DogInfoModule = ({ dogInfo }) => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex flex-row justify-between items-center space-y-2"
+            className={detailDivClasses}
           >
-            <div className="w-full h-full justify-start flex flex-col space-y-2">
-              <span className="w-full font-medium">
+            <div className={detailRowClasses}>
+              <span className={detailSpanClasses}>
                 <p className="">견종</p>
-                <p className="text-grayText">{dogInfo.breed}</p>
+                <p className="text-grayText">
+                  {safeDogInfo.breed || <Skeleton width={60} />}
+                </p>
               </span>
-              <span className="w-full font-medium">
+              <span className={detailSpanClasses}>
                 <p className="">분류</p>
                 <p className="text-grayText">
-                  {dogInfo.breedCategory === 1
-                    ? "소형견"
-                    : dogInfo.breedCategory === 2
-                      ? "중형견"
-                      : dogInfo.breedCategory === 3 && "대형견"}
+                  {safeDogInfo.breedCategory ? (
+                    safeDogInfo.breedCategory === 1 ? (
+                      "소형견"
+                    ) : safeDogInfo.breedCategory === 2 ? (
+                      "중형견"
+                    ) : (
+                      safeDogInfo.breedCategory === 3 && "대형견"
+                    )
+                  ) : (
+                    <Skeleton width={60} />
+                  )}
                 </p>
               </span>
             </div>
-            <div className="w-full h-full justify-start flex flex-col space-y-2">
-              <span className="w-full font-medium">
+            <div className={detailRowClasses}>
+              <span className={detailSpanClasses}>
                 <p className="">성별 / 나이</p>
                 <p className="text-grayText">
-                  {dogInfo.sex === "male"
-                    ? "남"
-                    : dogInfo.sex === "female"
-                      ? "여"
-                      : "중성화"}{" "}
-                  / {dogInfo.dogAge}살
+                  {safeDogInfo.sex ? (
+                    `${safeDogInfo.sex == "male" ? "수컷" : safeDogInfo.sex == "female" ? "암컷" : "중성화"} / ${safeDogInfo.dogAge}살`
+                  ) : (
+                    <Skeleton width={60} />
+                  )}
                 </p>
               </span>
-              <span className="w-full font-medium">
+              <span className={detailSpanClasses}>
                 <p className="">몸무게</p>
-                <p className="text-grayText">{dogInfo.weight}kg</p>
+                <p className="text-grayText">
+                  {safeDogInfo.weight ? (
+                    `${safeDogInfo.weight}kg`
+                  ) : (
+                    <Skeleton width={60} />
+                  )}
+                </p>
               </span>
             </div>
           </motion.div>

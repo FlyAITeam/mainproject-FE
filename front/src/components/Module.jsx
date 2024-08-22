@@ -39,7 +39,7 @@ export const Module = ({ title, children, reload, getDetail, className }) => {
     <div className={classNames(baseDivClasses, className)}>
       <div className={headerDivClasses}>
         <label className="text-md font-medium text-dimGray">
-          {title || "제목"}
+          {title || ""}
         </label>
         <div className={actionDivClasses}>
           {reload && (
