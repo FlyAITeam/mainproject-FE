@@ -1,16 +1,18 @@
 "use client";
 
-import Image from "next/image";
 import { Screen } from "@/components";
 import { useRouter } from "next/navigation";
+import KakaoMap from "@/components/KakaoMap";  
 
 export default function Page() {
   const router = useRouter();
 
   return (
     <Screen nav>
-      <div className="flex flex-col items-center space-y-2">
-        <p className="text-lg text-center text-grayText">Map Screen</p>
+      <div className="flex flex-col items-center justify-center w-full h-full p-4">
+        <div className="w-full h-full max-w-3xl">
+          <KakaoMap/>
+        </div>
       </div>
     </Screen>
   );
