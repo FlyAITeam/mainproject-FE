@@ -12,7 +12,6 @@ export default function WebSocketBluetoothSwitch() {
   const serviceUuid = process.env.NEXT_PUBLIC_SERVICE_UUID;
   const txCharUuid = process.env.NEXT_PUBLIC_TX_CHAR_UUID;
   const rxCharUuid = process.env.NEXT_PUBLIC_RX_CHAR_UUID;
-
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
