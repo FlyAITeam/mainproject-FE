@@ -1,8 +1,8 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components";
 
-export default function WebSocketTest() {
+export const WebSocketTest = () => {
   const [ws, setWs] = useState(null);
   const [authSuccess, setAuthSuccess] = useState(null);
   const [message, setMessage] = useState("");
@@ -94,7 +94,7 @@ export default function WebSocketTest() {
       console.log("Requesting Bluetooth device...");
       const device = await navigator.bluetooth.requestDevice({
         filters: [{ services: [serviceUuid] }],
-        optionalServices: [serviceUuid]
+        optionalServices: [serviceUuid],
       });
 
       console.log("Connecting to GATT server...");
@@ -105,7 +105,10 @@ export default function WebSocketTest() {
 
       console.log("Starting notifications...");
       await txCharacteristic.startNotifications();
-      txCharacteristic.addEventListener("characteristicvaluechanged", handleCharacteristicValueChanged);
+      txCharacteristic.addEventListener(
+        "characteristicvaluechanged",
+        handleCharacteristicValueChanged,
+      );
 
       console.log("Sending initial command to device...");
       const initCommand = hexStringToByteArray("FAFA0000000016000100FEFE");
@@ -143,14 +146,15 @@ export default function WebSocketTest() {
         const gz = buffer.getInt16(idx + gzOffset, true);
         const temperature = buffer.getFloat32(idx + tempOffset, true);
 
-        newData.push({time, ax, ay, az, bcg, gx, gy, gz, temperature});
+        newData.push({ time, ax, ay, az, bcg, gx, gy, gz, temperature });
       }
 
       if (ws && ws.readyState === WebSocket.OPEN) {
         try {
           const sensorData = { senserData: newData };
           const sensorData2 = {
-            senserData: [{
+            senserData: [
+              {
                 time: 1716563008215,
                 ax: 16236,
                 ay: -1916,
@@ -159,7 +163,7 @@ export default function WebSocketTest() {
                 gx: -60,
                 gy: 19,
                 gz: 73,
-                temperature: 38.04188537597660,
+                temperature: 38.0418853759766,
               },
               {
                 time: 1716563008224,
@@ -170,7 +174,7 @@ export default function WebSocketTest() {
                 gx: -52,
                 gy: 19,
                 gz: 81,
-                temperature: 38.04188537597660,
+                temperature: 38.0418853759766,
               },
               {
                 time: 1716563008234,
@@ -181,7 +185,7 @@ export default function WebSocketTest() {
                 gx: -47,
                 gy: 18,
                 gz: 94,
-                temperature: 38.04188537597660,
+                temperature: 38.0418853759766,
               },
               {
                 time: 1716563008244,
@@ -192,7 +196,7 @@ export default function WebSocketTest() {
                 gx: -59,
                 gy: 17,
                 gz: 97,
-                temperature: 38.04188537597660,
+                temperature: 38.0418853759766,
               },
               {
                 time: 1716563008254,
@@ -203,7 +207,7 @@ export default function WebSocketTest() {
                 gx: -50,
                 gy: 17,
                 gz: 104,
-                temperature: 38.04188537597660,
+                temperature: 38.0418853759766,
               },
               {
                 time: 1716563008264,
@@ -214,7 +218,7 @@ export default function WebSocketTest() {
                 gx: -61,
                 gy: 16,
                 gz: 97,
-                temperature: 38.04188537597660,
+                temperature: 38.0418853759766,
               },
               {
                 time: 1716563008275,
@@ -225,7 +229,7 @@ export default function WebSocketTest() {
                 gx: -61,
                 gy: 14,
                 gz: 94,
-                temperature: 38.04188537597660,
+                temperature: 38.0418853759766,
               },
             ],
           };
@@ -276,7 +280,10 @@ export default function WebSocketTest() {
         </Button>
       </div>
       <div>
-        <Button onClick={connectToDeviceAndCollectData} disabled={!authSuccess || isConnected}>
+        <Button
+          onClick={connectToDeviceAndCollectData}
+          disabled={!authSuccess || isConnected}
+        >
           2. Connect and Collect Data
         </Button>
       </div>
@@ -286,7 +293,9 @@ export default function WebSocketTest() {
         </Button>
       </div>
       <div>
-        <p>Auth Success: {authSuccess !== null ? authSuccess.toString() : "N/A"}</p>
+        <p>
+          Auth Success: {authSuccess !== null ? authSuccess.toString() : "N/A"}
+        </p>
         <p>Message: {message}</p>
         <p>Access Token: {accessToken}</p>
         <p>WebSocket Status: {wsStatus}</p>
@@ -294,4 +303,4 @@ export default function WebSocketTest() {
       </div>
     </div>
   );
-}
+};

@@ -9,6 +9,7 @@ import {
   TemperatureModule,
   RespirationModule,
   BluetoothStatus,
+  WebSocketTest,
 } from "./components";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,6 +23,7 @@ export default function Page() {
   const [dogPhoto, setDogPhoto] = useState(null);
 
   const [isConnectedBLE, setIsConnectedBLE] = useState(true);
+  const [bluetoothOnOff, setBluetoothOnOff] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -69,7 +71,14 @@ export default function Page() {
 
   return (
     <Screen nav>
-      <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto} />
+      <UserProfile
+        userInfo={userInfo}
+        dogInfo={dogInfo}
+        dogPhoto={dogPhoto}
+        setBluetoothOnOff={() => {
+          setBluetoothOnOff(!bluetoothOnOff);
+        }}
+      />
 
       <div className={topDivClasses}>
         <DogInfoModule dogInfo={dogInfo} />
@@ -127,6 +136,7 @@ export default function Page() {
           </Module>
         )}
       </div>
+      <WebSocketTest />
     </Screen>
   );
 }

@@ -5,7 +5,12 @@ import { Icon } from "@/components";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-export const UserProfile = ({ userInfo, dogInfo, dogPhoto }) => {
+export const UserProfile = ({
+  userInfo,
+  dogInfo,
+  dogPhoto,
+  setBluetoothOnOff,
+}) => {
   const baseDivClasses =
     "w-full h-fit flex flex-row justify-between items-center space-x-2 p-6";
   const profileDivClasses = "w-fit h-fit flex flex-row space-x-3";
@@ -14,7 +19,7 @@ export const UserProfile = ({ userInfo, dogInfo, dogPhoto }) => {
     "flex flex-col justify-center items-start space-y-1";
   const userNameClasses = "w-36 text-sm text-grayText truncate";
   const dogNameClasses = "w-40 text-3xl font-semibold text-black truncate";
-  const notiDivClasses =
+  const actionDivClasses =
     "w-fit h-fit p-3 bg-grayBackground rounded-full flex justify-center items-center";
 
   // userInfo, dogInfo, dogPhoto가 null 또는 undefined일 경우 기본 값 처리
@@ -55,8 +60,8 @@ export const UserProfile = ({ userInfo, dogInfo, dogPhoto }) => {
           </p>
         </div>
       </div>
-      <div className={notiDivClasses}>
-        <Icon icon="bell" className="text-black" size="24" />
+      <div onClick={setBluetoothOnOff} className={actionDivClasses}>
+        <Icon icon="bluetooth" className="text-black" size="24" />
       </div>
     </div>
   );
