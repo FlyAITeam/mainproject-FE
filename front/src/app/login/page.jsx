@@ -2,7 +2,7 @@
 
 import classNames from "classnames";
 import { useState } from "react";
-import { AppTitle, Screen, Input, Button, Icon } from "@/components";
+import { AppTitle, Screen, Input, Button, Icon, Loading } from "@/components";
 import { useRouter } from "next/navigation";
 import { loginUser } from "@/libs/authManager";
 
@@ -20,18 +20,23 @@ export default function Page() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const [isPasswordShown, setIsPasswordShown] = useState(false);
 
   /** TODO: 로그인 요청 @안호준 */
   const handleLogin = async (loginInfo) => {
     console.log("Login... ", loginInfo);
+    setLoading(true); // 로딩 상태 true
     try {
       const data = await loginUser(loginInfo.id, loginInfo.password);
       console.log("로그인 성공:", data);
-      router.replace("/main");
+      router.replace("/main"); // 메인 페이지로 이동
     } catch (error) {
       console.error("로그인 실패:", error);
       alert("로그인에 실패했습니다.");
+    } finally {
+      setLoading(false); // 로딩 상태 false
     }
   };
 
@@ -57,7 +62,7 @@ export default function Page() {
           onChange={(e) => setLoginInfo({ ...loginInfo, id: e.target.value })}
         />
         <Input
-          type="password"
+          type={isPasswordShown ? "text" : "password"}
           label="비밀번호"
           placeholder="비밀번호를 입력해주세요"
           value={loginInfo.password}
@@ -76,7 +81,7 @@ export default function Page() {
       </div>
       <div className={bottomDivClasses}>
         <Button
-          preset="default"
+          preset={!loading ? "default" : "reversed"}
           className="w-full"
           onClick={() =>
             loginInfo.id && loginInfo.password
@@ -88,7 +93,7 @@ export default function Page() {
                   : alert("아이디와 비밀번호를 입력해주세요.")
           }
         >
-          로그인
+          {loading ? <Loading size={24} /> : "로그인"}
         </Button>
       </div>
     </Screen>

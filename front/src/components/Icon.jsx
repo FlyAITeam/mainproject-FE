@@ -12,7 +12,6 @@ import {
   IoChevronDown,
   IoNotifications,
   IoNotificationsOff,
-  IoBluetooth,
   IoCall,
   IoCopy,
   IoCamera,
@@ -49,7 +48,7 @@ import {
   IoHappyOutline,
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
-import { check } from "prettier";
+import { MdBluetooth, MdBluetoothDisabled } from "react-icons/md";
 
 /**
  * Icon
@@ -86,7 +85,8 @@ export const iconRegistry = {
   down: IoChevronDown,
   bell: IoNotifications,
   bellOff: IoNotificationsOff,
-  bluetooth: IoBluetooth,
+  bluetooth: MdBluetooth,
+  bluetoothOff: MdBluetoothDisabled,
   call: IoCall,
   copy: IoCopy,
   check: IoCheckmark,
