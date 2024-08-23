@@ -4,11 +4,10 @@ import classNames from "classnames";
 import { Screen, Row, Module, Icon } from "@/components";
 import {
   UserProfile,
-  DogInfoModule,
   HeartRateModule,
   TemperatureModule,
   RespirationModule,
-  BluetoothStatus,
+  IntensityModule,
   WebSocketTest,
 } from "./components";
 import { useRouter } from "next/navigation";
@@ -47,10 +46,11 @@ export default function Page() {
   const wsData = {
     bcgData: [
       {
+        intensity: 1,
         time: "2021-10-01 12:00:00",
         heartRate: 60,
         breathRate: 12,
-        temperature: 36.5,
+        temperature: 38.5,
       },
     ],
   };
@@ -61,7 +61,7 @@ export default function Page() {
     battery: 70,
   };
 
-  const topDivClasses = "w-full h-fit flex flex-col px-6 pb-6 space-y-4";
+  const topDivClasses = "w-full h-fit px-6 mb-4";
   const contentHeaderClasses =
     "w-full h-fit flex flex-row justify-between items-center px-6 mb-2 ";
   const headerTextClasses = "w-fit h-fit flex font-medium";
@@ -71,22 +71,12 @@ export default function Page() {
 
   return (
     <Screen nav>
-      <UserProfile
-        userInfo={userInfo}
-        dogInfo={dogInfo}
-        dogPhoto={dogPhoto}
-        setBluetoothOnOff={() => {
-          setBluetoothOnOff(!bluetoothOnOff);
-        }}
-      />
-
+      <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto} />
       <div className={topDivClasses}>
-        <DogInfoModule dogInfo={dogInfo} />
+        <IntensityModule intensity={wsData.bcgData[0].intensity} />
       </div>
-
       <div className={contentHeaderClasses}>
         <div className={headerTextClasses}>건강 정보</div>
-        {isConnectedBLE && <BluetoothStatus connectedBLE={connectedBLE} />}
       </div>
       <div className={contentDivClasses}>
         {isConnectedBLE ? (

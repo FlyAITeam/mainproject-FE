@@ -12,15 +12,16 @@ export const UserProfile = ({
   setBluetoothOnOff,
 }) => {
   const baseDivClasses =
-    "w-full h-fit flex flex-row justify-between items-center space-x-2 p-6";
+    "w-full h-fit flex flex-row justify-between items-center space-x-2 px-6 py-4";
   const profileDivClasses = "w-fit h-fit flex flex-row space-x-3";
-  const profileImageClasses = "w-20 h-20 rounded-full overflow-hidden";
+  const profileImageClasses =
+    "w-20 h-20 bg-grayBackground flex justify-center items-center rounded-full overflow-hidden";
   const profileInfoDivClasses =
     "flex flex-col justify-center items-start space-y-1";
   const userNameClasses = "w-36 text-sm text-grayText truncate";
   const dogNameClasses = "w-40 text-3xl font-semibold text-black truncate";
   const actionDivClasses =
-    "w-fit h-fit p-3 bg-grayBackground rounded-full flex justify-center items-center";
+    "w-fit h-fit p-3 bg-grayBackground rounded-full flex justify-center items-center active:opacity-50";
 
   // userInfo, dogInfo, dogPhoto가 null 또는 undefined일 경우 기본 값 처리
   const safeUserInfo = userInfo || {};
@@ -61,7 +62,7 @@ export const UserProfile = ({
         </div>
       </div>
       <div onClick={setBluetoothOnOff} className={actionDivClasses}>
-        <Icon icon="bluetooth" className="text-black" size="24" />
+        <Icon icon="more" size="24" />
       </div>
     </div>
   );
