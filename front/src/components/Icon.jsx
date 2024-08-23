@@ -49,6 +49,8 @@ import {
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
 import { MdBluetooth, MdBluetoothDisabled } from "react-icons/md";
+import { GiSittingDog } from "react-icons/gi";
+import { IoMdMore } from "react-icons/io";
 
 /**
  * Icon
@@ -121,6 +123,8 @@ export const iconRegistry = {
   eye: IoEye,
   eyeOff: IoEyeOff,
   happy: IoHappyOutline,
+  dog: GiSittingDog,
+  more: IoMdMore,
 };
 
 export const Icon = ({ icon, color, size = 20, style, onClick, ...rest }) => {

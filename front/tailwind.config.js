@@ -22,7 +22,7 @@ module.exports = {
       },
       colors: {
         black: "#000000",
-        dimGray: "#555555",
+        dimGray: "#999999",
         grayBorder: "#DDDDDD",
         grayText: "#909090",
         grayBackground: "#F7F7F7",
@@ -31,9 +31,11 @@ module.exports = {
         green: "#00CB76",
         deepgreen: "#0BA263",
         red: "#EB4646",
-        yellow: "#FFC700",
-        orange: "#FF4E00",
+        yellow: "#F6BE2C",
+        orange: "#F6812C",
         blue: "#00A0FF",
+        deepblue: "#0068FF",
+        navy: "#000080",
       },
       animation: {
         "step-in": "stepIn 0.6s ease-in infinite alternate",
@@ -60,7 +62,7 @@ module.exports = {
         },
         breatheTongue: {
           "0%": { transform: "scaleY(1)" },
-          "50%": { transform: "scaleY(0.9)" },
+          "50%": { transform: "scaleY(0.8)" },
           "100%": { transform: "scaleY(1)" },
         },
       },

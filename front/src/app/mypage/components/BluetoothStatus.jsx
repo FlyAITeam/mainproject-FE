@@ -6,12 +6,12 @@ import { motion } from "framer-motion";
 
 export const BluetoothStatus = ({ connectedBLE }) => {
   const baseDivClasses =
-    "w-fit h-5 flex flex-row justify-end items-center bg-grayBackground text-black  rounded-full space-x-2 pl-3 pr-3";
-  const dividerClasses = "h-3 border-l border-grayText pr-1 w-0";
-  const deviceNameClasses = "text-sm font-regular pr-1";
+    "w-full h-fit flex flex-row justify-center items-center bg-grayBackground text-black  rounded-xl space-x-6 px-4 py-4";
+  const dividerClasses = "h-5 border-l border-grayBorder pr-1 w-0";
+  const deviceNameClasses = "text-lg font-regular pr-1";
   const batteryDivClasses =
     "w-fit h-fit flex flex-row justify-center items-center space-x-1";
-  const batteryTextClasses = "text-xs font-medium";
+  const batteryTextClasses = "text-md font-medium";
   return (
     <>
       <motion.div
@@ -27,7 +27,7 @@ export const BluetoothStatus = ({ connectedBLE }) => {
           className={classNames(
             connectedBLE.status == "connected" ? "text-green" : "text-red",
           )}
-          size="14"
+          size="24"
         />
         <span className={dividerClasses} />
         <div className={deviceNameClasses}>{connectedBLE.device}</div>
@@ -42,7 +42,7 @@ export const BluetoothStatus = ({ connectedBLE }) => {
                   ? "batteryHalf"
                   : "batteryFull"
             }
-            size="18"
+            size="24"
           />
         </div>
       </motion.div>

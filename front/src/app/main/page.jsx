@@ -4,17 +4,17 @@ import classNames from "classnames";
 import { Screen, Row, Module, Icon } from "@/components";
 import {
   UserProfile,
-  DogInfoModule,
   HeartRateModule,
   TemperatureModule,
   RespirationModule,
-  BluetoothStatus,
+  IntensityModule,
   WebSocketTest,
 } from "./components";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserInfo } from "@/libs/authManager";
 import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
+import Modal from "react-modal";
 
 export default function Page() {
   const router = useRouter();
@@ -23,7 +23,7 @@ export default function Page() {
   const [dogPhoto, setDogPhoto] = useState(null);
 
   const [isConnectedBLE, setIsConnectedBLE] = useState(true);
-  const [bluetoothOnOff, setBluetoothOnOff] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -44,24 +44,25 @@ export default function Page() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    localStorage.getItem("notify") === "true"
+      ? setIsModalOpen(true)
+      : setIsModalOpen(false);
+  }, []);
+
   const wsData = {
     bcgData: [
       {
+        intensity: 0,
         time: "2021-10-01 12:00:00",
         heartRate: 60,
         breathRate: 12,
-        temperature: 36.5,
+        temperature: 38.5,
       },
     ],
   };
 
-  const connectedBLE = {
-    device: "sense1",
-    status: "connected",
-    battery: 70,
-  };
-
-  const topDivClasses = "w-full h-fit flex flex-col px-6 pb-6 space-y-4";
+  const topDivClasses = "w-full h-fit px-6 mb-4";
   const contentHeaderClasses =
     "w-full h-fit flex flex-row justify-between items-center px-6 mb-2 ";
   const headerTextClasses = "w-fit h-fit flex font-medium";
@@ -71,22 +72,32 @@ export default function Page() {
 
   return (
     <Screen nav>
-      <UserProfile
-        userInfo={userInfo}
-        dogInfo={dogInfo}
-        dogPhoto={dogPhoto}
-        setBluetoothOnOff={() => {
-          setBluetoothOnOff(!bluetoothOnOff);
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+          content: {
+            width: "80%",
+            height: "60%",
+            margin: "auto",
+            padding: "0",
+            border: "none",
+            borderRadius: "10px",
+            backgroundColor: "white",
+          },
         }}
-      />
-
+      >
+        Modalkk
+      </Modal>
+      <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto} />
       <div className={topDivClasses}>
-        <DogInfoModule dogInfo={dogInfo} />
+        <IntensityModule intensity={wsData.bcgData[0].intensity} />
       </div>
-
       <div className={contentHeaderClasses}>
         <div className={headerTextClasses}>건강 정보</div>
-        {isConnectedBLE && <BluetoothStatus connectedBLE={connectedBLE} />}
       </div>
       <div className={contentDivClasses}>
         {isConnectedBLE ? (

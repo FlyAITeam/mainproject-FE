@@ -24,7 +24,7 @@ export const RespirationModule = ({ respiration }) => {
           <p className="w-full text-xs font-medium text-grayText pl-[1px]">
             회 / 분당
           </p>
-          <p className="w-full text-4xl font-bold text-black">{respiration}</p>
+          <p className="w-full text-4xl font-bold  text-black">{respiration}</p>
         </div>
       </div>
     </Module>
