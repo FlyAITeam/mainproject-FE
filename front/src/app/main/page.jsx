@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { getUserInfo } from "@/libs/authManager";
 import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
 import useModalStore from "@/stores/store";
+import DeviceConnector from "@/components/DeviceConnector";
 
 export default function Page() {
   const router = useRouter();
@@ -83,11 +84,11 @@ export default function Page() {
     "w-full h-fit flex flex-row justify-between items-center px-6 mb-2 ";
   const headerTextClasses = "w-full h-fit flex font-medium mb-2";
   const contentDivClasses = "w-full h-full flex flex-col space-y-4";
-  const guideDivClasses =
-    "w-full h-48 flex flex-col justify-center items-center px-6 active:opacity-50";
+  const guideDivClasses = "w-full h-48 flex flex-col justify-center items-center px-6 active:opacity-50";
 
   return (
     <Screen nav>
+      <DeviceConnector webSocket={webSocket}/>
       <Modal isModalOpen={isModalOpen} type="bcg" />
       <UserProfile
         userInfo={userInfo}
