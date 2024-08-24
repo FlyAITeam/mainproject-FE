@@ -1,10 +1,7 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-const DeviceConnector = ({
-  webSocket, 
-  setTemperature,
-}) => {
+const DeviceConnector = ({ webSocket, setTemperature }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [device, setDevice] = useState(null); // Bluetooth device state
   const [sensorData, setSensorData] = useState([]); // State to store sensor data
@@ -25,41 +22,45 @@ const DeviceConnector = ({
   const tempOffset = Number(process.env.NEXT_PUBLIC_TEMP_OFFSET);
 
   const connectToDeviceAndCollectData = async () => {
-    try{
-      await webSocket.send(JSON.stringify({accessToken: localStorage.getItem("accessToken") || ""}));
+    try {
+      await webSocket.send(
+        JSON.stringify({
+          accessToken: localStorage.getItem("accessToken") || "",
+        }),
+      );
 
       try {
         console.log("Requesting Bluetooth device...");
         const device = await navigator.bluetooth.requestDevice({
-          filters: [{services: [serviceUuid]}],
+          filters: [{ services: [serviceUuid] }],
           optionalServices: [serviceUuid],
         });
-  
+
         console.log("Connecting to GATT server...");
         const server = await device.gatt.connect();
         const service = await server.getPrimaryService(serviceUuid);
         const txCharacteristic = await service.getCharacteristic(txCharUuid);
         const rxCharacteristic = await service.getCharacteristic(rxCharUuid);
-  
+
         console.log("Starting notifications...");
         await txCharacteristic.startNotifications();
         txCharacteristic.addEventListener(
           "characteristicvaluechanged",
           handleCharacteristicValueChanged,
         );
-  
+
         console.log("Sending initial command to device...");
         const initCommand = hexStringToByteArray("FAFA0000000016000100FEFE");
         await rxCharacteristic.writeValue(initCommand);
-  
+
         setIsConnected(true);
         setDevice(device); // Save the device reference for later disconnection
         console.log("Device connected and data collection started");
       } catch (error) {
         console.error("Failed to connect to Bluetooth device:", error);
         throw error; // 에러 발생 시 다시 off 상태로 전환하기 위해 에러를 throw
-      }     
-    }catch(e){
+      }
+    } catch (e) {
       console.log(e);
       throw e; // 에러 발생 시 다시 off 상태로 전환하기 위해 에러를 throw
     }
@@ -69,7 +70,7 @@ const DeviceConnector = ({
     // console.log("Characteristic value changed, processing data...");
     const value = event.target.value;
     const buffer = new DataView(value.buffer);
-        
+
     const head = buffer.getInt16(0, true);
     const wdid = buffer.getUint32(2, true);
     const type = buffer.getUint16(6, true);
@@ -85,7 +86,7 @@ const DeviceConnector = ({
         const idx = i * sampleSize + dataOffset;
         // Korea -> 1724502816481
         // US -> 1724470416687
-        const time = Number(timestamp) + i*10 + 1724502816481;
+        const time = Number(timestamp) + i * 10 + 1724502816481;
         const bcg = buffer.getInt16(idx + bcgOffset, true);
         const ax = buffer.getInt16(idx + axOffset, true);
         const ay = buffer.getInt16(idx + ayOffset, true);
@@ -102,14 +103,18 @@ const DeviceConnector = ({
       }
 
       // console.log("New sensor data:", newData);
-      try{
+      try {
         await webSocket.send(JSON.stringify({ senserData: newData }));
-      }catch(e){
-        const initialMessage = {accessToken: localStorage.getItem("accessToken") || ""};
-        const res = await webSocket.webSocket.send(JSON.stringify(initialMessage));
+      } catch (e) {
+        const initialMessage = {
+          accessToken: localStorage.getItem("accessToken") || "",
+        };
+        const res = await webSocket.webSocket.send(
+          JSON.stringify(initialMessage),
+        );
         // console.log(res);
         // console.log(e);
-      }      
+      }
 
       setSensorData((prevData) => [...prevData, ...newData]); // Update sensor data state
     }
@@ -155,32 +160,32 @@ const DeviceConnector = ({
   };
 
   const switchContainerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "20px",
   };
 
   const switchStyle = {
-    width: '60px',
-    height: '30px',
-    backgroundColor: isOn ? '#4caf50' : '#ccc',
-    borderRadius: '15px',
-    position: 'relative',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
+    width: "60px",
+    height: "30px",
+    backgroundColor: isOn ? "#4caf50" : "#ccc",
+    borderRadius: "15px",
+    position: "relative",
+    cursor: "pointer",
+    transition: "background-color 0.3s",
   };
 
   const circleStyle = {
-    width: '26px',
-    height: '26px',
-    backgroundColor: 'white',
-    borderRadius: '50%',
-    position: 'absolute',
-    top: '2px',
-    left: '2px',
-    transition: 'transform 0.3s',
-    transform: isOn ? 'translateX(30px)' : 'none',
+    width: "26px",
+    height: "26px",
+    backgroundColor: "white",
+    borderRadius: "50%",
+    position: "absolute",
+    top: "2px",
+    left: "2px",
+    transition: "transform 0.3s",
+    transform: isOn ? "translateX(30px)" : "none",
   };
 
   return (
@@ -193,7 +198,6 @@ const DeviceConnector = ({
 };
 
 export default DeviceConnector;
-
 
 // const sample_data = {[
 // 	"heartRate": "float",
