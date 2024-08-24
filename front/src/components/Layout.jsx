@@ -1,9 +1,13 @@
 "use client";
 
 import { useRef } from "react";
+import { Toaster } from "react-hot-toast";
+import { Modal } from "@/components/Modal";
+import useModalStore from "@/stores/store";
 
 export const Layout = ({ children }) => {
   const ref = useRef(null);
+  const { isModalOpen } = useModalStore();
 
   return (
     <div
@@ -16,6 +20,8 @@ export const Layout = ({ children }) => {
       }}
     >
       {children}
+      <Toaster />
+      <Modal isModalOpen={isModalOpen} type="bcg" />
     </div>
   );
 };

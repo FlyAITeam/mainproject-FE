@@ -9,7 +9,7 @@ import {
   RespirationModule,
   IntensityModule,
   WebSocketTest,
-  ExerciseChart
+  ExerciseChart,
 } from "./components";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,11 +17,14 @@ import { getUserInfo } from "@/libs/authManager";
 import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
 import useModalStore from "@/stores/store";
 import DeviceConnector from "@/components/DeviceConnector";
-import {getHeartData , getExerciseData, getSequences} from "@/libs/getAnalysis"
+import {
+  getHeartData,
+  getExerciseData,
+  getSequences,
+} from "@/libs/getAnalysis";
 
 export default function Page() {
   const router = useRouter();
-  const { isModalOpen } = useModalStore();
 
   const [userInfo, setUserInfo] = useState(null);
   const [dogInfo, setDogInfo] = useState(null);
@@ -67,19 +70,22 @@ export default function Page() {
     };
     initializeWebSocket();
     loadData();
-    loadExerciseData();    
+    loadExerciseData();
   }, []);
 
   const loadExerciseData = async () => {
     console.log("운동량 데이터 불러오기");
     try {
       const data = await getExerciseData();
-      await setExerciseData({target: data.target, today: Math.min(data.today, data.target)});
+      await setExerciseData({
+        target: data.target,
+        today: Math.min(data.today, data.target),
+      });
     } catch (error) {
       console.error("운동량 데이터를 불러오는 중 오류 발생:", error);
-      await setExerciseData({target: 100, today: 0});
+      await setExerciseData({ target: 100, today: 0 });
     }
-  }
+  };
 
   const wsData = {
     bcgData: [
@@ -98,21 +104,15 @@ export default function Page() {
     "w-full h-fit flex flex-row justify-between items-center px-6 mb-2 ";
   const headerTextClasses = "w-full h-fit flex font-medium mb-2";
   const contentDivClasses = "w-full h-full flex flex-col space-y-4";
-  const guideDivClasses = "w-full h-48 flex flex-col justify-center items-center px-6 active:opacity-50";
+  const guideDivClasses =
+    "w-full h-48 flex flex-col justify-center items-center px-6 active:opacity-50";
 
   return (
     <Screen nav>
-      <DeviceConnector webSocket={webSocket}/>
-      <Modal isModalOpen={isModalOpen} type="bcg" />
-      <UserProfile
-        userInfo={userInfo}
-        dogInfo={dogInfo}
-        dogPhoto={dogPhoto}
-        onAction={() => {
-          Notify();
-        }}
-      />
-      <div className={topDivClasses}>
+      <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto}>
+        <DeviceConnector webSocket={webSocket} />
+      </UserProfile>
+      <div classame={topDivClasses}>
         <div className={headerTextClasses}>현재 상태</div>
         <IntensityModule intensity={wsData.bcgData[0].intensity} />
       </div>

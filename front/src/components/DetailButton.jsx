@@ -26,7 +26,7 @@ export const DetailButton = ({
   ...rest
 }) => {
   const baseButtonClasses =
-    "w-fit h-fit text-sm flex flex-row justify-center items-center active:opacity-50";
+    "w-fit h-fit text-sm flex flex-row justify-center text-grayText border-b border-grayText items-center active:opacity-50";
 
   const disabledClasses = "opacity-50 cursor-not-allowed";
 

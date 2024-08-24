@@ -3,11 +3,10 @@
 import classNames from "classnames";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Icon } from "@/components";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-export const UserProfile = ({ userInfo, dogInfo, dogPhoto, onAction }) => {
+export const UserProfile = ({ userInfo, dogInfo, dogPhoto, children }) => {
   const baseDivClasses =
     "w-full h-fit flex flex-row justify-between items-center space-x-2 px-6 py-4";
   const profileDivClasses = "w-fit h-fit flex flex-row space-x-3";
@@ -18,22 +17,12 @@ export const UserProfile = ({ userInfo, dogInfo, dogPhoto, onAction }) => {
   const userNameClasses = "w-36 text-sm text-grayText truncate";
   const dogNameClasses = "w-40 text-3xl font-semibold text-black truncate";
   const actionDivClasses =
-    "w-fit h-fit p-3 rounded-full flex justify-center items-center active:opacity-50";
+    "w-fit h-fit p-3 rounded-full flex justify-center items-center";
 
   // userInfo, dogInfo, dogPhoto가 null 또는 undefined일 경우 기본 값 처리
   const safeUserInfo = userInfo || {};
   const safeDogInfo = dogInfo || {};
   const safeDogPhoto = dogPhoto || ""; // dogPhoto가 없을 때 기본 값
-
-  const [onLoad, setOnLoad] = useState(false);
-
-  useEffect(() => {
-    if (onLoad) {
-      setTimeout(() => {
-        setOnLoad(false);
-      }, 500);
-    }
-  }, [onLoad]);
 
   return (
     <div className={baseDivClasses}>
@@ -68,25 +57,7 @@ export const UserProfile = ({ userInfo, dogInfo, dogPhoto, onAction }) => {
           </p>
         </div>
       </div>
-      <div
-        onClick={() => {
-          !onLoad && setOnLoad(true);
-          onAction();
-        }}
-        className={classNames(
-          actionDivClasses,
-          onLoad ? "bg-green text-white" : "bg-grayBackground text-black",
-        )}
-      >
-        <Icon
-          icon="sync"
-          size={20}
-          className={classNames(
-            "cursor-pointer",
-            onLoad ? "animate-spin" : "animate-none",
-          )}
-        />
-      </div>
+      <div className={classNames(actionDivClasses)}>{children}</div>
     </div>
   );
 };

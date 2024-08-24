@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export const ListItems = ({ children }) => {
   const baseDivClasses =
-    "w-full h-fit flex flex-col justify-center items-center bg-grayBackground text-black  rounded-xl px-4";
+    "w-full h-fit flex flex-col justify-center items-center bg-grayBackground text-black  rounded-xl ";
   const itemClasses =
     "w-full h-fit flex flex-col justify-start items-center py-4 border-b border-grayBorder last:border-b-0 active:text-green";
 
