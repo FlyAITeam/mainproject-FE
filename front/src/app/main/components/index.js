@@ -4,3 +4,6 @@ export * from "./TemperatureModule";
 export * from "./RespirationModule";
 export * from "./DeviceController";
 export * from "./IntensityModule";
+
+// From by Hojun
+export * from "./ExerciseChart";

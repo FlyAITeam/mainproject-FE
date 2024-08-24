@@ -9,6 +9,7 @@ import {
   RespirationModule,
   IntensityModule,
   WebSocketTest,
+  ExerciseChart
 } from "./components";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -16,6 +17,7 @@ import { getUserInfo } from "@/libs/authManager";
 import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
 import useModalStore from "@/stores/store";
 import DeviceConnector from "@/components/DeviceConnector";
+import {getHeartData , getExerciseData, getSequences} from "@/libs/getAnalysis"
 
 export default function Page() {
   const router = useRouter();
@@ -27,10 +29,10 @@ export default function Page() {
 
   const [isConnectedBLE, setIsConnectedBLE] = useState(true);
   const [webSocket, setWebSocket] = useState(null);
+  const [exerciseData, setExerciseData] = useState({ target: 0, today: 0 });
 
   useEffect(() => {
     const initializeWebSocket = async () => {
-      //const ws = await getWs();
       const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
       ws.onopen = async () => {
         const initialMessage = {
@@ -65,7 +67,19 @@ export default function Page() {
     };
     initializeWebSocket();
     loadData();
+    loadExerciseData();    
   }, []);
+
+  const loadExerciseData = async () => {
+    console.log("운동량 데이터 불러오기");
+    try {
+      const data = await getExerciseData();
+      await setExerciseData({target: data.target, today: Math.min(data.today, data.target)});
+    } catch (error) {
+      console.error("운동량 데이터를 불러오는 중 오류 발생:", error);
+      await setExerciseData({target: 100, today: 0});
+    }
+  }
 
   const wsData = {
     bcgData: [
@@ -123,10 +137,15 @@ export default function Page() {
               <Module
                 title="운동량"
                 className="w-full"
-                reload={() => console.log("reload")}
+                reload={() => loadExerciseData()}
                 getDetail={() => console.log("getDetail")}
               >
-                <div className="w-full h-48"></div>
+                <div className="w-full h-48">
+                  <ExerciseChart
+                    target={exerciseData.target}
+                    today={exerciseData.today}
+                  />
+                </div>
               </Module>
             </>
           ) : (
