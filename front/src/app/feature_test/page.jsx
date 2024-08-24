@@ -6,7 +6,8 @@ const MapPage = () => {
   const [location, setLocation] = useState(null);
   const [hospitals, setHospitals] = useState([]);
   const [selectedHospital, setSelectedHospital] = useState(null);
-  const [selectedPhoneNumber, setSelectedPhoneNumber] = useState(null); // State to store the selected phone number
+  const [selectedPhoneNumber, setSelectedPhoneNumber] = useState(null); // 선택된 전화번호를 저장할 상태
+  const [staticMapUrl, setStaticMapUrl] = useState(null); // 웹에서 경로 이미지를 표시하기 위한 URL 저장 상태
 
   useEffect(() => {
     // Tmap 초기화 함수 정의
@@ -66,7 +67,8 @@ const MapPage = () => {
             // 마커 클릭 시 POI 상세보기로 이동 및 전화번호 설정
             marker.addListener('click', () => {
               setSelectedHospital(poi);
-              setSelectedPhoneNumber(poi.telNo); // Set the selected phone number
+              setSelectedPhoneNumber(poi.telNo); // 선택된 전화번호 설정
+              setStaticMapUrl(null); // 새로운 마커를 클릭할 때 기존 URL을 초기화
             });
           });
         } catch (error) {
@@ -100,6 +102,37 @@ const MapPage = () => {
     }
   };
 
+  const openTmapNavigation = () => {
+    if (!selectedHospital || !location) return;
+
+    const apiKey = process.env.NEXT_PUBLIC_TMAP_APP_KEY;
+    const startx = location.longitude;
+    const starty = location.latitude;
+    const goalx = selectedHospital.frontLon;
+    const goaly = selectedHospital.frontLat;
+    const goalname = encodeURIComponent(selectedHospital.name);
+
+    const tmapUrl = `https://apis.openapi.sk.com/tmap/app/routes?appKey=${apiKey}&startx=${startx}&starty=${starty}&goalx=${goalx}&goaly=${goaly}&goalname=${goalname}`;
+
+    window.open(tmapUrl, '_blank'); // 새 탭에서 Tmap 네비게이션 열기
+  };
+
+  const displayWebRoute = () => {
+    if (!selectedHospital || !location) return;
+
+    const apiKey = process.env.NEXT_PUBLIC_TMAP_APP_KEY;
+    const startx = location.longitude;
+    const starty = location.latitude;
+    const goalx = selectedHospital.frontLon;
+    const goaly = selectedHospital.frontLat;
+    const width = 512; // 이미지 너비
+    const height = 512; // 이미지 높이
+
+    const staticMapUrl = `https://apis.openapi.sk.com/tmap/routeStaticMap?appKey=${apiKey}&startX=${startx}&startY=${starty}&endX=${goalx}&endY=${goaly}&reqCoordType=WGS84GEO&width=${width}&height=${height}`;
+
+    setStaticMapUrl(staticMapUrl); // 웹에서 표시할 경로 이미지 URL 설정
+  };
+
   return (
     <div>
       {/* Tmap 스크립트를 포함하여 실행 */}
@@ -127,6 +160,7 @@ const MapPage = () => {
           <h3>POI Detail Information</h3>
           <p>Name: {selectedHospital.name}</p>
           <p>Address: {selectedHospital.newAddressList.newAddress[0].fullAddressRoad}</p>
+          <p>거리: {selectedHospital.radius}km</p>
           <p>Phone: {selectedHospital.telNo}</p>
           <p>24시간여부: {selectedHospital.twFlag === '1' ? 'Yes' : 'No'}</p>
           {/* 전화걸기 버튼 추가 */}
@@ -136,6 +170,21 @@ const MapPage = () => {
                 Call {selectedPhoneNumber}
               </a>
             </p>
+          )}
+          {/* 경로안내 버튼 추가 */}
+          <button onClick={openTmapNavigation} style={{ marginTop: '10px', padding: '5px 10px' }}>
+            경로 안내받기(앱으로 이동)
+          </button>
+          {/* 웹에서 경로 이미지를 표시하는 버튼 추가 */}
+          <button onClick={displayWebRoute} style={{ marginTop: '10px', padding: '5px 10px', marginLeft: '10px' }}>
+            웹에서 경로보기
+          </button>
+          {/* 경로 이미지 표시 */}
+          {staticMapUrl && (
+            <div style={{ marginTop: '10px' }}>
+              <h4>Web-based Route Image</h4>
+              <img src={staticMapUrl} alt="Route Map" style={{ width: '50%', maxHeight: '50%' }} />
+            </div>
           )}
         </div>
       )}
