@@ -25,7 +25,12 @@ export const ExerciseChart = ({ target = 100, today = 0 }) => {
       tooltip: {
         callbacks: {
           label: function (tooltipItem) {
-            return tooltipItem.label + ": " + ((tooltipItem.raw / target) * 100).toFixed(2) + "%";
+            return (
+              tooltipItem.label +
+              ": " +
+              ((tooltipItem.raw / target) * 100).toFixed(2) +
+              "%"
+            );
           },
         },
       },
@@ -41,4 +46,4 @@ export const ExerciseChart = ({ target = 100, today = 0 }) => {
       </div>
     </div>
   );
-}
+};
