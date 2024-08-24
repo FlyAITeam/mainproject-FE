@@ -5,6 +5,8 @@ import { getCurrentLocation } from '@/libs/gpsManager';
 const MapPage = () => {
   const [location, setLocation] = useState(null);
   const [hospitals, setHospitals] = useState([]);
+  const [selectedHospital, setSelectedHospital] = useState(null);
+  const [selectedPhoneNumber, setSelectedPhoneNumber] = useState(null); // State to store the selected phone number
 
   useEffect(() => {
     // Tmap 초기화 함수 정의
@@ -20,15 +22,14 @@ const MapPage = () => {
           height: '400px',
           zoom: 16,
         });
-        console.log('Map initialized:', map);
 
         // 현재 위치 마커 추가
         const currentMarker = new window.Tmapv2.Marker({
           position: new window.Tmapv2.LatLng(currentLocation.latitude, currentLocation.longitude),
           map: map,
-          icon: '/icons/myMarker.png', // 로컬 public 디렉토리에 있는 마커 아이콘 경로
-          iconSize: new window.Tmapv2.Size(32, 32), // 마커 아이콘 크기 조절
-          title: '내 위치', // 마커 제목
+          icon: '/icons/myMarker.png',
+          iconSize: new window.Tmapv2.Size(32, 32),
+          title: '내 위치',
         });
 
         // '동물병원' POI 통합 검색 요청
@@ -40,26 +41,33 @@ const MapPage = () => {
           const response = await fetch(poiSearchUrl);
           const data = await response.json();
           const pois = data.searchPoiInfo.pois.poi;
-          setHospitals(pois);
+
+          // 각 POI의 상세 정보를 요청하여 twFlag 값을 가져오기
+          const detailedPois = await Promise.all(
+            pois.map(async (poi) => {
+              const detailInfo = await fetchPoiDetails(poi.id, apiKey);
+              return { ...poi, twFlag: detailInfo.twFlag };
+            })
+          );
+
+          setHospitals(detailedPois);
+          console.log('POI 검색 결과:', detailedPois);
 
           // POI 결과를 지도에 마커로 표시
-          pois.forEach((poi) => {
-            console.log('POI:', poi.id);
+          detailedPois.forEach((poi) => {
             const marker = new window.Tmapv2.Marker({
               position: new window.Tmapv2.LatLng(poi.frontLat, poi.frontLon),
               map: map,
-              icon: '/icons/marker.png', // 로컬 public 디렉토리에 있는 마커 아이콘 경로
-              iconSize: new window.Tmapv2.Size(24, 24), // 마커 아이콘 크기 조절
-              title: poi.name, // 마커 제목
+              icon: '/icons/marker.png',
+              iconSize: new window.Tmapv2.Size(24, 24),
+              title: poi.name,
             });
 
-            // 마커 클릭 시 POI 상세보기로 이동
+            // 마커 클릭 시 POI 상세보기로 이동 및 전화번호 설정
             marker.addListener('click', () => {
-              const detailUrl = `https://apis.openapi.sk.com/tmap/app/poidetail?appKey=${apiKey}&poiId=${poi.id}`;
-              window.open(detailUrl, '_blank'); // 새 창에서 POI 상세보기 페이지 열기
+              setSelectedHospital(poi);
+              setSelectedPhoneNumber(poi.telNo); // Set the selected phone number
             });
-
-            console.log('Marker added:', marker);
           });
         } catch (error) {
           console.error('Error fetching POI data:', error);
@@ -80,9 +88,20 @@ const MapPage = () => {
     return () => clearInterval(checkReady);
   }, []);
 
+  const fetchPoiDetails = async (poiId, apiKey) => {
+    try {
+      const detailUrl = `https://apis.openapi.sk.com/tmap/pois/${poiId}?version=1&resCoordType=WGS84GEO&format=json&appKey=${apiKey}`;
+      const response = await fetch(detailUrl);
+      const data = await response.json();
+      return data.poiDetailInfo;
+    } catch (error) {
+      console.error('Error fetching POI details:', error);
+      return {};
+    }
+  };
+
   return (
     <div>
-      <h1>Tmap Integration Example</h1>
       {/* Tmap 스크립트를 포함하여 실행 */}
       <div
         dangerouslySetInnerHTML={{
@@ -97,12 +116,29 @@ const MapPage = () => {
         <h2>Search Results:</h2>
         <ul>
           {hospitals.map((hospital) => (
-            <li key={hospital.id}>
-              {hospital.name} - {hospital.newAddress}
+            <li key={hospital.pkey}>
+              {hospital.name} - ({hospital.telNo}) {hospital.newAddressList.newAddress[0].fullAddressRoad}, 거리 : {hospital.radius}km, 24시간여부: {hospital.twFlag === '1' ? 'Yes' : 'No'}
             </li>
           ))}
         </ul>
       </div>
+      {selectedHospital && (
+        <div>
+          <h3>POI Detail Information</h3>
+          <p>Name: {selectedHospital.name}</p>
+          <p>Address: {selectedHospital.newAddressList.newAddress[0].fullAddressRoad}</p>
+          <p>Phone: {selectedHospital.telNo}</p>
+          <p>24시간여부: {selectedHospital.twFlag === '1' ? 'Yes' : 'No'}</p>
+          {/* 전화걸기 버튼 추가 */}
+          {selectedPhoneNumber && (
+            <p>
+              <a href={`tel:${selectedPhoneNumber}`} style={{ color: 'blue', textDecoration: 'underline' }}>
+                Call {selectedPhoneNumber}
+              </a>
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
