@@ -1,10 +1,9 @@
 "use client";
 
 import classNames from "classnames";
-import { Icon } from "@/components";
 import { motion } from "framer-motion";
 
-export const Item = ({}) => {
+export const Item = ({ onClick, children, className }) => {
   const baseDivClasses =
     "w-full h-fit flex flex-col justify-center items-center bg-grayBackground text-black  rounded-xl px-4";
   const itemClasses =
@@ -18,9 +17,11 @@ export const Item = ({}) => {
         exit={{ opacity: 0 }}
         className={baseDivClasses}
       >
-        <div className={itemClasses}>
-          <Icon icon="dog" size={16} />
-          반려견 정보 수정하기
+        <div
+          className={classNames(itemClasses, className)}
+          onClick={() => onClick()}
+        >
+          {children}
         </div>
       </motion.div>
     </>

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { Icon } from "@/components";
 import { motion } from "framer-motion";
 
-export const ListItems = ({}) => {
+export const ListItems = ({ children }) => {
   const baseDivClasses =
     "w-full h-fit flex flex-col justify-center items-center bg-grayBackground text-black  rounded-xl px-4";
   const itemClasses =
@@ -18,9 +18,7 @@ export const ListItems = ({}) => {
         exit={{ opacity: 0 }}
         className={baseDivClasses}
       >
-        <div className={itemClasses}>아이디 수정하기</div>
-        <div className={itemClasses}>비밀번호 수정하기</div>
-        <div className={classNames(itemClasses, "text-red")}>로그아웃</div>
+        {children}
       </motion.div>
     </>
   );

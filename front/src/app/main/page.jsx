@@ -25,8 +25,29 @@ export default function Page() {
   const [dogPhoto, setDogPhoto] = useState(null);
 
   const [isConnectedBLE, setIsConnectedBLE] = useState(true);
+  const [webSocket, setWebSocket] = useState(null);
 
   useEffect(() => {
+    const initializeWebSocket = async () => {
+      //const ws = await getWs();
+      const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
+      ws.onopen = async () => {
+        const initialMessage = {
+          accessToken: localStorage.getItem("accessToken") || "",
+        };
+        await ws.send(JSON.stringify(initialMessage));
+        console.log(ws);
+      };
+      ws.onmessage = (event) => {
+        const response = JSON.parse(event.data);
+        console.log("Received from server:", response);
+      };
+      ws.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
+      setWebSocket(ws);
+    };
+
     const loadData = async () => {
       try {
         const fetchedUserInfo = await getUserInfo();
@@ -41,7 +62,7 @@ export default function Page() {
         console.error("데이터를 불러오는 중 오류 발생:", error);
       }
     };
-
+    initializeWebSocket();
     loadData();
   }, []);
 

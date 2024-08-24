@@ -37,7 +37,7 @@ import { Icon } from "./Icon";
 
 export const Header = ({ title, left, right }) => {
   const baseHeaderClasses =
-    "fixed z-10 top-0 left-0 w-screen h-12 pl-2 pr-3 flex flex-row items-start bg-white";
+    "absolute z-10 top-0 left-0 w-screen h-12 pl-2 pr-3 flex flex-row items-start bg-white";
   const titleClasses =
     "absolute top-1 right-0 w-fit h-fit text-lg left-1/2 transform -translate-x-1/2";
   const leftHeaderClasses = "justify-start";
