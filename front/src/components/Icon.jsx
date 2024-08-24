@@ -115,7 +115,7 @@ export const iconRegistry = {
   chart: IoStatsChart,
   time: IoTime,
   trash: IoTrashOutline,
-  warn: IoWarning,
+  warning: IoWarning,
   batteryCharge: IoBatteryCharging,
   batteryDead: IoBatteryDead,
   batteryFull: IoBatteryFull,

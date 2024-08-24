@@ -6,12 +6,8 @@ import BreatheTongue from "@/svgs/icons/breatheTongue.svg";
 
 export const RespirationModule = ({ respiration }) => {
   return (
-    <Module
-      title="호흡수"
-      reload={() => console.log("reload")}
-      className="w-full"
-    >
-      <div className="w-full h-fit flex flex-row justify-start items-center space-x-4">
+    <Module title="호흡수" className="w-full">
+      <div className="w-full h-fit flex flex-row justify-start items-center space-x-4 relative z-0">
         <div className="w-[60px] h-[50px] relative z-10">
           <BreatheHead width="60" height="50" className="z-0" />
           <BreatheTongue

@@ -6,11 +6,7 @@ import { motion } from "framer-motion";
 
 export const TemperatureModule = ({ temperature }) => {
   return (
-    <Module
-      title="체온"
-      reload={() => console.log("reload")}
-      className="w-full"
-    >
+    <Module title="체온" className="w-full">
       <div className="w-full h-fit flex flex-row justify-between items-center space-x-4">
         <div className="w-fit pl-1 h-fit relative ">
           <svg

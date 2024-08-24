@@ -5,11 +5,7 @@ import Heart from "@/svgs/icons/heart.svg";
 
 export const HeartRateModule = ({ heartRate }) => {
   return (
-    <Module
-      title="심박수"
-      reload={() => console.log("reload")}
-      className="w-full"
-    >
+    <Module title="심박수" className="w-full">
       <div className="w-full h-fit flex flex-row justify-start items-center space-x-4">
         <div className="w-[60px] h-[50px] relative">
           <Heart width="60" height="50" className="animate-heartbeat" />

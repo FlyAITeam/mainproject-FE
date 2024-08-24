@@ -13,3 +13,4 @@ export * from "./Row";
 export * from "./Module";
 export * from "./Header";
 export * from "./Notify";
+export * from "./Modal";

@@ -37,49 +37,53 @@ export const Module = ({ title, children, reload, getDetail, className }) => {
 
   return (
     <div className={classNames(baseDivClasses, className)}>
-      <div className={headerDivClasses}>
-        <label className="text-md font-medium text-black">{title || ""}</label>
-        <div className={actionDivClasses}>
-          {reload && (
-            <div
-              onClick={() => {
-                !onLoad && setOnLoad(true);
-                reload();
-              }}
-              className={classNames(
-                actionButtonClasses,
-                onLoad ? "bg-green" : "bg-dimGray",
-              )}
-            >
-              <Icon
-                icon="sync"
-                size={14}
-                color="white"
+      {title && (
+        <div className={headerDivClasses}>
+          <label className="text-md font-medium text-black">
+            {title || ""}
+          </label>
+          <div className={actionDivClasses}>
+            {reload && (
+              <div
+                onClick={() => {
+                  !onLoad && setOnLoad(true);
+                  reload();
+                }}
                 className={classNames(
-                  "cursor-pointer",
-                  onLoad ? "animate-spin" : "animate-none",
+                  actionButtonClasses,
+                  onLoad ? "bg-green" : "bg-dimGray",
                 )}
-              />
-            </div>
-          )}
-          {getDetail && (
-            <div
-              onClick={() => {
-                setIsOpen(!isOpen);
-                getDetail();
-              }}
-              className={classNames(actionButtonClasses, "bg-dimGray")}
-            >
-              <Icon
-                icon={isOpen ? "up" : "down"}
-                size={14}
-                color="white"
-                className="cursor-pointer"
-              />
-            </div>
-          )}
+              >
+                <Icon
+                  icon="sync"
+                  size={14}
+                  color="white"
+                  className={classNames(
+                    "cursor-pointer",
+                    onLoad ? "animate-spin" : "animate-none",
+                  )}
+                />
+              </div>
+            )}
+            {getDetail && (
+              <div
+                onClick={() => {
+                  setIsOpen(!isOpen);
+                  getDetail();
+                }}
+                className={classNames(actionButtonClasses, "bg-dimGray")}
+              >
+                <Icon
+                  icon={isOpen ? "up" : "down"}
+                  size={14}
+                  color="white"
+                  className="cursor-pointer"
+                />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
       {children && <AnimatePresence>{children}</AnimatePresence>}
     </div>
   );

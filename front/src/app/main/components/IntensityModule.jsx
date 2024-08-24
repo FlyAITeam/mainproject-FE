@@ -18,11 +18,7 @@ export const IntensityModule = ({ intensity }) => {
   ];
 
   return (
-    <Module
-      reload={() => console.log("reload")}
-      title="현재 상태"
-      className="w-full"
-    >
+    <Module className="w-full">
       <div className="w-full h-fit flex flex-row space-x-4 justify-start items-center overflow-hidden">
         {/* 왼쪽 상태 표현 영역 */}
         <motion.div
