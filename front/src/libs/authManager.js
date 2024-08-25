@@ -20,6 +20,9 @@ const loginUser = async (loginId, password) => {
     const accessToken = response.headers.get("accessToken");
     localStorage.setItem("accessToken", response.headers.get("accessToken"));
 
+    // 토큰 출력
+    console.log("최근 토큰 정보: ", localStorage.getItem("accessToken"));
+
     return data;
   } catch (error) {
     console.error("로그인 중 오류:", error);
@@ -55,6 +58,7 @@ const registerUser = async (loginId, password, name) => {
     const data = await response.json();
     console.log("회원가입 성공:", data);
     await loginUser(loginId, password);
+
     return data;
   } catch (error) {
     console.error("회원가입 중 오류:", error);
@@ -87,6 +91,9 @@ const getUserInfo = async () => {
     // 수정된 accessToken으로 localStorage 업데이트
     const accessToken = response.headers.get("accessToken");
     localStorage.setItem("accessToken", accessToken);
+
+    // 토큰 출력
+    console.log("최근 토큰 정보: ", localStorage.getItem("accessToken"));
 
     return data;
   } catch (error) {
