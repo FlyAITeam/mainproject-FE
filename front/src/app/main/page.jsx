@@ -46,6 +46,8 @@ export default function Page() {
       intensity: 1, heartAnomaly: false, heartRate: 0 }
   ]);
 
+  // 건강정보3 - 현재상태
+  const [intensity, setIntensity] = useState(0);
 
   useEffect(() => {
     const initializeWebSocket = async () => {
@@ -117,6 +119,7 @@ export default function Page() {
       const data = await getHeartData();
       console.log('heart data from', data.bcgData);
       await setHeartData(data.bcgData);
+      await setIntensity(data.intensity);
     } catch (error) {
       console.error("심박값 데이터를 불러오는 중 오류 발생:", error);
       await setHeartData([{time: 0, heartRate: 100}]);
@@ -183,7 +186,7 @@ export default function Page() {
       </UserProfile>
       <div className={topDivClasses}>
         <div className={headerTextClasses}>현재 상태</div>
-        <IntensityModule intensity={wsData.bcgData[0].intensity} />
+        <IntensityModule intensity={intensity} />
       </div>
       <div className={topDivClasses}>
         <div className={headerTextClasses}>건강 정보</div>
