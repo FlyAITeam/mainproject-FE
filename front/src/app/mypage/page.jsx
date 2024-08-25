@@ -191,6 +191,9 @@ export default function Page() {
                 <Item
                   onClick={() => {
                     console.log("로그아웃");
+                    // 엑세스 토큰 제거
+                    localStorage.removeItem("accessToken");
+                    router.push("/");
                   }}
                   className="text-red"
                 >

@@ -3,25 +3,26 @@
 import classNames from "classnames";
 import { Screen, AppTitle, Button } from "@/components";
 import { useRouter } from "next/navigation";
+import { getUserInfo } from "@/libs/authManager";
+import { useEffect } from "react";
 
 export default function Page() {
   const router = useRouter();
-  try{
-    const accessToken = localStorage.getItem("accessToken");
-    console.log(accessToken);
-    // 로그인 창으로 이동
-    try{
-      if(accessToken){
-        router.push('/main');
+  useEffect(() => {
+    const checkUser = async () => {
+      try{
+        const userInfo = await getUserInfo();
+        if (userInfo) {
+          router.push("/main");
+        }
+      }catch(e){
+        // 자동로그인 ㄴㄴ
+        console.log('자동로그인 ㄴㄴ');
       }
-    }catch(e){
-      // 로그인 fail
-      console.log('기존 로그인 정보가 잇긴한데..',e);
     }
-  }catch(e){
-    // 로그인 fail
-    console.log('기존 로그인 정보가 없습니다.');
-  }
+    checkUser();    
+  });
+  
 
   const topDivClasses =
     "w-full h-3/4 flex flex-col justify-center items-center space-y-4 p-4";
