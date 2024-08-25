@@ -154,7 +154,8 @@ export default function Page() {
         <DeviceConnector 
           webSocket={webSocket} 
           setTemperature={setTemperature}
-          
+          setHeartRate={setHeartRate}
+          setRespiration={setRespiration}
         />
       </UserProfile>
       <div className={topDivClasses}>

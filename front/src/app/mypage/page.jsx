@@ -255,7 +255,8 @@ export default function Page() {
                 </Item>
                 <Item
                   onClick={() => {
-                    setPageDepth(1);
+                    console.log("로그아웃");
+                    // setPageDepth(1);
                   }}
                   className="text-red"
                 >

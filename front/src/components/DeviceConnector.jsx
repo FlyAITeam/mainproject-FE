@@ -25,41 +25,49 @@ const DeviceConnector = ({
   const tempOffset = Number(process.env.NEXT_PUBLIC_TEMP_OFFSET);
 
   const connectToDeviceAndCollectData = async () => {
-    try {
-      console.log("Requesting Bluetooth device...");
-      const device = await navigator.bluetooth.requestDevice({
-        filters: [{ services: [serviceUuid] }],
-        optionalServices: [serviceUuid],
-      });
+    try{
+      await webSocket.send(JSON.stringify({accessToken: localStorage.getItem("accessToken") || ""}));
 
-      console.log("Connecting to GATT server...");
-      const server = await device.gatt.connect();
-      const service = await server.getPrimaryService(serviceUuid);
-      const txCharacteristic = await service.getCharacteristic(txCharUuid);
-      const rxCharacteristic = await service.getCharacteristic(rxCharUuid);
-
-      console.log("Starting notifications...");
-      await txCharacteristic.startNotifications();
-      txCharacteristic.addEventListener(
-        "characteristicvaluechanged",
-        handleCharacteristicValueChanged,
-      );
-
-      console.log("Sending initial command to device...");
-      const initCommand = hexStringToByteArray("FAFA0000000016000100FEFE");
-      await rxCharacteristic.writeValue(initCommand);
-
-      setIsConnected(true);
-      setDevice(device); // Save the device reference for later disconnection
-      console.log("Device connected and data collection started");
-    } catch (error) {
-      console.error("Failed to connect to Bluetooth device:", error);
-      throw error; // 에러 발생 시 다시 off 상태로 전환하기 위해 에러를 throw
+      try {
+        console.log("Requesting Bluetooth device...");
+        const device = await navigator.bluetooth.requestDevice({
+          filters: [{ services: [serviceUuid] }],
+          optionalServices: [serviceUuid],
+        });
+  
+        console.log("Connecting to GATT server...");
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService(serviceUuid);
+        const txCharacteristic = await service.getCharacteristic(txCharUuid);
+        const rxCharacteristic = await service.getCharacteristic(rxCharUuid);
+  
+        console.log("Starting notifications...");
+        await txCharacteristic.startNotifications();
+        txCharacteristic.addEventListener(
+          "characteristicvaluechanged",
+          handleCharacteristicValueChanged,
+        );
+  
+        console.log("Sending initial command to device...");
+        const initCommand = hexStringToByteArray("FAFA0000000016000100FEFE");
+        await rxCharacteristic.writeValue(initCommand);
+  
+        setIsConnected(true);
+        setDevice(device); // Save the device reference for later disconnection
+        console.log("Device connected and data collection started");
+      } catch (error) {
+        console.error("Failed to connect to Bluetooth device:", error);
+        throw error; // 에러 발생 시 다시 off 상태로 전환하기 위해 에러를 throw
+      }     
+    }catch(e){
+      console.log(e);
+      throw e; // 에러 발생 시 다시 off 상태로 전환하기 위해 에러를 throw
     }
+
   };
 
   const handleCharacteristicValueChanged = async (event) => {
-    console.log("Characteristic value changed, processing data...");
+    // console.log("Characteristic value changed, processing data...");
     const value = event.target.value;
     const buffer = new DataView(value.buffer);
         
@@ -86,25 +94,23 @@ const DeviceConnector = ({
         const gx = buffer.getInt16(idx + gxOffset, true);
         const gy = buffer.getInt16(idx + gyOffset, true);
         const gz = buffer.getInt16(idx + gzOffset, true);
-        const temperature = buffer.getFloat32(idx + tempOffset, true);
+        const temperature = buffer.getFloat32(idx + tempOffset, true) + 9.0;
 
         let temperature_print = parseFloat(temperature.toFixed(1));
         setTemperature(temperature_print);
 
         newData.push({ time, ax, ay, az, bcg, gx, gy, gz, temperature });
-        console.log("KOERA TIME", time);
       }
 
       // console.log("New sensor data:", newData);
       try{
-        webSocket.webSocket.send(JSON.stringify({ senserData: newData }));
+        await webSocket.send(JSON.stringify({ senserData: newData }));
       }catch(e){
         const initialMessage = {accessToken: localStorage.getItem("accessToken") || ""};
         const res = await webSocket.webSocket.send(JSON.stringify(initialMessage));
-        console.log(res);
-        console.log(e);
-      }
-      
+        // console.log(res);
+        // console.log(e);
+      }      
 
       setSensorData((prevData) => [...prevData, ...newData]); // Update sensor data state
     }
@@ -188,3 +194,16 @@ const DeviceConnector = ({
 };
 
 export default DeviceConnector;
+
+
+// const sample_data = {[
+// 	"heartRate": "float",
+// 	"respirationRate":"float",
+// 	"heartAnomoly":"bool",
+// 	"senseData":[
+// 			{
+//             "time": "timestamp",
+//             "heart":"int"
+// 	    },...
+// 	]
+// }
