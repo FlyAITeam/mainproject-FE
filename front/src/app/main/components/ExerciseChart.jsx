@@ -4,23 +4,14 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const generateDummyExerciseData = () => {
-  const target = Math.floor(Math.random() * 100 + 50); // 50 ~ 150 사이의 임의의 목표 운동량
-  const today = Math.floor(Math.random() * target); // 목표 운동량보다 작은 오늘의 운동량
-  return { target, today };
-};
-
-export const ExerciseChart = ({ target, today }) => {
-  // 데이터가 없을 경우 임의의 데이터 생성
-  const { target: generatedTarget, today: generatedToday } = target && today ? { target, today } : generateDummyExerciseData();
-
-  const percentage = (generatedToday / generatedTarget) * 100;
+export const ExerciseChart = ({ target = 100, today = 0 }) => {
+  const percentage = (today / target) * 100;
 
   const data = {
     labels: ["Today", "Remaining"],
     datasets: [
       {
-        data: [generatedToday, generatedTarget - generatedToday],
+        data: [today, target - today],
         backgroundColor: ["#4CAF50", "#EEEEEE"],
         hoverBackgroundColor: ["#66BB6A", "#BDBDBD"],
       },
@@ -34,7 +25,7 @@ export const ExerciseChart = ({ target, today }) => {
       tooltip: {
         callbacks: {
           label: function (tooltipItem) {
-            return tooltipItem.label + ": " + tooltipItem.raw.toFixed(2) + "%";
+            return tooltipItem.label + ": " + ((tooltipItem.raw / target) * 100).toFixed(2) + "%";
           },
         },
       },
@@ -42,7 +33,7 @@ export const ExerciseChart = ({ target, today }) => {
   };
 
   return (
-    <div className="w-full h-full flex justify-center items-center">
+    <div className="w-full h-full flex justify-center items-center relative">
       <Pie data={data} options={options} />
       <div className="absolute text-center">
         <p className="text-lg font-bold">{percentage.toFixed(1)}%</p>

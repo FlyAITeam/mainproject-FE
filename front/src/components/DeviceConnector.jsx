@@ -1,7 +1,10 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
-const DeviceConnector = (webSocket) => {
+const DeviceConnector = ({
+  webSocket, 
+  setTemperature,
+}) => {
   const [isConnected, setIsConnected] = useState(false);
   const [device, setDevice] = useState(null); // Bluetooth device state
   const [sensorData, setSensorData] = useState([]); // State to store sensor data
@@ -55,7 +58,7 @@ const DeviceConnector = (webSocket) => {
     }
   };
 
-  const handleCharacteristicValueChanged = (event) => {
+  const handleCharacteristicValueChanged = async (event) => {
     console.log("Characteristic value changed, processing data...");
     const value = event.target.value;
     const buffer = new DataView(value.buffer);
@@ -65,8 +68,7 @@ const DeviceConnector = (webSocket) => {
     const type = buffer.getUint16(6, true);
 
     if (type === 0x11) {
-      // console.log("Processing sensor data...");
-
+      console.log("Processing sensor data...");
       const timestamp = buffer.getBigUint64(timestampOffset, true);
       const kstOffset = 9 * 60 * 60 * 1000; // 한국 시간 오프셋 (9시간)
       const kstTime = Date.now() + kstOffset;
@@ -85,12 +87,25 @@ const DeviceConnector = (webSocket) => {
         const gy = buffer.getInt16(idx + gyOffset, true);
         const gz = buffer.getInt16(idx + gzOffset, true);
         const temperature = buffer.getFloat32(idx + tempOffset, true);
+
+        let temperature_print = parseFloat(temperature.toFixed(1));
+        setTemperature(temperature_print);
+
         newData.push({ time, ax, ay, az, bcg, gx, gy, gz, temperature });
         console.log("KOERA TIME", time);
       }
 
       // console.log("New sensor data:", newData);
-      webSocket.webSocket.send(JSON.stringify({ senserData: newData }));
+      try{
+        webSocket.webSocket.send(JSON.stringify({ senserData: newData }));
+      }catch(e){
+        const initialMessage = {accessToken: localStorage.getItem("accessToken") || ""};
+        const res = await webSocket.webSocket.send(JSON.stringify(initialMessage));
+        console.log(res);
+        console.log(e);
+      }
+      
+
       setSensorData((prevData) => [...prevData, ...newData]); // Update sensor data state
     }
   };
@@ -118,12 +133,8 @@ const DeviceConnector = (webSocket) => {
   const handleToggle = async () => {
     if (!isOn) {
       try {
-        if (webSocket.webSocket.readyState) {
-          await connectToDeviceAndCollectData(); // 블루투스 장치에 연결하고 데이터 수집
-          setIsOn(true);
-        }else{
-          console.log("WebSocket is not connected");
-        }
+        await connectToDeviceAndCollectData(); // 블루투스 장치에 연결하고 데이터 수집
+        setIsOn(true);
       } catch (error) {
         console.error("Error occurred during ON logic:", error);
         setIsOn(false); // 에러 발생 시 다시 off 상태로 전환
@@ -177,4 +188,3 @@ const DeviceConnector = (webSocket) => {
 };
 
 export default DeviceConnector;
-

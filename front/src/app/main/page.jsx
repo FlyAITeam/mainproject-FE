@@ -8,8 +8,9 @@ import {
   TemperatureModule,
   RespirationModule,
   IntensityModule,
-  WebSocketTest,
   ExerciseChart,
+  HeartChart,
+  SequenceChart,
 } from "./components";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -25,14 +26,26 @@ import {
 
 export default function Page() {
   const router = useRouter();
+  const [webSocket, setWebSocket] = useState(null);
+  const [isConnectedBLE, setIsConnectedBLE] = useState(true);
 
   const [userInfo, setUserInfo] = useState(null);
   const [dogInfo, setDogInfo] = useState(null);
   const [dogPhoto, setDogPhoto] = useState(null);
 
-  const [isConnectedBLE, setIsConnectedBLE] = useState(true);
-  const [webSocket, setWebSocket] = useState(null);
-  const [exerciseData, setExerciseData] = useState({ target: 0, today: 0 });
+  // 건강정보1 - 심박수, 호흡수, 체온
+  const [heartRate, setHeartRate] = useState(0);
+  const [respiration, setRespiration] = useState(0);
+  const [temperature, setTemperature] = useState(0);
+
+  // 건강정보2 - 운동량, 심박값 변이, 심박수 변이
+  const [exerciseData, setExerciseData] = useState({ target: 100, today: 0 });
+  const [heartData, setHeartData] = useState([{time: 1000, heartRate: 0}]);
+  const [sequenceData, setSequenceData] = useState([
+    { startTime: 1724524010.631, endTime: 1724524143.424,
+      intensity: 1, heartAnomaly: false, heartRate: 0 }
+  ]);
+
 
   useEffect(() => {
     const initializeWebSocket = async () => {
@@ -70,22 +83,50 @@ export default function Page() {
     };
     initializeWebSocket();
     loadData();
+    loadHeartData();
     loadExerciseData();
+    loadSequences();
   }, []);
+
+  const loadHeartData = async () => {
+    console.log("심박값 데이터 불러오기");
+    try {
+      const data = await getHeartData();
+      console.log('heart data from', data.bcgData);
+      await setHeartData(data.bcgData);
+    } catch (error) {
+      console.error("심박값 데이터를 불러오는 중 오류 발생:", error);
+      await setHeartData([{time: 0, heartRate: 100}]);
+    }
+  };
 
   const loadExerciseData = async () => {
     console.log("운동량 데이터 불러오기");
+    console.log(exerciseData);
     try {
       const data = await getExerciseData();
-      await setExerciseData({
-        target: data.target,
-        today: Math.min(data.today, data.target),
+      console.log(data);
+      await setExerciseData({ 
+        target: data.target, 
+        today: Math.max(Math.min(data.today, data.target),0) 
       });
     } catch (error) {
       console.error("운동량 데이터를 불러오는 중 오류 발생:", error);
       await setExerciseData({ target: 100, today: 0 });
     }
   };
+
+  const loadSequences = async () => {
+    console.log("시퀀스 데이터 불러오기");
+    try {
+      const data = await getSequences();
+      console.log("Sequence data:", data.sequenceDatas);
+      setSequenceData(data.sequenceDatas);
+    } catch (error) {
+      console.error("시퀀스 데이터를 불러오는 중 오류 발생:", error);
+    }
+  };
+
 
   const wsData = {
     bcgData: [
@@ -110,7 +151,11 @@ export default function Page() {
   return (
     <Screen nav>
       <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto}>
-        <DeviceConnector webSocket={webSocket} />
+        <DeviceConnector 
+          webSocket={webSocket} 
+          setTemperature={setTemperature}
+          
+        />
       </UserProfile>
       <div className={topDivClasses}>
         <div className={headerTextClasses}>현재 상태</div>
@@ -122,18 +167,10 @@ export default function Page() {
           {isConnectedBLE ? (
             <>
               <Row gap="4">
-                <HeartRateModule heartRate={wsData.bcgData[0].heartRate} />
-                <RespirationModule respiration={wsData.bcgData[0].breathRate} />
+                <HeartRateModule heartRate={heartRate} />
+                <RespirationModule respiration={respiration} />
               </Row>
-              <TemperatureModule temperature={wsData.bcgData[0].temperature} />
-              <Module
-                title="심박수 변이"
-                className="w-full"
-                reload={() => console.log("reload")}
-                getDetail={() => console.log("getDetail")}
-              >
-                <div className="w-full h-48"></div>
-              </Module>
+              <TemperatureModule temperature={temperature} />
               <Module
                 title="운동량"
                 className="w-full"
@@ -145,6 +182,26 @@ export default function Page() {
                     target={exerciseData.target}
                     today={exerciseData.today}
                   />
+                </div>
+              </Module>
+              <Module
+                title="심박값 변이"
+                className="w-full"
+                reload={() => loadHeartData()}
+                getDetail={() => console.log("getDetail")}
+              >
+                <div className="w-full h-48">
+                  <HeartChart bcgData={heartData} />
+                </div>
+              </Module>
+              <Module
+                title="심박수 변이"
+                className="w-full"
+                reload={() => loadSequences()}
+                getDetail={() => console.log("getDetail")}
+              >
+                <div className="w-full h-48">
+                  <SequenceChart sequenceData={sequenceData}/>
                 </div>
               </Module>
             </>

@@ -7,3 +7,5 @@ export * from "./IntensityModule";
 
 // From by Hojun
 export * from "./ExerciseChart";
+export * from "./HeartChart";
+export * from "./SequenceChart";
