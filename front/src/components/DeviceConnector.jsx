@@ -31,7 +31,7 @@ const DeviceConnector = ({
       try {
         console.log("Requesting Bluetooth device...");
         const device = await navigator.bluetooth.requestDevice({
-          filters: [{ services: [serviceUuid] }],
+          filters: [{services: [serviceUuid]}],
           optionalServices: [serviceUuid],
         });
   
@@ -63,7 +63,6 @@ const DeviceConnector = ({
       console.log(e);
       throw e; // 에러 발생 시 다시 off 상태로 전환하기 위해 에러를 throw
     }
-
   };
 
   const handleCharacteristicValueChanged = async (event) => {
@@ -94,7 +93,7 @@ const DeviceConnector = ({
         const gx = buffer.getInt16(idx + gxOffset, true);
         const gy = buffer.getInt16(idx + gyOffset, true);
         const gz = buffer.getInt16(idx + gzOffset, true);
-        const temperature = buffer.getFloat32(idx + tempOffset, true) + 9.0;
+        const temperature = buffer.getFloat32(idx + tempOffset, true) + 4.5;
 
         let temperature_print = parseFloat(temperature.toFixed(1));
         setTemperature(temperature_print);
@@ -207,3 +206,30 @@ export default DeviceConnector;
 // 	    },...
 // 	]
 // }
+
+// const receivedData = {
+//   heartRate: 70,
+//   respirationRate: 32,
+//   heartAnomaly: false,
+//   senseData: [
+//       { time: 1724513423.578, heart: 1.712554865285747 },
+//       { time: 1724513423.588, heart: 13.868823767195737 },
+//       { time: 1724513423.598, heart: 13.9833491830139 },
+//       { time: 1724513423.608, heart: 9.15717122158727 },
+//       { time: 1724513423.618, heart: 0.453563687397327 },
+//       { time: 1724513423.628, heart: -0.94745128874174 },
+//       { time: 1724513423.638, heart: -3.53971622987497 },
+//       { time: 1724513423.648, heart: -13.81114286444748 },
+//       { time: 1724513423.658, heart: -15.92079363012095 },
+//       { time: 1724513423.668, heart: -13.57772112240701 },
+//       { time: 1724513423.678, heart: -5.97824354534157 },
+//       { time: 1724513423.688, heart: -1.626845574626915 },
+//       { time: 1724513423.698, heart: 1.12042755696937 },
+//       // ... Continue for the remaining 280 entries
+//   ]
+// };
+
+// // Example of accessing the data
+// console.log(receivedData.heartRate); // 70
+// console.log(receivedData.senseData[0].time); // 1724513423.578
+// console.log(receivedData.senseData[0].heart); // 1.712554865285747

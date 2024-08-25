@@ -60,6 +60,29 @@ export default function Page() {
       ws.onmessage = (event) => {
         const response = JSON.parse(event.data);
         console.log("Received from server:", response);
+        //1. 심박수
+        try{
+          setHeartRate(response.heartRate);
+          console.log("heartRate", response.heartRate);
+        }catch(e){
+          console.log(e);
+        }
+
+        //2. 호흡수
+        try{
+          setRespiration(response.respirationRate);
+          console.log("respiration", response.respirationRate);
+        }catch(e){
+          console.log(e);
+        }
+
+        //3. 이상 심박수
+        try{
+          setHeartData(response.heartAnomaly);
+          console.log("heartAnomaly", response.heartAnomaly);
+        }catch(e){
+          console.log(e);
+        }
       };
       ws.onerror = (error) => {
         console.error("WebSocket error:", error);
