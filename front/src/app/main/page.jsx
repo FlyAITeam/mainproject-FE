@@ -112,7 +112,7 @@ export default function Page() {
       <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto}>
         <DeviceConnector webSocket={webSocket} />
       </UserProfile>
-      <div classame={topDivClasses}>
+      <div className={topDivClasses}>
         <div className={headerTextClasses}>현재 상태</div>
         <IntensityModule intensity={wsData.bcgData[0].intensity} />
       </div>
@@ -172,7 +172,7 @@ export default function Page() {
           )}
         </div>
       </div>
-      <WebSocketTest />
+      {/* <WebSocketTest /> */}
     </Screen>
   );
 }
