@@ -21,7 +21,7 @@ const loginUser = async (loginId, password) => {
     localStorage.setItem("accessToken", response.headers.get("accessToken"));
 
     // 토큰 출력
-    console.log("최근 토큰 정보: ", localStorage.getItem("accessToken"));
+    // console.log("최근 토큰 정보: ", localStorage.getItem("accessToken"));
 
     return data;
   } catch (error) {
@@ -93,7 +93,7 @@ const getUserInfo = async () => {
     localStorage.setItem("accessToken", accessToken);
 
     // 토큰 출력
-    console.log("최근 토큰 정보: ", localStorage.getItem("accessToken"));
+    // console.log("최근 토큰 정보: ", localStorage.getItem("accessToken"));
 
     return data;
   } catch (error) {
