@@ -6,6 +6,7 @@ import {
   Screen,
   Icon,
   Header,
+  Button,
   DetailButton,
   Notify,
   Input,
@@ -85,7 +86,7 @@ export default function Page() {
       );
       console.log("강아지 정보 수정 성공:", dogInfo);
 
-      // 2. 강아지 사진 등록 (일단 보류)
+      // 2. 강아지 사진 등록
       if (newImage) {
         const photoInfo = await uploadDogPhoto(newImage);
         console.log("강아지 사진 등록 성공:", photoInfo);
@@ -95,12 +96,30 @@ export default function Page() {
     }
   };
 
+  // 아이디 수정하기
+  const handleIdChange = (e) => {
+    console.log(e.target.value);
+  };
+  const handleIdSubmit = () => {
+    console.log("아이디 수정하기");
+  };
+
+  // 비밀번호 수정하기
+  const handlePasswordChange = (e) => {
+    console.log(e.target.value);
+  };
+  const handlePasswordSubmit = () => {
+    console.log("비밀번호 수정하기");
+  };
+
   const baseDivClasses =
     "w-screen h-fit flex flex-col justify-start items-center space-y-4 px-6 pt-8 pb-10";
   const sectionClasses =
     "w-full h-fit rounded-lg flex flex-col justify-center items-center space-y-2";
 
   const [pageDepth, setPageDepth] = useState(1);
+
+  const [editMode, setEditMode] = useState(0);
 
   const sectionRefs = useRef([createRef(), createRef()]);
 
@@ -140,7 +159,9 @@ export default function Page() {
               </span>
               <DogInfoModule dogInfo={dogInfo} />
               <Item
+                alone
                 onClick={() => {
+                  setEditMode(1);
                   setPageDepth(2);
                 }}
               >
@@ -153,21 +174,23 @@ export default function Page() {
               <ListItems>
                 <Item
                   onClick={() => {
-                    setPageDepth(1);
+                    setEditMode(2);
+                    setPageDepth(2);
                   }}
                 >
                   아이디 수정하기
                 </Item>
                 <Item
                   onClick={() => {
-                    setPageDepth(1);
+                    setEditMode(3);
+                    setPageDepth(2);
                   }}
                 >
                   비밀번호 수정하기
                 </Item>
                 <Item
                   onClick={() => {
-                    setPageDepth(1);
+                    console.log("로그아웃");
                   }}
                   className="text-red"
                 >
@@ -186,87 +209,269 @@ export default function Page() {
         </motion.div>
         <motion.div ref={sectionRefs.current[1]} className={pageDivClasses}>
           <Header
-            title="반려견 정보 수정하기"
+            title={
+              {
+                1: "반려견 정보 수정하기",
+                2: "아이디 수정하기",
+                3: "비밀번호 수정하기",
+              }[editMode]
+            }
             left={{
               icon: "left",
-              onClick: () => setPageDepth(1),
+              onClick: () => {
+                setPageDepth(1), setEditMode(0);
+              },
             }}
           />
-          <div className={baseDivClasses}>
-            <div className={sectionClasses}>
-              <div className="w-56 h-56 rounded-full bg-grayBackground overflow-hidden flex justify-center items-center">
-                <label
-                  htmlFor="dogImage"
-                  className="w-full h-full z-10 flex flex-col justify-center items-center cursor-pointer relative active:opacity-50"
-                >
-                  {prevImage ? (
-                    <>
-                      <Icon icon="edit" className="text-white" size={24} />
-                      <span className="text-sm text-white font-medium">
-                        사진 변경하기
-                      </span>
-                      <Image
-                        className="absolute -z-10 top-0 leftp-0 w-full h-full"
-                        src={prevImage}
-                        alt="dog"
-                        width={512}
-                        height={512}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <Icon icon="camera" className="text-grayText" size={32} />
-                      <span className="text-sm font-medium">사진 추가하기</span>
-                    </>
-                  )}
-                  <input
-                    id="dogImage"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
-                </label>
-              </div>
-              <span className="w-full h-fit text-md text-left font-medium text-black pt-4">
-                반려견 정보 관리
-              </span>
-              <ListItems>
-                <Item
-                  onClick={() => {
-                    setPageDepth(1);
-                  }}
-                >
-                  <Input
-                    placeholder={dogInfo?.dogName}
-                    required
-                    value={newDogProfile.dogName}
-                    onChange={(e) =>
-                      setDogProfile({ ...dogProfile, dogName: e.target.value })
-                    }
-                  />
-                </Item>
-                <Item
-                  onClick={() => {
-                    setPageDepth(1);
-                  }}
-                >
-                  비밀번호 수정하기
-                </Item>
-                <Item
-                  onClick={() => {
-                    console.log("로그아웃");
-                    // setPageDepth(1);
-                  }}
-                  className="text-red"
-                >
-                  로그아웃
-                </Item>
-              </ListItems>
-            </div>
-          </div>
+          {editMode === 1
+            ? EditDog(
+                baseDivClasses,
+                sectionClasses,
+                prevImage,
+                handleImageChange,
+                dogInfo,
+                newDogProfile,
+                setNewDogProfile,
+                handleDogProfileSubmit,
+              )
+            : editMode === 2
+              ? EditId(
+                  baseDivClasses,
+                  sectionClasses,
+                  handleIdChange,
+                  handleIdSubmit,
+                )
+              : editMode === 3
+                ? EditPassword(
+                    baseDivClasses,
+                    sectionClasses,
+                    handlePasswordChange,
+                    handlePasswordSubmit,
+                  )
+                : null}
         </motion.div>
       </div>
     </Screen>
+  );
+}
+
+function EditDog(
+  baseDivClasses,
+  sectionClasses,
+  prevImage,
+  handleImageChange,
+  dogInfo,
+  newDogProfile,
+  setNewDogProfile,
+  handleDogProfileSubmit,
+) {
+  return (
+    <div className={baseDivClasses}>
+      <div className={sectionClasses}>
+        <div className="w-56 h-56 rounded-full bg-grayBackground overflow-hidden flex justify-center items-center">
+          <label
+            htmlFor="dogImage"
+            className="w-full h-full z-10 flex flex-col justify-center items-center cursor-pointer relative active:opacity-50"
+          >
+            {prevImage ? (
+              <>
+                <Icon icon="edit" className="text-white" size={24} />
+                <span className="text-sm text-white font-medium">
+                  사진 변경하기
+                </span>
+                <Image
+                  className="absolute -z-10 top-0 leftp-0 w-full h-full"
+                  src={prevImage}
+                  alt="dog"
+                  width={512}
+                  height={512}
+                />
+              </>
+            ) : (
+              <>
+                <Icon icon="camera" className="text-grayText" size={32} />
+                <span className="text-sm font-medium">사진 추가하기</span>
+              </>
+            )}
+            <input
+              id="dogImage"
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </label>
+        </div>
+        <div className="w-full h-fit flex flex-col -space-y-4">
+          <Input
+            label="반려견 이름"
+            newLabelClasses="text-base"
+            placeholder={dogInfo?.dogName}
+            value={newDogProfile.dogName}
+            onChange={(e) =>
+              setNewDogProfile({
+                ...newDogProfile,
+                dogName: e.target.value,
+              })
+            }
+          />
+          <Input
+            type="text"
+            label="견종"
+            newLabelClasses="text-base"
+            placeholder={dogInfo?.breed}
+            value={newDogProfile.breed}
+            onChange={(e) =>
+              setNewDogProfile({
+                ...newDogProfile,
+                breed: e.target.value,
+              })
+            }
+          />
+        </div>
+        <div className="w-full h-fit flex flex-row space-x-4">
+          <Select
+            required
+            label="분류"
+            newLabelClasses="text-base"
+            placeholder={
+              dogInfo?.breedCategory === 1
+                ? "소형견"
+                : dogInfo?.breedCategory === 2
+                  ? "중형견"
+                  : "대형견"
+            }
+            value={newDogProfile.breedCategory}
+            onChange={(e) =>
+              setNewDogProfile({
+                ...newDogProfile,
+                breedCategory: e.target.value,
+              })
+            }
+            options={[
+              { label: "소형견", value: 1 },
+              { label: "중형견", value: 2 },
+              { label: "대형견", value: 3 },
+            ]}
+          />
+
+          <Select
+            required
+            label="성별"
+            newLabelClasses="text-base"
+            placeholder={dogInfo?.sex}
+            value={newDogProfile.sex}
+            onChange={(e) =>
+              setNewDogProfile({
+                ...newDogProfile,
+                sex: e.target.value,
+              })
+            }
+            options={[
+              { label: "남", value: "male" },
+              { label: "여", value: "female" },
+              { label: "중성화", value: "neuter" },
+            ]}
+          />
+        </div>
+        <div className="w-full h-fit flex flex-row space-x-4">
+          <Input
+            required
+            type="number"
+            label="나이"
+            newLabelClasses="text-base"
+            placeholder={dogInfo?.dogAge}
+            maxLength="3"
+            value={newDogProfile.dogAge}
+            onChange={
+              (e) =>
+                setNewDogProfile({
+                  ...newDogProfile,
+                  dogAge: e.target.value,
+                })
+              // threeNumberFunc
+            }
+            actionComponent={<span className="text-grayText pr-6">살</span>}
+          />
+          <Input
+            required
+            type="number"
+            step="0.1"
+            max="500"
+            label="몸무게"
+            newLabelClasses="text-base"
+            placeholder={dogInfo?.weight}
+            value={newDogProfile.weight}
+            onChange={
+              (e) =>
+                setNewDogProfile({
+                  ...newDogProfile,
+                  weight: e.target.value,
+                })
+              // weightFunc
+            }
+            actionComponent={<span className="text-grayText pr-6">kg</span>}
+          />
+        </div>
+      </div>
+      <Button
+        className="w-full"
+        onClick={() => handleDogProfileSubmit(newDogProfile)}
+      >
+        수정하기
+      </Button>
+    </div>
+  );
+}
+
+// 아이디 수정하기 페이지
+function EditId(
+  baseDivClasses,
+  sectionClasses,
+  handleIdChange,
+  handleIdSubmit,
+) {
+  return (
+    <div className={baseDivClasses}>
+      <div className={classNames(sectionClasses, "pt-24")}>
+        <Input
+          required
+          type="text"
+          label="아이디"
+          newLabelClasses="text-base"
+          placeholder="아이디를 입력해주세요"
+          onChange={handleIdChange}
+        />
+      </div>
+      <Button className="w-full" onClick={handleIdSubmit}>
+        수정하기
+      </Button>
+    </div>
+  );
+}
+// 비밀번호 수정하기 페이지
+
+function EditPassword(
+  baseDivClasses,
+  sectionClasses,
+  handlePasswordChange,
+  handlePasswordSubmit,
+) {
+  return (
+    <div className={baseDivClasses}>
+      <div className={classNames(sectionClasses, "pt-24")}>
+        <Input
+          required
+          type="password"
+          label="비밀번호"
+          newLabelClasses="text-base"
+          placeholder="비밀번호를 입력해주세요"
+          onChange={handlePasswordChange}
+        />
+      </div>
+      <Button className="w-full" onClick={handlePasswordSubmit}>
+        수정하기
+      </Button>
+    </div>
   );
 }

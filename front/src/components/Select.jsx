@@ -35,6 +35,7 @@ import { Icon } from "./Icon";
 
 export const Select = ({
   label,
+  newLabelClasses,
   placeholder,
   value,
   onChange,
@@ -63,7 +64,11 @@ export const Select = ({
 
   return (
     <div className={baseDivClasses}>
-      {label && <label className={labelClasses}>{label}</label>}
+      {label && (
+        <label className={classNames(labelClasses, newLabelClasses)}>
+          {label}
+        </label>
+      )}
       <div
         ref={select}
         className={classNames(

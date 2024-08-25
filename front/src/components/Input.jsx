@@ -1,4 +1,6 @@
 "use client";
+
+import classNames from "classnames";
 import React, { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from ".";
@@ -26,6 +28,7 @@ import { Icon } from ".";
 
 export const Input = ({
   label,
+  newLabelClasses,
   placeholder,
   value,
   onChange,
@@ -47,7 +50,11 @@ export const Input = ({
 
   return (
     <div className={baseDivClasses}>
-      {label && <label className={labelClasses}>{label}</label>}
+      {label && (
+        <label className={classNames(labelClasses, newLabelClasses)}>
+          {label}
+        </label>
+      )}
       <div className={inputDivClasses}>
         <input
           ref={input}
