@@ -5,7 +5,7 @@ import 'chartjs-adapter-moment';
 
 ChartJS.register(PointElement, LinearScale, Title, Tooltip, Legend, TimeScale, LineElement);
 
-export const HeartChart = ({ bcgData }) => {  
+export const HeartChart = ({ bcgData }) => {
   try{
     const testData = bcgData.map(entry => ({ x: entry.time, y: entry.heart }));
   }catch(e){
@@ -14,7 +14,7 @@ export const HeartChart = ({ bcgData }) => {
 
   const data = {
     datasets: [{
-        label: 'Heart Rate',
+        label: '심박값',
         data: bcgData.map(entry => ({ x: entry.time, y: entry.heart })),
         showLine: true,
         backgroundColor: '#4CAF50',
@@ -32,7 +32,7 @@ export const HeartChart = ({ bcgData }) => {
         type: 'linear',
         title: {
           display: true,
-          text: 'Time',
+          text: '시간',
         },
         ticks: {
           display: false, // X축 값 숨기기
@@ -45,7 +45,7 @@ export const HeartChart = ({ bcgData }) => {
         beginAtZero: false,
         title: {
           display: true,
-          text: 'Heart Rate',
+          text: '',
         },
         ticks: {
           display: false, // Y축 값 숨기기
