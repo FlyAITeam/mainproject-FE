@@ -21,7 +21,7 @@ export const Layout = ({ children }) => {
     >
       {children}
       <Toaster />
-      <Modal isModalOpen={isModalOpen} type="bcg" />
+      {/* <Modal isModalOpen={isModalOpen} type="bcg" /> */}
     </div>
   );
 };

@@ -49,6 +49,7 @@ export default function Page() {
   // 건강정보3 - 현재상태
   const [intensity, setIntensity] = useState(0);
 
+
   useEffect(() => {
     const initializeWebSocket = async () => {
       const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);

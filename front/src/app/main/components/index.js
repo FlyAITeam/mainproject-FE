@@ -9,3 +9,6 @@ export * from "./IntensityModule";
 export * from "./ExerciseChart";
 export * from "./HeartChart";
 export * from "./SequenceChart";
+
+export * from "./AlertExerciseChart";
+export * from "./AlertHeartChart";

@@ -1,6 +1,8 @@
 "use client";
 
 import classNames from "classnames";
+import {Modal} from "@/components/Modal";
+import useModalStore from "@/stores/store";
 import Image from "next/image";
 import {
   Screen,
@@ -26,9 +28,8 @@ import {
 
 export default function Page() {
   const router = useRouter();
-
   const [userInfo, setUserInfo] = useState(null);
-
+  const { isModalOpen } = useModalStore();
   const [dogInfo, setDogInfo] = useState(null);
   const [newDogProfile, setNewDogProfile] = useState({
     dogName: "",
@@ -41,6 +42,8 @@ export default function Page() {
 
   const [prevImage, setPrevImage] = useState(null);
   const [newImage, setNewImage] = useState(null);
+
+  const [modalType, setModalType] = useState("운동량");
 
   useEffect(() => {
     const loadData = async () => {
@@ -203,11 +206,21 @@ export default function Page() {
             </div>
             <DetailButton
               onClick={() => {
-                Notify();
+                setModalType("운동량");
+                Notify("운동량");
               }}
             >
-              알림 테스트 버튼
+              알림 테스트 버튼 - 운동량
             </DetailButton>
+            <DetailButton
+              onClick={() => {
+                setModalType("심박수");
+                Notify("심박수");
+              }}
+            >
+              알림 테스트 버튼 - 심박수
+            </DetailButton>
+            <Modal isModalOpen={isModalOpen} type={modalType} />
           </div>
         </motion.div>
         <motion.div ref={sectionRefs.current[1]} className={pageDivClasses}>

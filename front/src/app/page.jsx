@@ -4,9 +4,10 @@ import classNames from "classnames";
 import { Screen, AppTitle, Button } from "@/components";
 import { useRouter } from "next/navigation";
 import { getUserInfo } from "@/libs/authManager";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function Page() {
+
   const router = useRouter();
   useEffect(() => {
     const checkUser = async () => {
