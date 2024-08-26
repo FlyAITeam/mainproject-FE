@@ -62,7 +62,8 @@ export default function Page() {
       ws.onmessage = (event) => {
         const response = JSON.parse(event.data);
         console.log("Received from server:", response);
-        //1. 심박수
+
+        // 1. 심박수
         try{
           setHeartRate(response.heartRate);
           console.log("heartRate", response.heartRate);
@@ -70,7 +71,7 @@ export default function Page() {
           console.log(e);
         }
 
-        //2. 호흡수
+        // 2. 호흡수
         try{
           setRespiration(response.respirationRate);
           console.log("respiration", response.respirationRate);
@@ -78,10 +79,18 @@ export default function Page() {
           console.log(e);
         }
 
-        //3. 이상 심박수
+        // 3. 이상 심박수
         try{
           setHeartData(response.heartAnomaly);
           console.log("heartAnomaly", response.heartAnomaly);
+        }catch(e){
+          console.log(e);
+        }
+
+        // 4. 심박값 변이
+        try{
+          setHeartData(response.senseData);
+          console.log("senseData", response.senseData);
         }catch(e){
           console.log(e);
         }

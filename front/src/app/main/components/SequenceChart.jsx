@@ -7,19 +7,17 @@ import {
   Title,
   Tooltip,
   Legend,
-  TimeScale,
   LineElement,
 } from "chart.js";
-import 'chartjs-adapter-moment';
 
-ChartJS.register(PointElement, LinearScale, Title, Tooltip, Legend, TimeScale, LineElement);
+ChartJS.register(PointElement, LinearScale, Title, Tooltip, Legend, LineElement);
 
 export const SequenceChart = ({ sequenceData }) => {
   // Process the data to calculate the average time and organize data points
   const dataPoints = sequenceData.map((data) => {
     const averageTime = (data.startTime + data.endTime) / 2;
     return {
-      x: averageTime * 1000, // Convert to milliseconds for chart.js
+      x: averageTime,
       y: data.heartRate,
       anomaly: data.heartAnomaly,
     };
@@ -28,25 +26,34 @@ export const SequenceChart = ({ sequenceData }) => {
   // Sort data points by time
   dataPoints.sort((a, b) => a.x - b.x);
 
+  // If there are more than 25 data points, only take the last 25
+  const slicedDataPoints = dataPoints.length > 20 ? dataPoints.slice(-20) : dataPoints;
+
+  // Assign indices based on sorted order
+  const indexedDataPoints = slicedDataPoints.map((point, index) => ({
+    x: index, // Use index as the X value
+    y: point.y,
+    anomaly: point.anomaly,
+  }));
+
   // Prepare the data for chart.js
   const chartData = {
-    datasets: [
-      {
+    datasets: [{
         label: 'Heart Rate over Time',
-        data: dataPoints,
+        data: indexedDataPoints,
         borderColor: "rgba(0,0,0,0.1)",
-        backgroundColor: dataPoints.map((point) =>
-          point.anomaly ? "red" : "blue"
+        backgroundColor: indexedDataPoints.map((point) =>
+          point.anomaly ? "red" : "#4CAF50"
         ),
-        pointBorderColor: dataPoints.map((point) =>
-          point.anomaly ? "red" : "blue"
+        pointBorderColor: indexedDataPoints.map((point) =>
+          point.anomaly ? "red" : "#4CAF50"
         ),
-        pointBackgroundColor: dataPoints.map((point) =>
-          point.anomaly ? "red" : "blue"
+        pointBackgroundColor: indexedDataPoints.map((point) =>
+          point.anomaly ? "red" : "#4CAF50"
         ),
         showLine: true,
         tension: 0.4, // Line tension (curvature)
-        pointRadius: 5,
+        pointRadius: 2,
         pointHoverRadius: 7,
       },
     ],
@@ -61,32 +68,25 @@ export const SequenceChart = ({ sequenceData }) => {
       },
       title: {
         display: true,
-        text: "Heart Rate Sequence",
+        text: "Sequence Data",
       },
       tooltip: {
         callbacks: {
           label: function (context) {
-            const anomaly = dataPoints[context.dataIndex].anomaly
+            const anomaly = indexedDataPoints[context.dataIndex].anomaly
               ? "Anomaly detected"
               : "No anomaly";
-            return `Heart Rate: ${context.raw.y} BPM (${anomaly})`;
+            return `${context.raw.y} BPM (${anomaly})`;
           },
         },
       },
     },
     scales: {
       x: {
-        type: 'time',
-        time: {
-          unit: 'second',
-          tooltipFormat: 'll HH:mm:ss',
-          displayFormats: {
-            second: 'HH:mm:ss',
-          },
-        },
+        type: 'linear',
         title: {
           display: true,
-          text: 'Time',
+          text: '시간', // X축 레이블을 "Time"에서 "Index"로 변경
         },
         ticks: {
           display: false, // X축 값 숨기기
@@ -99,7 +99,7 @@ export const SequenceChart = ({ sequenceData }) => {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Heart Rate (BPM)',
+          text: '심박수 (BPM)',
         },
         ticks: {
           display: false, // Y축 값 숨기기
