@@ -3,20 +3,16 @@
 import classNames from "classnames";
 import { Screen, Row, Module, Icon, Modal, Notify } from "@/components";
 import {
-  UserProfile,
-  HeartRateModule,
-  TemperatureModule,
-  RespirationModule,
-  IntensityModule,
-  ExerciseChart,
-  HeartChart,
-  SequenceChart,
+  UserProfile, HeartRateModule, TemperatureModule,
+  RespirationModule, IntensityModule, ExerciseChart,
+  HeartChart, SequenceChart,
 } from "./components";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserInfo } from "@/libs/authManager";
 import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
 import useModalStore from "@/stores/store";
+import Queue from "@/libs/queue";
 import DeviceConnector from "@/components/DeviceConnector";
 import {
   getHeartData,
@@ -24,11 +20,11 @@ import {
   getSequences,
 } from "@/libs/getAnalysis";
 
+
 export default function Page() {
   const router = useRouter();
   const [webSocket, setWebSocket] = useState(null);
   const [isConnectedBLE, setIsConnectedBLE] = useState(true);
-
   const [userInfo, setUserInfo] = useState(null);
   const [dogInfo, setDogInfo] = useState(null);
   const [dogPhoto, setDogPhoto] = useState(null);
@@ -41,14 +37,10 @@ export default function Page() {
   // 건강정보2 - 운동량, 심박값 변이, 심박수 변이
   const [exerciseData, setExerciseData] = useState({ target: 100, today: 0 });
   const [heartData, setHeartData] = useState([{time: 1000, heartRate: 0}]);
-  const [sequenceData, setSequenceData] = useState([
-    { startTime: 1724524010.631, endTime: 1724524143.424,
-      intensity: 1, heartAnomaly: false, heartRate: 0 }
-  ]);
+  const [sequenceData, setSequenceData] = useState([]);  
 
   // 건강정보3 - 현재상태
   const [intensity, setIntensity] = useState(0);
-
 
   useEffect(() => {
     const initializeWebSocket = async () => {
@@ -60,6 +52,7 @@ export default function Page() {
         await ws.send(JSON.stringify(initialMessage));
         console.log(ws);
       };
+
       ws.onmessage = (event) => {
         const response = JSON.parse(event.data);
         console.log("Received from server:", response);
@@ -67,7 +60,9 @@ export default function Page() {
         // 1. 심박수
         try{
           setHeartRate(response.heartRate);
+          setSequenceData(prevData => [...prevData, response.heartRate]);
           console.log("heartRate", response.heartRate);
+          console.log("sequenceData on message", sequenceData);
         }catch(e){
           console.log(e);
         }
@@ -120,7 +115,6 @@ export default function Page() {
     loadData();
     loadHeartData();
     loadExerciseData();
-    loadSequences();
   }, []);
 
   const loadHeartData = async () => {
@@ -150,31 +144,7 @@ export default function Page() {
       console.error("운동량 데이터를 불러오는 중 오류 발생:", error);
       await setExerciseData({ target: 100, today: 0 });
     }
-  };
-
-  const loadSequences = async () => {
-    console.log("시퀀스 데이터 불러오기");
-    try {
-      const data = await getSequences();
-      console.log("Sequence data:", data.sequenceDatas);
-      setSequenceData(data.sequenceDatas);
-    } catch (error) {
-      console.error("시퀀스 데이터를 불러오는 중 오류 발생:", error);
-    }
-  };
-
-
-  const wsData = {
-    bcgData: [
-      {
-        intensity: 0,
-        time: "2021-10-01 12:00:00",
-        heartRate: 60,
-        breathRate: 12,
-        temperature: 38.5,
-      },
-    ],
-  };
+    };
 
   const topDivClasses = "w-full h-fit px-6 mb-4";
   const contentHeaderClasses =
@@ -188,10 +158,10 @@ export default function Page() {
     <Screen nav>
       <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto}>
         <DeviceConnector 
-          webSocket={webSocket} 
           setTemperature={setTemperature}
           setHeartRate={setHeartRate}
           setRespiration={setRespiration}
+          setSequenceData={setSequenceData}
         />
       </UserProfile>
       <div className={topDivClasses}>
@@ -234,7 +204,7 @@ export default function Page() {
               <Module
                 title="심박수 변이"
                 className="w-full"
-                reload={() => loadSequences()}
+                reload={()=>{console.log("곧 지우셈")}}
                 getDetail={() => console.log("getDetail")}
               >
                 <div className="w-full h-48">
@@ -270,3 +240,7 @@ export default function Page() {
     </Screen>
   );
 }
+
+
+// 여기서 어디가 잘못됐지? -> sequenceData를 Queue로 선언했는데, useState로 선언해야 했음
+// 그럼 뭐 어떻게해야돼? -> sequenceData를 useState로 선언하고, useEffect에서 loadSequences를 호출하면 됨
