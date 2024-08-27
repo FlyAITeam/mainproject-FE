@@ -9,11 +9,11 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { motion } from "framer-motion";
 import useModalStore from "@/stores/store";
 // 그래프 차트 임포트
-import { AlertExerciseChart, AlertHeartChart} from "@/app/main/components";
+import { AlertExerciseChart, AlertHeartChart } from "@/app/main/components";
 import { HeartChart } from "@/app/main/components";
 import { SequenceChart } from "@/app/main/components";
 
-// 
+//
 import {
   getHeartData,
   getExerciseData,
@@ -22,7 +22,7 @@ import {
 import { useState } from "react";
 
 export const Modal = ({ isModalOpen, type }) => {
-  const [heartData, setHeartData] = useState([{time: 1000, heartRate: 0}]);
+  const [heartData, setHeartData] = useState([{ time: 1000, heartRate: 0 }]);
   const [exerciseData, setExerciseData] = useState({ target: 100, today: 0 });
 
   useEffect(() => {
@@ -30,12 +30,12 @@ export const Modal = ({ isModalOpen, type }) => {
       console.log("심박값 데이터 불러오기");
       try {
         const data = await getHeartData();
-        console.log('heart data from', data.bcgData);
+        console.log("heart data from", data.bcgData);
         await setHeartData(data.bcgData);
         await setIntensity(data.intensity);
       } catch (error) {
         console.error("심박값 데이터를 불러오는 중 오류 발생:", error);
-        await setHeartData([{time: 0, heartRate: 100}]);
+        await setHeartData([{ time: 0, heartRate: 100 }]);
       }
     };
 
@@ -45,29 +45,27 @@ export const Modal = ({ isModalOpen, type }) => {
       try {
         const data = await getExerciseData();
         console.log(data);
-        await setExerciseData({ 
-          target: data.target, 
-          today: Math.max(Math.min(data.today, data.target),0) 
+        await setExerciseData({
+          target: data.target,
+          today: Math.max(Math.min(data.today, data.target), 0),
         });
       } catch (error) {
         console.error("운동량 데이터를 불러오는 중 오류 발생:", error);
         await setExerciseData({ target: 100, today: 0 });
       }
     };
-  
 
     loadHeartData();
     loadExerciseData();
   });
-  
+
   const titleText = ["심박 이상 감지!", "운동량 부족 감지!"];
   const explainText = [
     "의 심박수에서 이상 패턴이 감지되었습니다. 병원 방문을 고려해주세요.",
     "의 운동량이 부족한 것으로 감지되었습니다. 산책 혹은 운동을 고려해주세요.",
   ];
-  console.log("type", type);
   const closeModal = useModalStore((state) => state.closeModal);
-  if(type==="심박수"){
+  if (type === "심박수") {
     return (
       <>
         {isModalOpen && (
@@ -137,7 +135,7 @@ export const Modal = ({ isModalOpen, type }) => {
         )}
       </>
     );
-  }else{
+  } else {
     return (
       <>
         {isModalOpen && (
@@ -174,7 +172,10 @@ export const Modal = ({ isModalOpen, type }) => {
                 </p>
               </div>
               <div className="w-full h-fit py-4">
-                <AlertExerciseChart target={exerciseData.target} today={exerciseData.today} />
+                <AlertExerciseChart
+                  target={exerciseData.target}
+                  today={exerciseData.today}
+                />
               </div>
               <div className="w-full h-fit flex flex-row space-x-2">
                 {type == "심박수" ? (
@@ -207,6 +208,5 @@ export const Modal = ({ isModalOpen, type }) => {
         )}
       </>
     );
-
   }
 };

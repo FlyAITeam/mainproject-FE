@@ -13,7 +13,7 @@ export const AppTitle = () => {
     <>
       <div className="flex flex-col items-center">
         <p className="text-lg text-center text-grayText">
-          반려견 헬스 케어 서비스 플랫폼
+          반려견 헬스 케어 서비스
         </p>
         <div className="flex space-x-2">
           <h1 className="text-6xl font-bold text-center">Petssist</h1>

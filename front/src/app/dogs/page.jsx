@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Screen, Button } from "@/components";
@@ -120,7 +119,7 @@ export default function Page() {
   };
 
   return (
-    <Screen isFixed header={headerConfig}>
+    <Screen isFixed header={headerConfig} className="bg-white">
       <div className={topDivClasses} style={{ x: scrollX }}>
         <motion.div ref={sectionRefs.current[0]}>
           <Step1

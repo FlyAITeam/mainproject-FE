@@ -51,7 +51,7 @@ const Nav = ({ name, path, icon, active }) => {
 export const BottomTab = () => {
   const pathname = usePathname();
   const baseBottomTabClasses =
-    "fixed z-10 left-0 bottom-0 w-full h-fit pb-8 flex flex-row bg-white";
+    "fixed z-10 left-0 bottom-0 w-full h-fit pb-8 flex flex-row bg-white rounded-t-xl shadow-top-sm";
   const actionAreaClasses = "flex-1 flex h-16 justify-center items-center";
 
   return (

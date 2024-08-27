@@ -3,15 +3,19 @@
 import classNames from "classnames";
 import { Screen, Row, Module, Icon, Modal, Notify } from "@/components";
 import {
-  UserProfile, HeartRateModule, TemperatureModule,
-  RespirationModule, IntensityModule, ExerciseChart,
-  HeartChart, SequenceChart,
+  UserProfile,
+  HeartRateModule,
+  TemperatureModule,
+  RespirationModule,
+  IntensityModule,
+  ExerciseChart,
+  HeartChart,
+  SequenceChart,
 } from "./components";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserInfo } from "@/libs/authManager";
 import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
-import useModalStore from "@/stores/store";
 import Queue from "@/libs/queue";
 import DeviceConnector from "@/components/DeviceConnector";
 import {
@@ -35,7 +39,7 @@ export default function Page() {
 
   // 건강정보2 - 운동량, 심박값 변이, 심박수 변이
   const [exerciseData, setExerciseData] = useState({ target: 100, today: 0 });
-  const [heartData, setHeartData] = useState([{time: 1000, heartRate: 0}]);
+  const [heartData, setHeartData] = useState([{ time: 1000, heartRate: 0 }]);
   const [sequenceData, setSequenceData] = useState([]);
 
   // 건강정보3 - 현재상태
@@ -65,12 +69,12 @@ export default function Page() {
     console.log("심박값 데이터 불러오기");
     try {
       const data = await getHeartData();
-      console.log('heart data from', data.bcgData);
+      console.log("heart data from", data.bcgData);
       await setHeartData(data.bcgData);
       await setIntensity(data.intensity);
     } catch (error) {
       console.error("심박값 데이터를 불러오는 중 오류 발생:", error);
-      await setHeartData([{time: 0, heartRate: 100}]);
+      await setHeartData([{ time: 0, heartRate: 100 }]);
     }
   };
 
@@ -80,15 +84,15 @@ export default function Page() {
     try {
       const data = await getExerciseData();
       console.log(data);
-      await setExerciseData({ 
-        target: data.target, 
-        today: Math.max(Math.min(data.today, data.target),0) 
+      await setExerciseData({
+        target: data.target,
+        today: Math.max(Math.min(data.today, data.target), 0),
       });
     } catch (error) {
       console.error("운동량 데이터를 불러오는 중 오류 발생:", error);
       await setExerciseData({ target: 100, today: 0 });
     }
-    };
+  };
 
   const topDivClasses = "w-full h-fit px-6 mb-4";
   const contentHeaderClasses =
@@ -101,7 +105,7 @@ export default function Page() {
   return (
     <Screen nav>
       <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto}>
-        <DeviceConnector 
+        <DeviceConnector
           setTemperature={setTemperature}
           setHeartRate={setHeartRate}
           setRespiration={setRespiration}
@@ -109,7 +113,7 @@ export default function Page() {
           setHeartData={setHeartData}
         />
       </UserProfile>
-      <div className={topDivClasses}>
+      <div className={classNames(topDivClasses, `mt-24`)}>
         <div className={headerTextClasses}>현재 상태</div>
         <IntensityModule intensity={intensity} />
       </div>
@@ -127,7 +131,7 @@ export default function Page() {
                 title="운동량"
                 className="w-full"
                 reload={() => loadExerciseData()}
-                getDetail={() => console.log("getDetail")}
+                // getDetail={() => console.log("getDetail")}
               >
                 <div className="w-full h-48">
                   <ExerciseChart
@@ -140,7 +144,7 @@ export default function Page() {
                 title="심박값 변이"
                 className="w-full"
                 reload={() => loadHeartData()}
-                getDetail={() => console.log("getDetail")}
+                // getDetail={() => console.log("getDetail")}
               >
                 <div className="w-full h-48">
                   <HeartChart bcgData={heartData} />
@@ -149,11 +153,13 @@ export default function Page() {
               <Module
                 title="심박수 변이"
                 className="w-full"
-                reload={()=>{console.log("곧 지우셈")}}
-                getDetail={() => console.log("getDetail")}
+                reload={() => {
+                  // console.log("곧 지우셈");
+                }}
+                // getDetail={() => console.log("getDetail")}
               >
                 <div className="w-full h-48">
-                  <SequenceChart sequenceData={sequenceData}/>
+                  <SequenceChart sequenceData={sequenceData} />
                 </div>
               </Module>
             </>
@@ -185,7 +191,6 @@ export default function Page() {
     </Screen>
   );
 }
-
 
 // 여기서 어디가 잘못됐지? -> sequenceData를 Queue로 선언했는데, useState로 선언해야 했음
 // 그럼 뭐 어떻게해야돼? -> sequenceData를 useState로 선언하고, useEffect에서 loadSequences를 호출하면 됨

@@ -48,9 +48,13 @@ import {
   IoHappyOutline,
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
-import { MdBluetooth, MdBluetoothDisabled } from "react-icons/md";
 import { GiSittingDog } from "react-icons/gi";
 import { IoMdMore } from "react-icons/io";
+import {
+  PiBluetooth,
+  PiBluetoothSlash,
+  PiBluetoothConnected,
+} from "react-icons/pi";
 
 /**
  * Icon
@@ -87,8 +91,9 @@ export const iconRegistry = {
   down: IoChevronDown,
   bell: IoNotifications,
   bellOff: IoNotificationsOff,
-  bluetooth: MdBluetooth,
-  bluetoothOff: MdBluetoothDisabled,
+  bluetooth: PiBluetooth,
+  bluetoothOn: PiBluetoothConnected,
+  bluetoothOff: PiBluetoothSlash,
   call: IoCall,
   copy: IoCopy,
   check: IoCheckmark,

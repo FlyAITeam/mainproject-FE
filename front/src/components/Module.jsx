@@ -28,7 +28,7 @@ export const Module = ({ title, children, reload, getDetail, className }) => {
   }, [onLoad]);
 
   const baseDivClasses =
-    "flex flex-col w-full h-fit bg-grayBackground rounded-xl px-4 pt-3 pb-4 space-y-3 ";
+    "flex flex-col w-full h-fit bg-white rounded-xl px-4 pt-3 pb-4 space-y-3 ";
   const headerDivClasses =
     "w-full h-fit flex flex-row justify-between items-center";
   const actionDivClasses =

@@ -1,7 +1,7 @@
 "use client";
 
 import classNames from "classnames";
-import {Modal} from "@/components/Modal";
+import { Modal } from "@/components/Modal";
 import useModalStore from "@/stores/store";
 import Image from "next/image";
 import {
@@ -28,22 +28,30 @@ import {
 
 export default function Page() {
   const router = useRouter();
+
+  const [pageDepth, setPageDepth] = useState(1);
+
+  const [editMode, setEditMode] = useState(1);
+
+  const sectionRefs = useRef([createRef(), createRef()]);
+
+  const { scrollXProgress } = useScroll();
+  const scrollX = useTransform(scrollXProgress, [0, 0.5, 1], [0, 50, 100]);
+
+  const frameDivClasses = "w-screen h-full flex	  overflow-x-hidden";
+  const pageDivClasses =
+    "w-full h-full flex flex-col items-center space-y-4 relative";
+
+  const baseDivClasses =
+    "w-screen h-fit flex flex-col justify-start items-center space-y-4 px-6 pt-8 pb-10";
+  const sectionClasses =
+    "w-full h-fit rounded-lg flex flex-col justify-center items-center space-y-2";
+
   const [userInfo, setUserInfo] = useState(null);
-  const { isModalOpen } = useModalStore();
+  const { isModalOpen, type, setType } = useModalStore();
   const [dogInfo, setDogInfo] = useState(null);
-  const [newDogProfile, setNewDogProfile] = useState({
-    dogName: "",
-    breed: "",
-    breedCategory: 1,
-    dogAge: "",
-    sex: "male",
-    weight: "",
-  });
 
   const [prevImage, setPrevImage] = useState(null);
-  const [newImage, setNewImage] = useState(null);
-
-  const [modalType, setModalType] = useState("운동량");
 
   useEffect(() => {
     const loadData = async () => {
@@ -64,44 +72,10 @@ export default function Page() {
     loadData();
   }, []);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setNewImage(file);
-
-      const reader = new FileReader();
-      reader.onload = (e) => setPrevImage(e.target.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleDogProfileSubmit = async (dogProfile) => {
-    console.log("Uploading dog profile ... ", dogProfile);
-    try {
-      // 1. 강아지 정보 수정
-      const dogInfo = await updateDog(
-        dogProfile.dogName,
-        dogProfile.breed,
-        parseInt(dogProfile.breedCategory),
-        parseInt(dogProfile.dogAge),
-        dogProfile.sex,
-        parseFloat(dogProfile.weight),
-      );
-      console.log("강아지 정보 수정 성공:", dogInfo);
-
-      // 2. 강아지 사진 등록
-      if (newImage) {
-        const photoInfo = await uploadDogPhoto(newImage);
-        console.log("강아지 사진 등록 성공:", photoInfo);
-      }
-    } catch (error) {
-      console.error("강아지 정보 등록 중 오류:", error);
-    }
-  };
-
   // 아이디 수정하기
   const handleIdChange = (e) => {
     console.log(e.target.value);
+    setPageDepth(1);
   };
   const handleIdSubmit = () => {
     console.log("아이디 수정하기");
@@ -110,28 +84,11 @@ export default function Page() {
   // 비밀번호 수정하기
   const handlePasswordChange = (e) => {
     console.log(e.target.value);
+    setPageDepth(1);
   };
   const handlePasswordSubmit = () => {
     console.log("비밀번호 수정하기");
   };
-
-  const baseDivClasses =
-    "w-screen h-fit flex flex-col justify-start items-center space-y-4 px-6 pt-8 pb-10";
-  const sectionClasses =
-    "w-full h-fit rounded-lg flex flex-col justify-center items-center space-y-2";
-
-  const [pageDepth, setPageDepth] = useState(1);
-
-  const [editMode, setEditMode] = useState(0);
-
-  const sectionRefs = useRef([createRef(), createRef()]);
-
-  const { scrollXProgress } = useScroll();
-  const scrollX = useTransform(scrollXProgress, [0, 0.5, 1], [0, 50, 100]);
-
-  const frameDivClasses = "w-screen h-full flex  overflow-x-hidden";
-  const pageDivClasses =
-    "w-full h-full flex flex-col items-center space-y-4 relative";
 
   useEffect(() => {
     const targetSection = sectionRefs.current[pageDepth - 1].current;
@@ -145,7 +102,8 @@ export default function Page() {
   }, [pageDepth]);
 
   return (
-    <Screen nav>
+    <Screen nav className="bg-white">
+      <Modal isModalOpen={isModalOpen} type={type} />
       <div className={frameDivClasses} style={{ x: scrollX }}>
         <motion.div ref={sectionRefs.current[0]} className={pageDivClasses}>
           <div className={baseDivClasses}>
@@ -206,7 +164,7 @@ export default function Page() {
             </div>
             <DetailButton
               onClick={() => {
-                setModalType("운동량");
+                setType("운동량");
                 Notify("운동량");
               }}
             >
@@ -214,13 +172,13 @@ export default function Page() {
             </DetailButton>
             <DetailButton
               onClick={() => {
-                setModalType("심박수");
+                setType("심박수");
                 Notify("심박수");
               }}
             >
               알림 테스트 버튼 - 심박수
             </DetailButton>
-            <Modal isModalOpen={isModalOpen} type={modalType} />
+            {/* <Modal isModalOpen={isModalOpen} type={modalType} /> */}
           </div>
         </motion.div>
         <motion.div ref={sectionRefs.current[1]} className={pageDivClasses}>
@@ -235,55 +193,88 @@ export default function Page() {
             left={{
               icon: "left",
               onClick: () => {
-                setPageDepth(1), setEditMode(0);
+                setPageDepth(1), setEditMode(1);
               },
             }}
           />
-          {editMode === 1
-            ? EditDog(
-                baseDivClasses,
-                sectionClasses,
-                prevImage,
-                handleImageChange,
-                dogInfo,
-                newDogProfile,
-                setNewDogProfile,
-                handleDogProfileSubmit,
-              )
-            : editMode === 2
-              ? EditId(
-                  baseDivClasses,
-                  sectionClasses,
-                  handleIdChange,
-                  handleIdSubmit,
-                )
-              : editMode === 3
-                ? EditPassword(
-                    baseDivClasses,
-                    sectionClasses,
-                    handlePasswordChange,
-                    handlePasswordSubmit,
-                  )
-                : null}
+          {editMode === 1 ? (
+            <EditDog
+              baseDivClasses={baseDivClasses}
+              sectionClasses={sectionClasses}
+              dogInfo={dogInfo}
+              prevImage={prevImage}
+            />
+          ) : editMode === 2 ? (
+            <EditId
+              baseDivClasses={baseDivClasses}
+              sectionClasses={sectionClasses}
+              handleIdChange={handleIdChange}
+              handleIdSubmit={handleIdSubmit}
+            />
+          ) : editMode === 3 ? (
+            <EditPassword
+              baseDivClasses={baseDivClasses}
+              sectionClasses={sectionClasses}
+              handlePasswordChange={handlePasswordChange}
+              handlePasswordSubmit={handlePasswordSubmit}
+            />
+          ) : null}
         </motion.div>
       </div>
     </Screen>
   );
 }
 
-function EditDog(
-  baseDivClasses,
-  sectionClasses,
-  prevImage,
-  handleImageChange,
-  dogInfo,
-  newDogProfile,
-  setNewDogProfile,
-  handleDogProfileSubmit,
-) {
+const EditDog = (baseDivClasses, sectionClasses, dogInfo, prevImage) => {
+  const [newImage, setNewImage] = useState(null);
+  const [newDogProfile, setNewDogProfile] = useState({
+    dogName: "",
+    breed: "",
+    breedCategory: 1,
+    dogAge: "",
+    sex: "male",
+    weight: "",
+  });
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewImage(file);
+
+      const reader = new FileReader();
+      reader.onload = (e) => setPrevImage(e.target.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDogProfileSubmit = async (dogProfile) => {
+    console.log("Uploading dog profile ... ", dogProfile);
+    setPageDepth(1);
+    try {
+      // 1. 강아지 정보 수정
+      const dogInfo = await updateDog(
+        dogProfile.dogName,
+        dogProfile.breed,
+        parseInt(dogProfile.breedCategory),
+        parseInt(dogProfile.dogAge),
+        dogProfile.sex,
+        parseFloat(dogProfile.weight),
+      );
+      console.log("강아지 정보 수정 성공:", dogInfo);
+
+      // 2. 강아지 사진 등록
+      if (newImage) {
+        const photoInfo = await uploadDogPhoto(newImage);
+        console.log("강아지 사진 등록 성공:", photoInfo);
+      }
+    } catch (error) {
+      console.error("강아지 정보 등록 중 오류:", error);
+    }
+  };
+
   return (
-    <div className={baseDivClasses}>
-      <div className={sectionClasses}>
+    <div className={classNames(baseDivClasses, "")}>
+      <div className={classNames(sectionClasses)}>
         <div className="w-56 h-56 rounded-full bg-grayBackground overflow-hidden flex justify-center items-center">
           <label
             htmlFor="dogImage"
@@ -429,24 +420,24 @@ function EditDog(
             actionComponent={<span className="text-grayText pr-6">kg</span>}
           />
         </div>
+        <Button
+          className="w-full"
+          onClick={() => handleDogProfileSubmit(newDogProfile)}
+        >
+          수정하기
+        </Button>
       </div>
-      <Button
-        className="w-full"
-        onClick={() => handleDogProfileSubmit(newDogProfile)}
-      >
-        수정하기
-      </Button>
     </div>
   );
-}
+};
 
 // 아이디 수정하기 페이지
-function EditId(
+const EditId = (
   baseDivClasses,
   sectionClasses,
   handleIdChange,
   handleIdSubmit,
-) {
+) => {
   return (
     <div className={baseDivClasses}>
       <div className={classNames(sectionClasses, "pt-24")}>
@@ -464,15 +455,15 @@ function EditId(
       </Button>
     </div>
   );
-}
+};
 // 비밀번호 수정하기 페이지
 
-function EditPassword(
+const EditPassword = (
   baseDivClasses,
   sectionClasses,
   handlePasswordChange,
   handlePasswordSubmit,
-) {
+) => {
   return (
     <div className={baseDivClasses}>
       <div className={classNames(sectionClasses, "pt-24")}>
@@ -490,4 +481,4 @@ function EditPassword(
       </Button>
     </div>
   );
-}
+};

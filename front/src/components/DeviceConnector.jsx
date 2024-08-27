@@ -1,15 +1,21 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import classNames from "classnames";
+import { Icon } from ".";
+import { AnimatePresence, motion } from "framer-motion";
 
 const DeviceConnector = ({
-  setTemperature, 
+  setTemperature,
   setHeartData,
   setHeartRate,
-  setSequenceData, 
-  setRespiration
+  setSequenceData,
+  setRespiration,
 }) => {
   const [webSocket, setWebSocket] = useState(null);
   // 웹소켓 초기화
+
+  const [bleBatteryLevel, setBleBatteryLevel] = useState(0);
+
   const initializeWebSocket = async () => {
     const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
     ws.onopen = async () => {
@@ -26,35 +32,35 @@ const DeviceConnector = ({
       console.log("Received from server:", response);
 
       // 1. 심박수 및 심박수 시퀀스
-      try{
+      try {
         setHeartRate(response.heartRate);
-        setSequenceData(prevData => [...prevData, response.heartRate]);
+        setSequenceData((prevData) => [...prevData, response.heartRate]);
         console.log("heartRate", response.heartRate);
         console.log("sequenceData on message", sequenceData);
-      }catch(e){
+      } catch (e) {
         console.log(e);
       }
 
       // 2. 호흡수
-      try{
+      try {
         setRespiration(response.respirationRate);
         console.log("respiration", response.respirationRate);
-      }catch(e){
+      } catch (e) {
         console.log(e);
       }
 
       // 3. 이상 심박수
-      try{
+      try {
         console.log("heartAnomaly", response.heartAnomaly);
-      }catch(e){
+      } catch (e) {
         console.log(e);
       }
-      
+
       // 4. 심박값 변이
-      try{
+      try {
         setHeartData(response.senseData);
         console.log("senseData", response.senseData);
-      }catch(e){
+      } catch (e) {
         console.log(e);
       }
     };
@@ -66,10 +72,10 @@ const DeviceConnector = ({
     ws.onclose = () => {
       console.log("WebSocket closed. Reconnecting...");
       initializeWebSocket();
-    }
-  }
+    };
+  };
   useEffect(() => {
-    initializeWebSocket()
+    initializeWebSocket();
   }, []);
 
   // 블루투스 장치의 UUID와 데이터 오프셋
@@ -96,19 +102,28 @@ const DeviceConnector = ({
   const connectToDeviceAndCollectData = async () => {
     try {
       try {
-        // 블루투스 장치 요청        
-        console.log("Requesting Bluetooth device..."); 
+        // 블루투스 장치 요청 (serviceUuid 필터링과 battery service 추가)
+        console.log("Requesting Bluetooth device...", navigator.bluetooth);
         const device = await navigator.bluetooth.requestDevice({
           filters: [{ services: [serviceUuid] }],
-          optionalServices: [serviceUuid],
+          optionalServices: [serviceUuid, "battery_service"],
         });
 
         // GATT 서버에 연결: 블루투스 장치와 데이터 송수신
-        console.log("Connecting to GATT server..."); 
-        const server = await device.gatt.connect(); 
+        console.log("Connecting to GATT server...");
+        const server = await device.gatt.connect();
         const service = await server.getPrimaryService(serviceUuid); // 서비스 가져오기
         const txCharacteristic = await service.getCharacteristic(txCharUuid); // 송신 Characteristic
         const rxCharacteristic = await service.getCharacteristic(rxCharUuid); // 수신 Characteristic
+
+        // 배터리 서비스 요청
+        const batteryService =
+          await server.getPrimaryService("battery_service");
+        // 배터리 레벨 요청
+        const batteryLevelChar =
+          await batteryService.getCharacteristic("battery_level");
+        const batteryLevel = await batteryLevelChar.readValue();
+        setBleBatteryLevel(batteryLevel.getUint8(0));
 
         // 알림 시작: 데이터 수신
         console.log("Starting notifications...");
@@ -125,6 +140,7 @@ const DeviceConnector = ({
 
         setIsConnected(true);
         setDevice(device); // Save the device reference for later disconnection
+
         console.log("Device connected and data collection started");
       } catch (error) {
         console.error("Failed to connect to Bluetooth device:", error);
@@ -174,8 +190,8 @@ const DeviceConnector = ({
         // setDataBox(prevData => [...prevData, { time, ax, ay, az, bcg, gx, gy, gz, temperature }]);
       }
 
-      // 
-      if(dataBox.length>560){
+      //
+      if (dataBox.length > 560) {
         // 웹소켓 보내기 560묶음
         await sendWebSocketMessage({ senserData: dataBox });
 
@@ -192,9 +208,12 @@ const DeviceConnector = ({
     if (webSocket.readyState === WebSocket.OPEN) {
       await webSocket.send(JSON.stringify(message));
       console.log("Successfully sended..");
-    } else if (webSocket.readyState === WebSocket.CLOSED || webSocket.readyState === WebSocket.CLOSING) {
+    } else if (
+      webSocket.readyState === WebSocket.CLOSED ||
+      webSocket.readyState === WebSocket.CLOSING
+    ) {
       console.log("WebSocket is closed or closing. Reconnecting...");
-    }else{
+    } else {
       console.log("???? Nothing");
     }
   };
@@ -240,41 +259,66 @@ const DeviceConnector = ({
     }
   };
 
-  const switchContainerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
-  };
+  const bleDivClasses = "flex flex-col items-center justify-center space-y-1";
 
-  const switchStyle = {
-    width: '60px',
-    height: '30px',
-    backgroundColor: isOn ? '#4CD964' : '#ccc',
-    borderRadius: '15px',
-    position: 'relative',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-  };
+  const switchClasses =
+    "w-14 h-8 relative cursor-pointer rounded-full p-1 transition duration-300 ease-in-out";
 
-  const circleStyle = {
-    width: '26px',
-    height: '26px',
-    backgroundColor: 'white',
-    borderRadius: '50%',
-    position: 'absolute',
-    top: '2px',
-    left: '2px',
-    transition: 'transform 0.3s',
-    transform: isOn ? 'translateX(30px)' : 'none',
-  };
+  const circleClasses =
+    "w-6 h-6 absolute top-1 left-1 bg-white rounded-full shadow-md transform duration-300 ease-in-out flex justify-center items-center";
+
+  const batteryDivClasses =
+    "w-fit h-fit flex flex-row justify-center items-center space-x-1";
+
+  const batteryTextClasses = "text-md font-medium text-dimGray";
 
   return (
-    <div style={switchContainerStyle} onClick={handleToggle}>
-      <div style={switchStyle}>
-        <div style={circleStyle}></div>
+    <>
+      <div className={bleDivClasses} onClick={handleToggle}>
+        <div
+          className={classNames(
+            switchClasses,
+            isOn ? "bg-green" : "bg-dimGray",
+          )}
+        >
+          <div
+            className={classNames(
+              circleClasses,
+              isOn ? "translate-x-6" : "translate-x-0",
+            )}
+          >
+            <Icon
+              icon="bluetooth"
+              className={classNames(isOn ? "text-green" : "text-dimGray")}
+              size={22}
+            />
+          </div>
+        </div>
+        <AnimatePresence>
+          {isOn && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={batteryDivClasses}
+            >
+              <div className={batteryTextClasses}>{bleBatteryLevel}%</div>
+              <Icon
+                className="text-dimGray "
+                icon={
+                  bleBatteryLevel < 30
+                    ? "batteryDead"
+                    : bleBatteryLevel < 70
+                      ? "batteryHalf"
+                      : "batteryFull"
+                }
+                size="24"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </>
   );
 };
 

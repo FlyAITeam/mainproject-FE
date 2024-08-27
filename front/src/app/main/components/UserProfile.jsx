@@ -8,16 +8,16 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 export const UserProfile = ({ userInfo, dogInfo, dogPhoto, children }) => {
   const baseDivClasses =
-    "w-full h-fit flex flex-row justify-between items-center space-x-2 px-6 py-4";
-  const profileDivClasses = "w-fit h-fit flex flex-row space-x-3";
+    "fixed z-30 top-0 w-full h-fit flex flex-row justify-between items-center space-x-2 px-6 py-4 bg-white rounded-b-xl shadow-sm";
+  const profileDivClasses =
+    "w-full h-fit flex flex-row justify-start items-center space-x-3 border-r";
   const profileImageClasses =
-    "w-16 h-16 bg-grayBackground flex justify-center items-center rounded-full overflow-hidden";
+    "w-12 h-12 bg-grayBackground flex justify-center items-center rounded-full overflow-hidden";
   const profileInfoDivClasses =
-    "flex flex-col justify-center items-start space-y-1";
-  const userNameClasses = "w-32 text-sm text-grayText truncate";
-  const dogNameClasses = "w-36 text-3xl font-semibold text-black truncate";
-  const actionDivClasses =
-    "w-fit h-fit p-0 rounded-full flex justify-center items-center";
+    "w-fit flex flex-col justify-center items-start space-y-0";
+  const userNameClasses = "w-28 text-sm text-grayText truncate";
+  const dogNameClasses = "w-36 text-2xl font-semibold text-black truncate";
+  const bleDivClasses = "w-fit pl-2 h-fit flex justify-center items-center ";
 
   // userInfo, dogInfo, dogPhoto가 null 또는 undefined일 경우 기본 값 처리
   const safeUserInfo = userInfo || {};
@@ -57,7 +57,7 @@ export const UserProfile = ({ userInfo, dogInfo, dogPhoto, children }) => {
           </p>
         </div>
       </div>
-      <div className={classNames(actionDivClasses)}>{children}</div>
+      <div className={classNames(bleDivClasses)}>{children}</div>
     </div>
   );
 };

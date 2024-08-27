@@ -22,9 +22,16 @@ import { Header, BottomTab } from ".";
  * </Screen>
  */
 
-export const Screen = ({ header, nav, isFixed, children, ...rest }) => {
+export const Screen = ({
+  header,
+  nav,
+  isFixed,
+  children,
+  className,
+  ...rest
+}) => {
   const baseScreenClasses =
-    "w-full h-screen relative flex flex-col  justify-start items-center";
+    "w-full h-screen relative flex flex-col  justify-start items-center ";
 
   return (
     <div
@@ -33,6 +40,7 @@ export const Screen = ({ header, nav, isFixed, children, ...rest }) => {
         header ? `pt-12` : ``,
         nav ? `pb-28` : `pb-8`,
         isFixed ? `overflow-y-clip` : `overflow-y-scroll`,
+        className ? className : `bg-grayBackground`,
       )}
       {...rest}
     >

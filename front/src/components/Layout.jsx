@@ -7,7 +7,7 @@ import useModalStore from "@/stores/store";
 
 export const Layout = ({ children }) => {
   const ref = useRef(null);
-  const { isModalOpen } = useModalStore();
+  const { isModalOpen, type } = useModalStore();
 
   return (
     <div
@@ -21,7 +21,7 @@ export const Layout = ({ children }) => {
     >
       {children}
       <Toaster />
-      {/* <Modal isModalOpen={isModalOpen} type="bcg" /> */}
+      {/* <Modal isModalOpen={isModalOpen} type={type} /> */}
     </div>
   );
 };
