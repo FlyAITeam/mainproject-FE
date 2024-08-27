@@ -1,7 +1,7 @@
 // store.js
 import { create } from "zustand";
 
-const useModalStore = create((set) => ({
+export const useModalStore = create((set) => ({
   isModalOpen: false,
   type: null,
   openModal: (content) => set({ isModalOpen: true }),
@@ -9,4 +9,7 @@ const useModalStore = create((set) => ({
   setType: (type) => set({ type }),
 }));
 
-export default useModalStore;
+export const usePageStore = create((set) => ({
+  page: 1,
+  setPage: (page) => set({ page }),
+}));

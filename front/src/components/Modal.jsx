@@ -7,7 +7,7 @@ import { Button } from ".";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { motion } from "framer-motion";
-import useModalStore from "@/stores/store";
+import { useModalStore } from "@/stores/store";
 // 그래프 차트 임포트
 import { AlertExerciseChart, AlertHeartChart } from "@/app/main/components";
 import { HeartChart } from "@/app/main/components";

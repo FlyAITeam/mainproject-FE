@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 import Image from "next/image";
-import useModalStore from "@/stores/store";
+import { useModalStore } from "@/stores/store";
 
 const CustomPush = ({ t, type }) => {
   const { openModal } = useModalStore();

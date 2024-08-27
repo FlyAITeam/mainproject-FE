@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { Toaster } from "react-hot-toast";
 import { Modal } from "@/components/Modal";
-import useModalStore from "@/stores/store";
+import { useModalStore } from "@/stores/store";
 
 export const Layout = ({ children }) => {
   const ref = useRef(null);

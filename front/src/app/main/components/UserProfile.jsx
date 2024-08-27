@@ -8,7 +8,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 export const UserProfile = ({ userInfo, dogInfo, dogPhoto, children }) => {
   const baseDivClasses =
-    "fixed z-30 top-0 w-full h-fit flex flex-row justify-between items-center space-x-2 px-6 py-4 bg-white rounded-b-xl shadow-sm";
+    "fixed z-30 top-0 w-full h-fit flex flex-row justify-between items-center space-x-2 px-6 py-3 bg-white rounded-b-xl shadow-sm";
   const profileDivClasses =
     "w-full h-fit flex flex-row justify-start items-center space-x-3 border-r";
   const profileImageClasses =

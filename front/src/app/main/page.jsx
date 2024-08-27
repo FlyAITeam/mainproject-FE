@@ -24,13 +24,19 @@ import {
   getSequences,
 } from "@/libs/getAnalysis";
 
+import MapPageComponent from "@/app/map/MapPageComponent";
+import MyPageComponent from "@/app/mypage/MyPageComponent";
+import { usePageStore } from "@/stores/store";
+
 export default function Page() {
   const router = useRouter();
   const [webSocket, setWebSocket] = useState(null);
-  const [isConnectedBLE, setIsConnectedBLE] = useState(true);
+  const [isConnectedBLE, setIsConnectedBLE] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [dogInfo, setDogInfo] = useState(null);
   const [dogPhoto, setDogPhoto] = useState(null);
+
+  const { page, setPage } = usePageStore();
 
   // 건강정보1 - 심박수, 호흡수, 체온
   const [heartRate, setHeartRate] = useState(0);
@@ -94,14 +100,6 @@ export default function Page() {
     }
   };
 
-  const topDivClasses = "w-full h-fit px-6 mb-4";
-  const contentHeaderClasses =
-    "w-full h-fit flex flex-row justify-between items-center px-6 mb-2 ";
-  const headerTextClasses = "w-full h-fit flex font-medium mb-2";
-  const contentDivClasses = "w-full h-full flex flex-col space-y-4";
-  const guideDivClasses =
-    "w-full h-48 flex flex-col justify-center items-center px-6 active:opacity-50";
-
   return (
     <Screen nav>
       <UserProfile userInfo={userInfo} dogInfo={dogInfo} dogPhoto={dogPhoto}>
@@ -111,9 +109,60 @@ export default function Page() {
           setRespiration={setRespiration}
           setSequenceData={setSequenceData}
           setHeartData={setHeartData}
+          setBLEOn={setIsConnectedBLE}
         />
       </UserProfile>
-      <div className={classNames(topDivClasses, `mt-24`)}>
+      <div className="mt-24 w-full min-h-fit">
+        {page === 1 ? (
+          <MainPageComponent
+            intensity={intensity}
+            heartRate={heartRate}
+            respiration={respiration}
+            temperature={temperature}
+            isConnectedBLE={isConnectedBLE}
+            exerciseData={exerciseData}
+            heartData={heartData}
+            sequenceData={sequenceData}
+            loadExerciseData={loadExerciseData}
+            loadHeartData={loadHeartData}
+          />
+        ) : page === 2 ? (
+          <MapPageComponent />
+        ) : (
+          <MyPageComponent />
+        )}
+      </div>
+      {/* <WebSocketTest /> */}
+    </Screen>
+  );
+}
+
+// 여기서 어디가 잘못됐지? -> sequenceData를 Queue로 선언했는데, useState로 선언해야 했음
+// 그럼 뭐 어떻게해야돼? -> sequenceData를 useState로 선언하고, useEffect에서 loadSequences를 호출하면 됨
+
+const MainPageComponent = ({
+  intensity,
+  heartRate,
+  respiration,
+  temperature,
+  isConnectedBLE,
+  exerciseData,
+  heartData,
+  sequenceData,
+  loadExerciseData,
+  loadHeartData,
+}) => {
+  const topDivClasses = "w-full h-fit px-6 mb-4";
+  const contentHeaderClasses =
+    "w-full h-fit flex flex-row justify-between items-center px-6 mb-2 ";
+  const headerTextClasses = "w-full h-fit flex font-medium mb-2";
+  const contentDivClasses = "w-full h-full flex flex-col space-y-4";
+  const guideDivClasses =
+    "w-full h-48 flex flex-col justify-center items-center px-6 active:opacity-50";
+
+  return (
+    <>
+      <div className={classNames(topDivClasses)}>
         <div className={headerTextClasses}>현재 상태</div>
         <IntensityModule intensity={intensity} />
       </div>
@@ -172,25 +221,22 @@ export default function Page() {
                 }}
                 className={guideDivClasses}
               >
-                <div className="w-fit h-fit p-4 border border-green rounded-full flex justify-center items-center text-green mb-4 animate-heartbeat">
-                  <Icon icon="add" className="text-green" size="20" />
-                </div>
                 <div className="flex flex-row  space-x-1 justify-center items-center text-green mb-1">
-                  <Icon icon="bluetooth" className="text-green" size="18" />
+                  {/* <Icon icon="bluetooth" className="text-green" size="18" /> */}
                   <p className="text-md font-medium">블루투스 연결하기</p>
+                  <Icon icon="topRight" className="text-green" size="20" />
                 </div>
+                {/* <p className="text-xs text-grayText text-wrap w-40 text-center ">
+                  반려견의 건강정보를 불러오기 위해 블루투스를 연결해주세요.
+                </p> */}
                 <p className="text-xs text-grayText text-wrap w-40 text-center ">
-                  반려견의 건강 정보를 확인하려면 블루투스를 연결해주세요.
+                  상단에 위치한 블루투스 아이콘을 클릭해주세요.
                 </p>
               </div>
             </Module>
           )}
         </div>
       </div>
-      {/* <WebSocketTest /> */}
-    </Screen>
+    </>
   );
-}
-
-// 여기서 어디가 잘못됐지? -> sequenceData를 Queue로 선언했는데, useState로 선언해야 했음
-// 그럼 뭐 어떻게해야돼? -> sequenceData를 useState로 선언하고, useEffect에서 loadSequences를 호출하면 됨
+};

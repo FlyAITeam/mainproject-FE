@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import classNames from "classnames";
-import { Icon } from ".";
+import { Icon, Loading } from ".";
 import { AnimatePresence, motion } from "framer-motion";
 
 const DeviceConnector = ({
@@ -10,11 +10,16 @@ const DeviceConnector = ({
   setHeartRate,
   setSequenceData,
   setRespiration,
+  setBLEOn,
 }) => {
   const [webSocket, setWebSocket] = useState(null);
   // 웹소켓 초기화
 
+  // 배터리 레벨
   const [bleBatteryLevel, setBleBatteryLevel] = useState(0);
+
+  //소켓 전송 완료 여부
+  const [isSendData, setIsSendData] = useState(false);
 
   const initializeWebSocket = async () => {
     const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
@@ -163,6 +168,7 @@ const DeviceConnector = ({
     const type = buffer.getUint16(6, true);
 
     if (type === 0x11) {
+      setIsSendData(false);
       console.log("Processing sensor data...");
       const timestamp = buffer.getBigUint64(timestampOffset, true);
       const kstOffset = 9 * 60 * 60 * 1000; // 한국 시간 오프셋 (9시간)
@@ -207,13 +213,16 @@ const DeviceConnector = ({
   const sendWebSocketMessage = async (message) => {
     if (webSocket.readyState === WebSocket.OPEN) {
       await webSocket.send(JSON.stringify(message));
+      setIsSendData(true);
       console.log("Successfully sended..");
     } else if (
       webSocket.readyState === WebSocket.CLOSED ||
       webSocket.readyState === WebSocket.CLOSING
     ) {
+      setIsSendData(false);
       console.log("WebSocket is closed or closing. Reconnecting...");
     } else {
+      setIsSendData(false);
       console.log("???? Nothing");
     }
   };
@@ -245,14 +254,17 @@ const DeviceConnector = ({
       try {
         await connectToDeviceAndCollectData(); // 블루투스 장치에 연결하고 데이터 수집
         setIsOn(true);
+        setBLEOn(true);
       } catch (error) {
         console.error("Error occurred during ON logic:", error);
         setIsOn(false); // 에러 발생 시 다시 off 상태로 전환
+        setBLEOn(false);
       }
     } else {
       try {
         closeConnections(); // 연결을 끊음
         setIsOn(false);
+        setBLEOn(false);
       } catch (error) {
         console.error("Error occurred during OFF logic:", error);
       }
@@ -262,7 +274,7 @@ const DeviceConnector = ({
   const bleDivClasses = "flex flex-col items-center justify-center space-y-1";
 
   const switchClasses =
-    "w-14 h-8 relative cursor-pointer rounded-full p-1 transition duration-300 ease-in-out";
+    "w-16 h-8 relative cursor-pointer rounded-full p-1 transition duration-300 ease-in-out";
 
   const circleClasses =
     "w-6 h-6 absolute top-1 left-1 bg-white rounded-full shadow-md transform duration-300 ease-in-out flex justify-center items-center";
@@ -270,10 +282,25 @@ const DeviceConnector = ({
   const batteryDivClasses =
     "w-fit h-fit flex flex-row justify-center items-center space-x-1";
 
-  const batteryTextClasses = "text-md font-medium text-dimGray";
+  const batteryTextClasses = "text-sm font-medium text-dimGray";
 
   return (
     <>
+      <AnimatePresence>
+        {!isSendData && isOn && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-fit h-fit flex flex-row space-x-2 justify-center items-center px-6 py-0 opacity-0 rounded-sm animate-pulse"
+          >
+            <span className="min-w-40 text-sm font-light text-dimGray">
+              Processing Sender Data...
+            </span>
+            <Loading size={20} />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className={bleDivClasses} onClick={handleToggle}>
         <div
           className={classNames(
@@ -284,7 +311,7 @@ const DeviceConnector = ({
           <div
             className={classNames(
               circleClasses,
-              isOn ? "translate-x-6" : "translate-x-0",
+              isOn ? "translate-x-8" : "translate-x-0",
             )}
           >
             <Icon
@@ -294,29 +321,24 @@ const DeviceConnector = ({
             />
           </div>
         </div>
-        <AnimatePresence>
-          {isOn && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className={batteryDivClasses}
-            >
-              <div className={batteryTextClasses}>{bleBatteryLevel}%</div>
-              <Icon
-                className="text-dimGray "
-                icon={
-                  bleBatteryLevel < 30
-                    ? "batteryDead"
-                    : bleBatteryLevel < 70
-                      ? "batteryHalf"
-                      : "batteryFull"
-                }
-                size="24"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isOn ? { opacity: 1 } : { opacity: 0 }}
+          className={batteryDivClasses}
+        >
+          <div className={batteryTextClasses}>{bleBatteryLevel}%</div>
+          <Icon
+            className="text-dimGray "
+            icon={
+              bleBatteryLevel < 30
+                ? "batteryDead"
+                : bleBatteryLevel < 70
+                  ? "batteryHalf"
+                  : "batteryFull"
+            }
+            size="24"
+          />
+        </motion.div>
       </div>
     </>
   );

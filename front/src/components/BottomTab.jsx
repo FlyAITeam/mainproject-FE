@@ -1,8 +1,10 @@
 "use client";
 
 import classNames from "classnames";
-import { useRouter, usePathname } from "next/navigation";
+// import { useRouter, usePathname } from "next/navigation";
 import { Icon } from ".";
+import { usePageStore } from "@/stores/store";
+import { useEffect } from "react";
 
 /**
  * BottomTab
@@ -29,17 +31,21 @@ import { Icon } from ".";
  */
 
 const navList = [
-  { name: "메인", path: "main", icon: "home" },
-  { name: "병원찾기", path: "map", icon: "location" },
-  { name: "마이", path: "mypage", icon: "setting" },
+  { name: "메인", path: 1, icon: "home" },
+  { name: "병원찾기", path: 2, icon: "location" },
+  { name: "마이", path: 3, icon: "setting" },
 ];
 
 const Nav = ({ name, path, icon, active }) => {
-  const router = useRouter();
+  // const router = useRouter();
+  const { page, setPage } = usePageStore();
 
   return (
     <div
-      onClick={() => router.replace("/" + path)}
+      onClick={() =>
+        // router.push(`/${path}`)
+        setPage(path)
+      }
       className={`active:opacity-50 ${active ? "text-green" : "text-grayText"}`}
       alt={name}
     >
@@ -49,7 +55,8 @@ const Nav = ({ name, path, icon, active }) => {
 };
 
 export const BottomTab = () => {
-  const pathname = usePathname();
+  const { page, setPage } = usePageStore();
+
   const baseBottomTabClasses =
     "fixed z-10 left-0 bottom-0 w-full h-fit pb-8 flex flex-row bg-white rounded-t-xl shadow-top-sm";
   const actionAreaClasses = "flex-1 flex h-16 justify-center items-center";
@@ -58,7 +65,7 @@ export const BottomTab = () => {
     <div className={baseBottomTabClasses}>
       {navList.map((nav) => (
         <div key={nav.name} className={actionAreaClasses}>
-          <Nav {...nav} active={pathname === "/" + nav.path} />
+          <Nav {...nav} active={page === nav.path} />
         </div>
       ))}
     </div>

@@ -55,6 +55,7 @@ import {
   PiBluetoothSlash,
   PiBluetoothConnected,
 } from "react-icons/pi";
+import { RxArrowTopRight } from "react-icons/rx";
 
 /**
  * Icon
@@ -130,6 +131,7 @@ export const iconRegistry = {
   happy: IoHappyOutline,
   dog: GiSittingDog,
   more: IoMdMore,
+  topRight: RxArrowTopRight,
 };
 
 export const Icon = ({ icon, color, size = 20, style, onClick, ...rest }) => {

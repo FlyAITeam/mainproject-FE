@@ -2,7 +2,7 @@
 
 import classNames from "classnames";
 import { Modal } from "@/components/Modal";
-import useModalStore from "@/stores/store";
+import { useModalStore } from "@/stores/store";
 import Image from "next/image";
 import {
   Screen,
@@ -26,7 +26,35 @@ import {
   uploadDogPhoto,
 } from "@/libs/petInfoManager";
 
-export default function Page() {
+/**
+ * 페이지 -> 컴포넌트로 변경
+ * 이전 코드 :
+ * export default function Page() {
+ * ...
+ * return (
+ *  <Screen nav>
+    ....
+    </Screen>
+ * );
+ * }
+ *
+ * 변경 코드 :
+ * export default function MyPageComponent() {
+ * ...
+ * return (
+ * <>
+     ...
+    </>
+ * );
+ * }
+ *
+ * 파일 이름도 변경
+ * 이전 파일 이름 : page.jsx
+ * 변경 파일 이름 : MyPageComponent.jsx
+ * 
+ */
+
+export default function MyPageComponent() {
   const router = useRouter();
 
   const [pageDepth, setPageDepth] = useState(1);
@@ -38,12 +66,12 @@ export default function Page() {
   const { scrollXProgress } = useScroll();
   const scrollX = useTransform(scrollXProgress, [0, 0.5, 1], [0, 50, 100]);
 
-  const frameDivClasses = "w-screen h-full flex	  overflow-x-hidden";
+  const frameDivClasses = "w-screen h-full flex	overflow-x-hidden";
   const pageDivClasses =
     "w-full h-full flex flex-col items-center space-y-4 relative";
 
   const baseDivClasses =
-    "w-screen h-fit flex flex-col justify-start items-center space-y-4 px-6 pt-8 pb-10";
+    "w-screen h-fit flex flex-col justify-start items-center space-y-4 px-6 pt-4 pb-10";
   const sectionClasses =
     "w-full h-fit rounded-lg flex flex-col justify-center items-center space-y-2";
 
@@ -102,7 +130,7 @@ export default function Page() {
   }, [pageDepth]);
 
   return (
-    <Screen nav className="bg-white">
+    <>
       <Modal isModalOpen={isModalOpen} type={type} />
       <div className={frameDivClasses} style={{ x: scrollX }}>
         <motion.div ref={sectionRefs.current[0]} className={pageDivClasses}>
@@ -221,7 +249,7 @@ export default function Page() {
           ) : null}
         </motion.div>
       </div>
-    </Screen>
+    </>
   );
 }
 

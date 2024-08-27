@@ -24,7 +24,7 @@ export const DogInfoModule = ({ dogInfo }) => {
     <Module
       title="반려견 정보"
       getDetail={() => setDetailInfo(!detailInfo)}
-      className="w-full border border-grayBorder"
+      className="w-full"
     >
       <AnimatePresence>
         {!detailInfo ? (
