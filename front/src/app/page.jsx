@@ -23,12 +23,9 @@ export default function Page() {
     }
     checkUser();    
   });
-  
 
-  const topDivClasses =
-    "w-full h-3/4 flex flex-col justify-center items-center space-y-4 p-4";
-  const bottomDivClasses =
-    "w-full h-1/4 flex flex-col justify-center items-center space-y-4 p-4";
+  const topDivClasses = "w-full h-3/4 flex flex-col justify-center items-center space-y-4 p-4";
+  const bottomDivClasses = "w-full h-1/4 flex flex-col justify-center items-center space-y-4 p-4";
 
   return (
     <Screen>

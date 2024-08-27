@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 
 const DeviceConnector = ({
   setTemperature, 
-  setHeartRate, 
+  setHeartData,
+  setHeartRate,
   setSequenceData, 
   setRespiration
 }) => {
@@ -90,7 +91,7 @@ const DeviceConnector = ({
   // Bluetooth device state
   const [isConnected, setIsConnected] = useState(false);
   const [device, setDevice] = useState(null); // Bluetooth device state
-  const [sensorData, setSensorData] = useState([]); // State to store sensor data
+  const [dataBox, setDataBox] = useState([]);
 
   const connectToDeviceAndCollectData = async () => {
     try {
@@ -168,34 +169,31 @@ const DeviceConnector = ({
         setTemperature(temperature_print);
 
         newData.push({ time, ax, ay, az, bcg, gx, gy, gz, temperature });
+        // dataBox 도 push
+        dataBox.push({ time, ax, ay, az, bcg, gx, gy, gz, temperature });
+        // setDataBox(prevData => [...prevData, { time, ax, ay, az, bcg, gx, gy, gz, temperature }]);
+      }
+
+      // 
+      if(dataBox.length>560){
+        // 웹소켓 보내기 560묶음
+        await sendWebSocketMessage({ senserData: dataBox });
+
+        // 다시 지우기
+        dataBox.splice(dataBox, dataBox.length);
       }
 
       // console.log("New sensor data:", newData);
-      try {
-        await sendWebSocketMessage({ senserData: newData });
-        console.log("box1");
-      } catch (e) {
-        console.log("box2");
-        const initialMessage = { accessToken: localStorage.getItem("accessToken") || "" };
-        await sendWebSocketMessage(initialMessage);
-      }
-
-      setSensorData((prevData) => [...prevData, ...newData]); // Update sensor data state
+      // setSensorData((prevData) => [...prevData, ...newData]); // Update sensor data state
     }
   };
 
   const sendWebSocketMessage = async (message) => {
     if (webSocket.readyState === WebSocket.OPEN) {
-      console.log("await webSocket.send(JSON.stringify(message));");
       await webSocket.send(JSON.stringify(message));
+      console.log("Successfully sended..");
     } else if (webSocket.readyState === WebSocket.CLOSED || webSocket.readyState === WebSocket.CLOSING) {
       console.log("WebSocket is closed or closing. Reconnecting...");
-      initializeWebSocket();
-      return;
-      // webSocket = new WebSocket(webSocket.url);
-      // webSocket.onopen = async () => {
-      //   await webSocket.send(JSON.stringify(message));
-      // };
     }else{
       console.log("???? Nothing");
     }
@@ -252,7 +250,7 @@ const DeviceConnector = ({
   const switchStyle = {
     width: '60px',
     height: '30px',
-    backgroundColor: isOn ? '#4caf50' : '#ccc',
+    backgroundColor: isOn ? '#4CD964' : '#ccc',
     borderRadius: '15px',
     position: 'relative',
     cursor: 'pointer',

@@ -17,8 +17,8 @@ export const HeartChart = ({ bcgData }) => {
         label: '심박값',
         data: bcgData.map(entry => ({ x: entry.time, y: entry.heart })),
         showLine: true,
-        backgroundColor: '#4CAF50',
-        borderColor: '#4CAF50',
+        backgroundColor: '#4CD964',
+        borderColor: '#4CD964',
         pointRadius: 0,  // 점을 표시하지 않도록 설정
       },
     ],

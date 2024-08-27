@@ -12,7 +12,7 @@ export const ExerciseChart = ({ target = 100, today = 0 }) => {
     datasets: [
       {
         data: [today, target - today],
-        backgroundColor: ["#4CAF50", "#EEEEEE"],
+        backgroundColor: ["#4CD964", "#EEEEEE"],
         hoverBackgroundColor: ["#66BB6A", "#BDBDBD"],
       },
     ],

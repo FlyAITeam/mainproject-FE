@@ -20,7 +20,6 @@ import {
   getSequences,
 } from "@/libs/getAnalysis";
 
-
 export default function Page() {
   const router = useRouter();
   const [webSocket, setWebSocket] = useState(null);
@@ -37,66 +36,12 @@ export default function Page() {
   // 건강정보2 - 운동량, 심박값 변이, 심박수 변이
   const [exerciseData, setExerciseData] = useState({ target: 100, today: 0 });
   const [heartData, setHeartData] = useState([{time: 1000, heartRate: 0}]);
-  const [sequenceData, setSequenceData] = useState([]);  
+  const [sequenceData, setSequenceData] = useState([]);
 
   // 건강정보3 - 현재상태
   const [intensity, setIntensity] = useState(0);
 
   useEffect(() => {
-    const initializeWebSocket = async () => {
-      const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
-      ws.onopen = async () => {
-        const initialMessage = {
-          accessToken: localStorage.getItem("accessToken") || "",
-        };
-        await ws.send(JSON.stringify(initialMessage));
-        console.log(ws);
-      };
-
-      ws.onmessage = (event) => {
-        const response = JSON.parse(event.data);
-        console.log("Received from server:", response);
-
-        // 1. 심박수
-        try{
-          setHeartRate(response.heartRate);
-          setSequenceData(prevData => [...prevData, response.heartRate]);
-          console.log("heartRate", response.heartRate);
-          console.log("sequenceData on message", sequenceData);
-        }catch(e){
-          console.log(e);
-        }
-
-        // 2. 호흡수
-        try{
-          setRespiration(response.respirationRate);
-          console.log("respiration", response.respirationRate);
-        }catch(e){
-          console.log(e);
-        }
-
-        // 3. 이상 심박수
-        try{
-          setHeartData(response.heartAnomaly);
-          console.log("heartAnomaly", response.heartAnomaly);
-        }catch(e){
-          console.log(e);
-        }
-
-        // 4. 심박값 변이
-        try{
-          setHeartData(response.senseData);
-          console.log("senseData", response.senseData);
-        }catch(e){
-          console.log(e);
-        }
-      };
-      ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
-      setWebSocket(ws);
-    };
-
     const loadData = async () => {
       try {
         const fetchedUserInfo = await getUserInfo();
@@ -111,9 +56,8 @@ export default function Page() {
         console.error("데이터를 불러오는 중 오류 발생:", error);
       }
     };
-    initializeWebSocket();
+
     loadData();
-    loadHeartData();
     loadExerciseData();
   }, []);
 
@@ -162,6 +106,7 @@ export default function Page() {
           setHeartRate={setHeartRate}
           setRespiration={setRespiration}
           setSequenceData={setSequenceData}
+          setHeartData={setHeartData}
         />
       </UserProfile>
       <div className={topDivClasses}>
