@@ -51,7 +51,7 @@ const DeviceConnector = ({
       
       // 4. 심박값 변이
       try{
-        setHeartData(response.senseData);
+        setHeartRate(response.senseData);
         console.log("senseData", response.senseData);
       }catch(e){
         console.log(e);
@@ -190,6 +190,7 @@ const DeviceConnector = ({
       await webSocket.send(JSON.stringify(message));
     } else if (webSocket.readyState === WebSocket.CLOSED || webSocket.readyState === WebSocket.CLOSING) {
       console.log("WebSocket is closed or closing. Reconnecting...");
+      webSocket.close();
       initializeWebSocket();
       return;
       // webSocket = new WebSocket(webSocket.url);
