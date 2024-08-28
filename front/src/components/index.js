@@ -14,3 +14,4 @@ export * from "./Module";
 export * from "./Header";
 export * from "./Notify";
 export * from "./Modal";
+export * from "./PetMap";

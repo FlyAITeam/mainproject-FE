@@ -6,13 +6,14 @@ import { motion } from "framer-motion";
 import SleepDog from "@/svgs/icons/sleepdog.svg";
 import StandDog from "@/svgs/icons/standdog.svg";
 
-export const IntensityModule = ({ intensity }) => {
+export const intentsityModule = ({ intentsity }) => {
   // 상태별 설명을 위한 텍스트
-  const intensityText = [
+  const intentsityText = [
     "반려견이 수면 중입니다.",
     "반려견이 비수면 상태입니다.",
   ];
-  const intensityDetailText = [
+
+  const intentsityDetailText = [
     "수면 상태에서는 이상 징후를 탐지합니다.",
     "수면상태가 아닐 때는 건강 정보가 부정확하며, 이상 징후를 확인할 수 없습니다.",
   ];
@@ -27,7 +28,7 @@ export const IntensityModule = ({ intensity }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {intensity === 0 ? (
+          {intentsity === 0 ? (
             <SleepDog className="w-16 h-12 bg-white py-2 rounded-2xl " />
           ) : (
             <StandDog className="w-16 h-12 bg-white py-2 rounded-2xl" />
@@ -42,18 +43,18 @@ export const IntensityModule = ({ intensity }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {intensityText[intensity === 0 ? 0 : 1]}
+            {intentsityText[intentsity === 0 ? 0 : 1]}
           </motion.p>
           <motion.p
             className={classNames(
               "w-full h-fit text-xs break-keep",
-              intensity === 0 ? "text-orange" : "text-red",
+              intentsity === 0 ? "text-orange" : "text-red",
             )}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            {intensityDetailText[intensity === 0 ? 0 : 1]}
+            {intentsityDetailText[intentsity === 0 ? 0 : 1]}
           </motion.p>
         </div>
       </div>

@@ -5,27 +5,29 @@ import { Screen, AppTitle, Button } from "@/components";
 import { useRouter } from "next/navigation";
 import { getUserInfo } from "@/libs/authManager";
 import { useState, useEffect } from "react";
+import PetMap from "@/components/PetMap";
 
 export default function Page() {
-
   const router = useRouter();
   useEffect(() => {
     const checkUser = async () => {
-      try{
+      try {
         const userInfo = await getUserInfo();
         if (userInfo) {
           router.push("/main");
         }
-      }catch(e){
+      } catch (e) {
         // 자동로그인 ㄴㄴ
-        console.log('자동로그인 ㄴㄴ');
+        console.log("자동로그인 ㄴㄴ");
       }
-    }
-    checkUser();    
+    };
+    checkUser();
   });
 
-  const topDivClasses = "w-full h-3/4 flex flex-col justify-center items-center space-y-4 p-4";
-  const bottomDivClasses = "w-full h-1/4 flex flex-col justify-center items-center space-y-4 p-4";
+  const topDivClasses =
+    "w-full h-3/4 flex flex-col justify-center items-center space-y-4 p-4";
+  const bottomDivClasses =
+    "w-full h-1/4 flex flex-col justify-center items-center space-y-4 p-4";
 
   return (
     <Screen>

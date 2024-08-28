@@ -286,7 +286,7 @@ const DeviceConnector = ({
 
   return (
     <>
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {!isSendData && isOn && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -300,7 +300,7 @@ const DeviceConnector = ({
             <Loading size={20} />
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
       <div className={bleDivClasses} onClick={handleToggle}>
         <div
           className={classNames(

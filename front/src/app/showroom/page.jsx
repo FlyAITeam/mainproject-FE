@@ -13,6 +13,7 @@ import {
   Col,
   Row,
   Module,
+  PetMap,
 } from "@/components";
 import { iconRegistry } from "@/components/Icon";
 
@@ -179,6 +180,7 @@ export default function Page() {
               />
             }
           />
+          <PreviewBox name="PetMap" component={<PetMap />} />
         </div>
       </div>
     </Screen>

@@ -32,7 +32,7 @@ export const Modal = ({ isModalOpen, type }) => {
         const data = await getHeartData();
         console.log("heart data from", data.bcgData);
         await setHeartData(data.bcgData);
-        await setIntensity(data.intensity);
+        await setintentsity(data.intentsity);
       } catch (error) {
         console.error("심박값 데이터를 불러오는 중 오류 발생:", error);
         await setHeartData([{ time: 0, heartRate: 100 }]);

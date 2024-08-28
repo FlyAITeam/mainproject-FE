@@ -1,13 +1,13 @@
 "use client";
 
 import classNames from "classnames";
-import { Screen, Row, Module, Icon, Modal, Notify } from "@/components";
+import { Screen, Row, Module, Icon, Modal, Notify, PetMap } from "@/components";
 import {
   UserProfile,
   HeartRateModule,
   TemperatureModule,
   RespirationModule,
-  IntensityModule,
+  intentsityModule,
   ExerciseChart,
   HeartChart,
   SequenceChart,
@@ -16,15 +16,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserInfo } from "@/libs/authManager";
 import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
-import Queue from "@/libs/queue";
 import DeviceConnector from "@/components/DeviceConnector";
 import {
   getHeartData,
   getExerciseData,
   getSequences,
 } from "@/libs/getAnalysis";
-
-import PetMap from "@/components/PetMap";
 
 import MapPageComponent from "@/app/map/MapPageComponent";
 import MyPageComponent from "@/app/mypage/MyPageComponent";
@@ -51,7 +48,7 @@ export default function Page() {
   const [sequenceData, setSequenceData] = useState([]);
 
   // 건강정보3 - 현재상태
-  const [intensity, setIntensity] = useState(0);
+  const [intentsity, setintentsity] = useState(0);
 
   useEffect(() => {
     const loadData = async () => {
@@ -79,7 +76,7 @@ export default function Page() {
       const data = await getHeartData();
       console.log("heart data from", data.bcgData);
       await setHeartData(data.bcgData);
-      await setIntensity(data.intensity);
+      await setintentsity(data.intentsity);
     } catch (error) {
       console.error("심박값 데이터를 불러오는 중 오류 발생:", error);
       await setHeartData([{ time: 0, heartRate: 100 }]);
@@ -117,7 +114,7 @@ export default function Page() {
       <div className="mt-24 w-full min-h-fit">
         {page === 1 ? (
           <MainPageComponent
-            intensity={intensity}
+            intentsity={intentsity}
             heartRate={heartRate}
             respiration={respiration}
             temperature={temperature}
@@ -129,9 +126,7 @@ export default function Page() {
             loadHeartData={loadHeartData}
           />
         ) : page === 2 ? (
-          <MapPageComponent>
-            <PetMap />
-          </MapPageComponent>
+          <MapPageComponent />
         ) : (
           <MyPageComponent />
         )}
@@ -145,7 +140,7 @@ export default function Page() {
 // 그럼 뭐 어떻게해야돼? -> sequenceData를 useState로 선언하고, useEffect에서 loadSequences를 호출하면 됨
 
 const MainPageComponent = ({
-  intensity,
+  intentsity,
   heartRate,
   respiration,
   temperature,
@@ -168,7 +163,7 @@ const MainPageComponent = ({
     <>
       <div className={classNames(topDivClasses)}>
         <div className={headerTextClasses}>현재 상태</div>
-        <IntensityModule intensity={intensity} />
+        <intentsityModule intentsity={intentsity} />
       </div>
       <div className={topDivClasses}>
         <div className={headerTextClasses}>건강 정보</div>
