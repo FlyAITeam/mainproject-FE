@@ -36,10 +36,8 @@ export default function MapPageComponent({}) {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center w-full h-full p-4">
-        <div className="w-full h-full max-w-3xl">
-          <PetMap page={page} />
-        </div>
+      <div className="w-full h-full px-6">
+        <PetMap page={page} />
       </div>
     </>
   );

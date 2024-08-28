@@ -113,12 +113,12 @@ export default function Page() {
       </UserProfile>
       <div
         id="cover"
-        className="mt-24 w-screen h-full relative flex-row overflow-x-scroll overflow-y-scroll"
+        className="mt-24 w-screen h-full relative overflow-hidden "
       >
         <div
           id="main"
           className={classNames(
-            "min-w-[100vw] absolute h-full top-0 bg-grayBackground",
+            "min-w-[100vw] absolute h-full overflow-y-scroll top-0 bg-grayBackground",
             page === 1 ? "z-10" : "z-0",
           )}
         >
@@ -138,7 +138,7 @@ export default function Page() {
         <div
           id="map"
           className={classNames(
-            "min-w-[100vw] absolute h-full top-0 bg-grayBackground",
+            "min-w-[100vw] absolute h-full overflow-hidden top-0 bg-grayBackground",
             page === 2 ? "z-10" : "z-0",
           )}
         >
@@ -147,7 +147,7 @@ export default function Page() {
         <div
           id="mypage"
           className={classNames(
-            "min-w-[100vw] absolute h-full top-0 bg-grayBackground",
+            "min-w-[100vw] absolute h-full overflow-y-scroll top-0 bg-grayBackground",
             page === 3 ? "z-10" : "z-0",
           )}
         >

@@ -2,6 +2,7 @@
 
 import React, { Suspense, useEffect, useState } from "react";
 import { getCurrentLocation } from "@/libs/gpsManager";
+import { DetailButton } from "./DetailButton";
 
 export const PetMap = (page) => {
   const [location, setLocation] = useState(null);
@@ -162,156 +163,148 @@ export const PetMap = (page) => {
 
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <style jsx>{`
-          #map_div {
-            width: 100%;
-            height: 300px;
-            margin-bottom: 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          }
-          .poi-details {
-            border: 1px solid #e0e0e0;
-            padding: 16px;
-            min-height: 200px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          }
-          .poi-details h3 {
-            margin-bottom: 12px;
-            font-size: 18px;
-            text-align: center;
-            font-weight: 700;
-          }
-          .poi-details p {
-            margin: 4px 0;
-            font-size: 14px;
-            color: #333;
-          }
-          .poi-details a {
-            color: #4cd964;
-            text-decoration: none;
-            font-weight: bold;
-          }
-          .poi-details a:hover {
-            text-decoration: underline;
-          }
-          .buttons {
-            margin-top: 12px;
-            text-align: center;
-            display: flex;
-            justify-content: space-around;
-          }
-          .modal {
-            display: ${isModalOpen ? "flex" : "none"};
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-            align-items: center;
-            justify-content: center;
-          }
-          .modal-content {
-            background-color: #fefefe;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            max-width: 90%;
-            width: 100%;
-            text-align: center;
-            position: relative;
-          }
-          .modal-content img {
-            width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          }
-          .close {
-            position: absolute;
-            right: 16px;
-            top: 16px;
-            color: #aaa;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-          }
-          .close:hover,
-          .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-          }
-          .empty-state {
-            text-align: center;
-            color: #888;
-            font-size: 16px;
-          }
-        `}</style>
+      <style jsx>{`
+        #map_div {
+          width: 100%;
+          height: 100%;
+          border-radius: 12px;
+          overflow: hidden;
+        }
+        .poi-details {
+          margin-top: -12px;
+          padding: 12px;
+          height: fit-content;
+          background-color: #ffffff;
+          border-radius: 12px;
+        }
+        .poi-details h3 {
+          margin-bottom: 12px;
+          font-size: 18px;
+          text-align: center;
+          font-weight: semibold;
+        }
+        .poi-details p {
+          margin: 4px 0;
+          font-size: 14px;
+          color: #333;
+        }
+        .poi-details a {
+          color: #4cd964;
+          text-decoration: none;
+          font-weight: bold;
+        }
+        .poi-details a:hover {
+          text-decoration: underline;
+        }
+        .buttons {
+          margin-top: 12px;
+          text-align: center;
+          display: flex;
+          justify-content: space-around;
+        }
+        .modal {
+          display: ${isModalOpen ? "flex" : "none"};
+          position: fixed;
+          z-index: 1000;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0, 0, 0, 0.5);
+          align-items: center;
+          justify-content: center;
+        }
+        .modal-content {
+          background-color: #fefefe;
+          padding: 16px;
+          border: none;
+          border-radius: 12px;
+          max-width: 90%;
+          width: 100%;
+          text-align: center;
+          position: relative;
+        }
+        .modal-content img {
+          width: 100%;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .close {
+          position: absolute;
+          right: 16px;
+          top: 16px;
+          color: #aaa;
+          font-size: 24px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+          color: #000;
+          text-decoration: none;
+          cursor: pointer;
+        }
+        .empty-state {
+          text-align: center;
+          color: #888;
+          font-size: 16px;
+        }
+      `}</style>
 
-        <div
-          dangerouslySetInnerHTML={{
-            __html: `
+      <div
+        dangerouslySetInnerHTML={{
+          __html: `
             <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=${process.env.NEXT_PUBLIC_TMAP_APP_KEY}"></script>
           `,
-          }}
-        />
-        <div className="poi-details">
-          {selectedHospital ? (
-            <>
-              <h3>{selectedHospital.name}</h3>
+        }}
+      />
+      <div className="poi-details">
+        {selectedHospital ? (
+          <>
+            <h3>{selectedHospital.name}</h3>
+            <p>
+              <strong>주소:</strong>{" "}
+              {selectedHospital.newAddressList.newAddress[0].fullAddressRoad}
+            </p>
+            <p>
+              <strong>거리:</strong> {selectedHospital.radius}km
+            </p>
+            <p>
+              <strong>24시간 운영:</strong>{" "}
+              {selectedHospital.twFlag === "1" ? "O" : "X"}
+            </p>
+            {selectedPhoneNumber && (
               <p>
-                <strong>주소:</strong>{" "}
-                {selectedHospital.newAddressList.newAddress[0].fullAddressRoad}
+                {/* 전화아이콘 */}
+                <a href={`tel:${selectedPhoneNumber}`}>
+                  {selectedPhoneNumber} 전화하기
+                </a>
               </p>
-              <p>
-                <strong>거리:</strong> {selectedHospital.radius}km
-              </p>
-              <p>
-                <strong>24시간 운영:</strong>{" "}
-                {selectedHospital.twFlag === "1" ? "O" : "X"}
-              </p>
-              {selectedPhoneNumber && (
-                <p>
-                  {/* 전화아이콘 */}
-                  <a href={`tel:${selectedPhoneNumber}`}>
-                    {selectedPhoneNumber} 전화하기
-                  </a>
-                </p>
-              )}
-              <div className="buttons">
-                <DetailButton onClick={openTmapNavigation}>
-                  경로 안내(앱)
-                </DetailButton>
-                <DetailButton onClick={displayWebRoute}>
-                  경로 보기(웹)
-                </DetailButton>
-              </div>
-            </>
-          ) : (
-            <div className="empty-state">병원을 선택해 주세요.</div>
-          )}
-        </div>
-
-        <div id="map_div"></div>
-
-        {/* 모달창 */}
-        {isModalOpen && (
-          <div className="modal" onClick={handleBackgroundClick}>
-            <span className="close" onClick={closeModal}>
-              &times;
-            </span>
-            <div className="modal-content">
-              {staticMapUrl && <img src={staticMapUrl} alt="경로 지도" />}
+            )}
+            <div className="buttons">
+              <Button onClick={openTmapNavigation}>경로 안내(앱)</Button>
+              <Button onClick={displayWebRoute}>경로 보기(웹)</Button>
             </div>
-          </div>
+          </>
+        ) : (
+          <div className="empty-state">가까운 병원을 선택해 주세요!</div>
         )}
-      </Suspense>
+      </div>
+
+      <div id="map_div"></div>
+
+      {/* 모달창 */}
+      {isModalOpen && (
+        <div className="modal" onClick={handleBackgroundClick}>
+          <span className="close" onClick={closeModal}>
+            &times;
+          </span>
+          <div className="modal-content">
+            {staticMapUrl && <img src={staticMapUrl} alt="경로 지도" />}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
