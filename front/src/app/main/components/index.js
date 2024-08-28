@@ -3,7 +3,7 @@ export * from "./HeartRateModule";
 export * from "./TemperatureModule";
 export * from "./RespirationModule";
 export * from "./DeviceController";
-export * from "./intentsityModule";
+export * from "./IntentsityModule";
 
 // From by Hojun
 export * from "./ExerciseChart";

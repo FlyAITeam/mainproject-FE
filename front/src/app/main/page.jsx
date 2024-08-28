@@ -7,7 +7,7 @@ import {
   HeartRateModule,
   TemperatureModule,
   RespirationModule,
-  intentsityModule,
+  IntentsityModule,
   ExerciseChart,
   HeartChart,
   SequenceChart,
@@ -163,7 +163,7 @@ const MainPageComponent = ({
     <>
       <div className={classNames(topDivClasses)}>
         <div className={headerTextClasses}>현재 상태</div>
-        <intentsityModule intentsity={intentsity} />
+        <IntentsityModule intentsity={intentsity} />
       </div>
       <div className={topDivClasses}>
         <div className={headerTextClasses}>건강 정보</div>

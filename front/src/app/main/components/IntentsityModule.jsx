@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import SleepDog from "@/svgs/icons/sleepdog.svg";
 import StandDog from "@/svgs/icons/standdog.svg";
 
-export const intentsityModule = ({ intentsity }) => {
+export const IntentsityModule = ({ intentsity }) => {
   // 상태별 설명을 위한 텍스트
   const intentsityText = [
     "반려견이 수면 중입니다.",
