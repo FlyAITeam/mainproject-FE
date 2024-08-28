@@ -1,7 +1,5 @@
 "use client";
 
-import PetMap from "@/components/PetMap";
-
 /**
  * 페이지 -> 컴포넌트로 변경
  * 이전 코드 :
@@ -30,13 +28,11 @@ import PetMap from "@/components/PetMap";
  * 
  */
 
-export default function MapPageComponent() {
+export default function MapPageComponent({ children }) {
   return (
     <>
       <div className="flex flex-col items-center justify-center w-full h-full p-4">
-        <div className="w-full h-full max-w-3xl">
-          <PetMap />
-        </div>
+        <div className="w-full h-full max-w-3xl">{children}</div>
       </div>
     </>
   );

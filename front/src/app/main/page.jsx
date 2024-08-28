@@ -24,6 +24,8 @@ import {
   getSequences,
 } from "@/libs/getAnalysis";
 
+import PetMap from "@/components/PetMap";
+
 import MapPageComponent from "@/app/map/MapPageComponent";
 import MyPageComponent from "@/app/mypage/MyPageComponent";
 import { usePageStore } from "@/stores/store";
@@ -127,7 +129,9 @@ export default function Page() {
             loadHeartData={loadHeartData}
           />
         ) : page === 2 ? (
-          <MapPageComponent />
+          <MapPageComponent>
+            <PetMap />
+          </MapPageComponent>
         ) : (
           <MyPageComponent />
         )}
