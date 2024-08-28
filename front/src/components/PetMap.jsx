@@ -3,6 +3,8 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { getCurrentLocation } from "@/libs/gpsManager";
 import { DetailButton } from "./DetailButton";
+import { Button } from "./Button";
+import { Icon } from "./Icon";
 
 export const PetMap = (page) => {
   const [location, setLocation] = useState(null);
@@ -172,20 +174,18 @@ export const PetMap = (page) => {
         }
         .poi-details {
           margin-top: -12px;
-          padding: 12px;
+          padding: 16px 18px;
           height: fit-content;
           background-color: #ffffff;
           border-radius: 12px;
         }
         .poi-details h3 {
           margin-bottom: 12px;
-          font-size: 18px;
           text-align: center;
           font-weight: semibold;
         }
         .poi-details p {
           margin: 4px 0;
-          font-size: 14px;
           color: #333;
         }
         .poi-details a {
@@ -262,29 +262,49 @@ export const PetMap = (page) => {
       <div className="poi-details">
         {selectedHospital ? (
           <>
-            <h3>{selectedHospital.name}</h3>
-            <p>
-              <strong>주소:</strong>{" "}
-              {selectedHospital.newAddressList.newAddress[0].fullAddressRoad}
+            <h3 className="font-bold">{selectedHospital.name}</h3>
+            <p className="w-full text-sm text-left border-b py-1">
+              <strong>주소 :</strong>{" "}
+              <span className="font-semibold text-[#333]">
+                {selectedHospital.newAddressList.newAddress[0].fullAddressRoad}
+              </span>
             </p>
-            <p>
-              <strong>거리:</strong> {selectedHospital.radius}km
+            <p className="w-full text-sm text-left border-b py-1">
+              <strong>거리 : </strong>
+              <span className="font-semibold text-[#333]">
+                {selectedHospital.radius}km
+              </span>
             </p>
-            <p>
-              <strong>24시간 운영:</strong>{" "}
-              {selectedHospital.twFlag === "1" ? "O" : "X"}
+            <p className="w-full text-sm text-left border-b py-1">
+              <strong>24시간 운영 :</strong>{" "}
+              {selectedHospital.twFlag === "1" ? (
+                <span className="text-green font-semibold">예</span>
+              ) : (
+                <span className="text-red font-semibold">아니오</span>
+              )}
             </p>
             {selectedPhoneNumber && (
               <p>
-                {/* 전화아이콘 */}
-                <a href={`tel:${selectedPhoneNumber}`}>
-                  {selectedPhoneNumber} 전화하기
+                <a
+                  className="flex flex-row gap-1 text-sm text-left py-1 items-center"
+                  href={`tel:${selectedPhoneNumber}`}
+                >
+                  <Icon icon="call" size={16} />
+                  {selectedPhoneNumber}
                 </a>
               </p>
             )}
-            <div className="buttons">
-              <Button onClick={openTmapNavigation}>경로 안내(앱)</Button>
-              <Button onClick={displayWebRoute}>경로 보기(웹)</Button>
+            <div className="w-full flex flex-row gap-4 mt-4">
+              <Button className="w-full" onClick={openTmapNavigation}>
+                경로 안내(앱)
+              </Button>
+              <Button
+                preset="reversed"
+                className="w-full"
+                onClick={displayWebRoute}
+              >
+                경로 보기(웹)
+              </Button>
             </div>
           </>
         ) : (

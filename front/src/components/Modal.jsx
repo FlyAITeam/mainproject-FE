@@ -27,12 +27,11 @@ export const Modal = ({ isModalOpen, type }) => {
 
   useEffect(() => {
     const loadHeartData = async () => {
-      console.log("심박값 데이터 불러오기");
       try {
-        const data = await getHeartData();
-        console.log("heart data from", data.bcgData);
-        await setHeartData(data.bcgData);
-        await setintentsity(data.intentsity);
+        // const data = await getHeartData();
+
+        // await setHeartData(data.bcgData);
+        // await setintentsity(data.intentsity);
       } catch (error) {
         console.error("심박값 데이터를 불러오는 중 오류 발생:", error);
         await setHeartData([{ time: 0, heartRate: 100 }]);
@@ -40,15 +39,13 @@ export const Modal = ({ isModalOpen, type }) => {
     };
 
     const loadExerciseData = async () => {
-      console.log("운동량 데이터 불러오기");
-      console.log(exerciseData);
       try {
-        const data = await getExerciseData();
-        console.log(data);
-        await setExerciseData({
-          target: data.target,
-          today: Math.max(Math.min(data.today, data.target), 0),
-        });
+        // const data = await getExerciseData();
+        // console.log(data);
+        // await setExerciseData({
+        //   target: data.target,
+        //   today: Math.max(Math.min(data.today, data.target), 0),
+        // });
       } catch (error) {
         console.error("운동량 데이터를 불러오는 중 오류 발생:", error);
         await setExerciseData({ target: 100, today: 0 });

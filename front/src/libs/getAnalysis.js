@@ -9,9 +9,6 @@ export const getHeartData = async () => {
     });
 
     const data = await response.json();
-    console.log("Heart data:", data);
-
-    // Update the accessToken if a new one is provided
     const newAccessToken = response.headers.get("accessToken");
     if (newAccessToken) {
       localStorage.setItem("accessToken", newAccessToken);
@@ -38,15 +35,11 @@ export const getExerciseData = async () => {
     );
 
     if (!response.ok) {
-      // const errorData = await response.json();
       console.log(response);
       return { target: 100, today: 0 };
     }
 
     const data = await response.json();
-    console.log("Exercise data:", data);
-
-    // Update the accessToken if a new one is provided
     const newAccessToken = response.headers.get("accessToken");
     if (newAccessToken) {
       localStorage.setItem("accessToken", newAccessToken);
@@ -63,8 +56,7 @@ export const getExerciseData = async () => {
 export const getSequences = async () => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/sequences`,
-      {
+      `${process.env.NEXT_PUBLIC_API_URL}/sequences`,{
         method: "GET",
         headers: {
           accessToken: `${localStorage.getItem("accessToken")}`,
@@ -79,9 +71,6 @@ export const getSequences = async () => {
     }
 
     const data = await response.json();
-    console.log("Sequences data:", data);
-
-    // Update the accessToken if a new one is provided
     const newAccessToken = response.headers.get("accessToken");
     if (newAccessToken) {
       localStorage.setItem("accessToken", newAccessToken);

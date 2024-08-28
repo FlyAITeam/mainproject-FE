@@ -76,7 +76,6 @@ export default function Page() {
   };
 
   const handleDogProfileSubmit = async (dogProfile) => {
-    console.log("Uploading dog profile ... ", dogProfile);
     try {
       // 1. 강아지 정보 등록
       const dogInfo = await registerDog(
@@ -88,12 +87,9 @@ export default function Page() {
         parseFloat(dogProfile.weight),
       );
 
-      console.log("강아지 정보 등록 성공:", dogInfo);
-
       // 2. 강아지 사진 등록 (일단 보류)
       if (image) {
         const photoInfo = await uploadDogPhoto(image);
-        console.log("강아지 사진 등록 성공:", photoInfo);
       }
     } catch (error) {
       console.error("강아지 정보 등록 중 오류:", error);

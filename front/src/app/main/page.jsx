@@ -48,7 +48,7 @@ export default function Page() {
   const [sequenceData, setSequenceData] = useState([]);
 
   // 건강정보3 - 현재상태
-  const [intentsity, setintentsity] = useState(0);
+  const [intentsity, setIntentsity] = useState(0);
 
   useEffect(() => {
     const loadData = async () => {
@@ -71,12 +71,10 @@ export default function Page() {
   }, []);
 
   const loadHeartData = async () => {
-    console.log("심박값 데이터 불러오기");
     try {
       const data = await getHeartData();
-      console.log("heart data from", data.bcgData);
       await setHeartData(data.bcgData);
-      await setintentsity(data.intentsity);
+      await setIntentsity(data.intentsity);
     } catch (error) {
       console.error("심박값 데이터를 불러오는 중 오류 발생:", error);
       await setHeartData([{ time: 0, heartRate: 100 }]);
@@ -84,11 +82,8 @@ export default function Page() {
   };
 
   const loadExerciseData = async () => {
-    console.log("운동량 데이터 불러오기");
-    console.log(exerciseData);
     try {
       const data = await getExerciseData();
-      console.log(data);
       await setExerciseData({
         target: data.target,
         today: Math.max(Math.min(data.today, data.target), 0),
@@ -108,6 +103,7 @@ export default function Page() {
           setRespiration={setRespiration}
           setSequenceData={setSequenceData}
           setHeartData={setHeartData}
+          setIntentsity={setIntentsity}
           setBLEOn={setIsConnectedBLE}
         />
       </UserProfile>
@@ -186,7 +182,7 @@ const MainPageComponent = ({
     <>
       <div className={classNames(topDivClasses)}>
         <div className={headerTextClasses}>현재 상태</div>
-        <IntentsityModule intentsity={intentsity} />
+        <IntentsityModule intensity={intentsity} />
       </div>
       <div className={topDivClasses}>
         <div className={headerTextClasses}>건강 정보</div>

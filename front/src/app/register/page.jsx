@@ -85,14 +85,12 @@ export default function Page() {
   };
 
   const handleProfileSubmit = async (userProfile) => {
-    console.log("Uploading profile ... ", userProfile);
     try {
       const response = await registerUser(
         userProfile.loginId,
         userProfile.password,
         userProfile.name
       );
-      console.log("회원가입 성공:", response);
     } catch (error) {
       console.error("회원가입 중 오류:", error);
     }

@@ -17,8 +17,7 @@ export default function Page() {
           router.push("/main");
         }
       } catch (e) {
-        // 자동로그인 ㄴㄴ
-        console.log("자동로그인 ㄴㄴ");
+        console.log("자동로그인 실패");
       }
     };
     checkUser();

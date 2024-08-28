@@ -32,8 +32,6 @@ const registerDog = async (
     }
 
     const data = await response.json();
-    console.log("강아지 정보 등록 성공:", data);
-    // 수정된 accessToken으로 localStorage 업데이트
     const accessToken = response.headers.get("accessToken");
     localStorage.setItem("accessToken", accessToken);
 
@@ -75,8 +73,6 @@ const updateDog = async (
     }
 
     const data = await response.json();
-    console.log("강아지 정보 수정 성공:", data);
-    // 수정된 accessToken으로 localStorage 업데이트
     const accessToken = response.headers.get("accessToken");
     localStorage.setItem("accessToken", accessToken);
 
@@ -89,8 +85,6 @@ const updateDog = async (
 
 // 강아지 사진 등록
 const uploadDogPhoto = async (photoFile) => {
-  console.log("photoFile", photoFile);
-
   const formData = new FormData();
   formData.append("image", photoFile); // 파일을 FormData에 추가
 
@@ -119,7 +113,6 @@ const uploadDogPhoto = async (photoFile) => {
     }
 
     const responseData = await response.json();
-    console.log("강아지 사진 등록 성공:", responseData);
     return responseData;
   } catch (error) {
     console.error("강아지 사진 등록 중 오류:", error);
@@ -142,8 +135,6 @@ const getDogInfo = async () => {
     }
 
     const data = await response.json();
-    console.log("강아지 정보 조회 성공:", data);
-    // 수정된 accessToken으로 localStorage 업데이트
     const accessToken = response.headers.get("accessToken");
     localStorage.setItem("accessToken", accessToken);
     return data;

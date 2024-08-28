@@ -15,9 +15,6 @@ const loginUser = async (loginId, password) => {
     }
 
     const data = await response.json();
-    console.log("로그인 성공:", data);
-    // 헤더에 저장된 Access token을 변수에 넣어 localStorage에 저장
-    const accessToken = response.headers.get("accessToken");
     localStorage.setItem("accessToken", response.headers.get("accessToken"));
 
     // 토큰 출력
@@ -56,7 +53,6 @@ const registerUser = async (loginId, password, name) => {
     }
 
     const data = await response.json();
-    console.log("회원가입 성공:", data);
     await loginUser(loginId, password);
 
     return data;
@@ -86,7 +82,6 @@ const getUserInfo = async () => {
     }
 
     const data = await response.json();
-    console.log("사용자 정보 조회 성공:", response);
 
     // 수정된 accessToken으로 localStorage 업데이트
     const accessToken = response.headers.get("accessToken");
@@ -102,24 +97,9 @@ const getUserInfo = async () => {
   }
 };
 
-// passWd 검증 (길이 6자리 이상, 숫자 영문 포함, 기호는 넣어도 되고 안넣어도 됨)
-const checkPasswd = (passwd) => {
-  const passwdReg = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/;
-  return passwdReg.test(passwd);
-};
-
-// Access token 존재 여부 확인
-const isTokenAvailable = () => {
-  // token 출력
-  console.log(localStorage.getItem("accessToken"));
-  return !!localStorage.getItem("accessToken");
-};
-
 export {
   loginUser,
   registerUser,
   getUserInfo,
-  checkPasswd,
-  isTokenAvailable,
   checkDuplicateUserId,
 };

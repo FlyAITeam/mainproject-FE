@@ -10,6 +10,7 @@ const DeviceConnector = ({
   setHeartRate,
   setSequenceData,
   setRespiration,
+  setIntentsity,
   setBLEOn,
 }) => {
   const [webSocket, setWebSocket] = useState(null);
@@ -24,24 +25,24 @@ const DeviceConnector = ({
   const initializeWebSocket = async () => {
     const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
     ws.onopen = async () => {
+      // setInterval(function() {
+      //   ws.send(JSON.stringify({ type: "ping" }));
+      // }, 15000); // 15초마다 ping 메시지 전송
       const initialMessage = {
         accessToken: localStorage.getItem("accessToken") || "",
       };
       await ws.send(JSON.stringify(initialMessage));
-      console.log(ws);
       setWebSocket(ws);
     };
 
     ws.onmessage = (event) => {
       const response = JSON.parse(event.data);
-      console.log("Received from server:", response);
+      console.log("WebSocket message received..");
 
       // 1. 심박수 및 심박수 시퀀스
       try {
         setHeartRate(response.heartRate);
         setSequenceData((prevData) => [...prevData, response.heartRate]);
-        console.log("heartRate", response.heartRate);
-        console.log("sequenceData on message", sequenceData);
       } catch (e) {
         console.log(e);
       }
@@ -49,14 +50,15 @@ const DeviceConnector = ({
       // 2. 호흡수
       try {
         setRespiration(response.respirationRate);
-        console.log("respiration", response.respirationRate);
       } catch (e) {
         console.log(e);
       }
 
       // 3. 이상 심박수
       try {
-        console.log("heartAnomaly", response.heartAnomaly);
+        const heartAnomaly = response.heartAnomaly;
+        // 1일때, 푸시알림 설정
+        // 생략
       } catch (e) {
         console.log(e);
       }
@@ -64,7 +66,14 @@ const DeviceConnector = ({
       // 4. 심박값 변이
       try {
         setHeartData(response.senseData);
-        console.log("senseData", response.senseData);
+      } catch (e) {
+        console.log(e);
+      }
+
+      // 5. 활동상태
+      try {
+        // console.log(response.intentsity, "intentsity");
+        setIntentsity(response.intentsity);
       } catch (e) {
         console.log(e);
       }
@@ -76,7 +85,7 @@ const DeviceConnector = ({
 
     ws.onclose = () => {
       console.log("WebSocket closed. Reconnecting...");
-      initializeWebSocket();
+      // initializeWebSocket();
     };
   };
   useEffect(() => {
@@ -185,7 +194,7 @@ const DeviceConnector = ({
         const gx = buffer.getInt16(idx + gxOffset, true);
         const gy = buffer.getInt16(idx + gyOffset, true);
         const gz = buffer.getInt16(idx + gzOffset, true);
-        const temperature = buffer.getFloat32(idx + tempOffset, true) + 4.5;
+        const temperature = buffer.getFloat32(idx + tempOffset, true); // + 4.5;
 
         let temperature_print = parseFloat(temperature.toFixed(1));
         setTemperature(temperature_print);
@@ -197,7 +206,7 @@ const DeviceConnector = ({
       }
 
       //
-      if (dataBox.length > 560) {
+      if (dataBox.length >= 70) {
         // 웹소켓 보내기 560묶음
         await sendWebSocketMessage({ senserData: dataBox });
 
@@ -214,12 +223,15 @@ const DeviceConnector = ({
     if (webSocket.readyState === WebSocket.OPEN) {
       await webSocket.send(JSON.stringify(message));
       setIsSendData(true);
-      console.log("Successfully sended..");
+      const date = new Date();
+      console.log("Successfully sended..", date);
     } else if (
       webSocket.readyState === WebSocket.CLOSED ||
       webSocket.readyState === WebSocket.CLOSING
     ) {
       setIsSendData(false);
+      setIsOn(false);
+      setIsConnected(false);
       console.log("WebSocket is closed or closing. Reconnecting...");
     } else {
       setIsSendData(false);
