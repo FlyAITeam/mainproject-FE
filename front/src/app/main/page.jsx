@@ -13,7 +13,7 @@ import {
   SequenceChart,
 } from "./components";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { getUserInfo } from "@/libs/authManager";
 import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
 import DeviceConnector from "@/components/DeviceConnector";
@@ -111,8 +111,17 @@ export default function Page() {
           setBLEOn={setIsConnectedBLE}
         />
       </UserProfile>
-      <div className="mt-24 w-full min-h-fit">
-        {page === 1 ? (
+      <div
+        id="cover"
+        className="mt-24 w-screen h-full relative flex-row overflow-x-scroll overflow-y-scroll"
+      >
+        <div
+          id="main"
+          className={classNames(
+            "min-w-[100vw] absolute h-full top-0 bg-grayBackground",
+            page === 1 ? "z-10" : "z-0",
+          )}
+        >
           <MainPageComponent
             intentsity={intentsity}
             heartRate={heartRate}
@@ -125,11 +134,25 @@ export default function Page() {
             loadExerciseData={loadExerciseData}
             loadHeartData={loadHeartData}
           />
-        ) : page === 2 ? (
+        </div>
+        <div
+          id="map"
+          className={classNames(
+            "min-w-[100vw] absolute h-full top-0 bg-grayBackground",
+            page === 2 ? "z-10" : "z-0",
+          )}
+        >
           <MapPageComponent />
-        ) : (
+        </div>
+        <div
+          id="mypage"
+          className={classNames(
+            "min-w-[100vw] absolute h-full top-0 bg-grayBackground",
+            page === 3 ? "z-10" : "z-0",
+          )}
+        >
           <MyPageComponent />
-        )}
+        </div>
       </div>
       {/* <WebSocketTest /> */}
     </Screen>
