@@ -24,6 +24,8 @@ const DeviceConnector = ({
 
   const initializeWebSocket = async () => {
     const ws = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL);
+    console.log("WebSocket initializing...");
+    console.log(ws);
     ws.onopen = async () => {
       // setInterval(function() {
       //   ws.send(JSON.stringify({ type: "ping" }));
@@ -220,7 +222,10 @@ const DeviceConnector = ({
   };
 
   const sendWebSocketMessage = async (message) => {
-    if (webSocket.readyState === WebSocket.OPEN) {
+    if (webSocket === null) {
+      console.error("WebSocket is not initialized.");
+    }
+    else if (webSocket.readyState === WebSocket.OPEN) {
       await webSocket.send(JSON.stringify(message));
       setIsSendData(true);
       const date = new Date();
