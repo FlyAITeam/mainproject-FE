@@ -18,9 +18,7 @@ import { getUserInfo } from "@/libs/authManager";
 import { getDogInfo, getDogPhoto } from "@/libs/petInfoManager";
 import DeviceConnector from "@/components/DeviceConnector";
 import {
-  getHeartData,
-  getExerciseData,
-  getSequences,
+  getHeartData, getExerciseData,
 } from "@/libs/getAnalysis";
 
 import MapPageComponent from "@/app/map/MapPageComponent";
@@ -48,8 +46,8 @@ export default function Page() {
   const [sequenceData, setSequenceData] = useState([]);
 
   // 건강정보3 - 현재상태
-  const [intentsity, setIntentsity] = useState(0);
-
+  const [intentsity, setIntentsity] = useState(0); 
+  
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -68,6 +66,14 @@ export default function Page() {
 
     loadData();
     loadExerciseData();
+
+    try{
+      console.log(window.Tmapv2.Map);
+    }catch(e){
+      // F5: 새로고침
+      window.location.reload();
+    }
+    
   }, []);
 
   const loadHeartData = async () => {
@@ -236,6 +242,7 @@ const MainPageComponent = ({
                 onClick={() => {
                   /** TODO : 블루투스 연결하기 @안호준 */
                   console.log("블루투스 연결하기");
+                  // window.location.reload();
                 }}
                 className={guideDivClasses}
               >
@@ -243,7 +250,7 @@ const MainPageComponent = ({
                   {/* <Icon icon="bluetooth" className="text-green" size="18" /> */}
                   <p className="text-md font-medium">블루투스 연결하기</p>
                   <Icon icon="topRight" className="text-green" size="20" />
-                </div>
+                </div> 
                 {/* <p className="text-xs text-grayText text-wrap w-40 text-center ">
                   반려견의 건강정보를 불러오기 위해 블루투스를 연결해주세요.
                 </p> */}

@@ -5,16 +5,11 @@ import { Icon, Loading } from ".";
 import { AnimatePresence, motion } from "framer-motion";
 
 const DeviceConnector = ({
-  setTemperature,
-  setHeartData,
-  setHeartRate,
-  setSequenceData,
-  setRespiration,
-  setIntentsity,
-  setBLEOn,
+  setTemperature, setHeartData, setHeartRate,
+  setSequenceData, setRespiration, setIntentsity, setBLEOn,
 }) => {
-  const [webSocket, setWebSocket] = useState(null);
   // 웹소켓 초기화
+  const [webSocket, setWebSocket] = useState(null);
 
   // 배터리 레벨
   const [bleBatteryLevel, setBleBatteryLevel] = useState(0);

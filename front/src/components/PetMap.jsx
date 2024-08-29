@@ -1,12 +1,12 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getCurrentLocation } from "@/libs/gpsManager";
 import { DetailButton } from "./DetailButton";
 import { Button } from "./Button";
 import { Icon } from "./Icon";
 
-export const PetMap = (page) => {
+export const PetMap = ({ page }) => {  // page 값을 props로 받음
   const [location, setLocation] = useState(null);
   const [hospitals, setHospitals] = useState([]);
   const [selectedHospital, setSelectedHospital] = useState(null);
@@ -24,21 +24,20 @@ export const PetMap = (page) => {
         const map = new window.Tmapv2.Map("map_div", {
           center: new window.Tmapv2.LatLng(
             currentLocation.latitude,
-            currentLocation.longitude,
+            currentLocation.longitude
           ),
           width: "100%",
           height: "350px",
           zoom: 13,
         });
 
-        // 현위치 마커 설정 (커스텀 아이콘 사용)
         const currentMarker = new window.Tmapv2.Marker({
           position: new window.Tmapv2.LatLng(
             currentLocation.latitude,
-            currentLocation.longitude,
+            currentLocation.longitude
           ),
           map: map,
-          icon: "/icons/myMarker.png", // 커스텀 현위치 아이콘
+          icon: "/icons/myMarker.png",
           iconSize: new window.Tmapv2.Size(48, 48),
           title: "내 위치",
         });
@@ -56,12 +55,11 @@ export const PetMap = (page) => {
             pois.map(async (poi) => {
               const detailInfo = await fetchPoiDetails(poi.id, apiKey);
               return { ...poi, twFlag: detailInfo.twFlag };
-            }),
+            })
           );
 
           setHospitals(detailedPois);
 
-          // 병원 마커 설정 (기본 TMAP 마커 사용)
           const markers = detailedPois.map((poi) => {
             const marker = new window.Tmapv2.Marker({
               position: new window.Tmapv2.LatLng(poi.frontLat, poi.frontLon),
@@ -73,6 +71,9 @@ export const PetMap = (page) => {
               handleHospitalSelection(poi, marker);
             });
 
+            marker.addListener("touchstart", () => {
+              handleHospitalSelection(poi, marker);
+            });
             return marker;
           });
 
@@ -86,6 +87,7 @@ export const PetMap = (page) => {
     };
 
     const checkReady = setInterval(() => {
+      console.log("window.Tmapv2", window.Tmapv2);
       if (window.Tmapv2 && window.Tmapv2.Map) {
         clearInterval(checkReady);
         initTmap();
@@ -93,7 +95,7 @@ export const PetMap = (page) => {
     }, 100);
 
     return () => clearInterval(checkReady);
-  }, [page]);
+  }, [page]);  // page가 변경될 때마다 useEffect 실행
 
   const fetchPoiDetails = async (poiId, apiKey) => {
     try {
@@ -108,14 +110,12 @@ export const PetMap = (page) => {
   };
 
   const handleHospitalSelection = (hospital, marker) => {
-    // 이전에 선택된 마커를 원래 상태로 되돌림
     if (selectedHospital) {
       const prevMarker = hospitalMarkers.find(
-        (m) => m.getTitle() === selectedHospital.name,
+        (m) => m.getTitle() === selectedHospital.name
       );
     }
 
-    // 선택된 마커를 크고 다른 색상으로 변경
     setSelectedHospital(hospital);
     setSelectedPhoneNumber(hospital.telNo);
     setStaticMapUrl(null);
@@ -150,11 +150,11 @@ export const PetMap = (page) => {
     const staticMapUrl = `https://apis.openapi.sk.com/tmap/routeStaticMap?appKey=${apiKey}&startX=${startx}&startY=${starty}&endX=${goalx}&endY=${goaly}&reqCoordType=WGS84GEO&width=${width}&height=${height}`;
 
     setStaticMapUrl(staticMapUrl);
-    setIsModalOpen(true); // 모달창 열기
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); // 모달창 닫기
+    setIsModalOpen(false);
   };
 
   const handleBackgroundClick = (event) => {
@@ -252,13 +252,7 @@ export const PetMap = (page) => {
         }
       `}</style>
 
-      <div
-        dangerouslySetInnerHTML={{
-          __html: `
-            <script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=${process.env.NEXT_PUBLIC_TMAP_APP_KEY}"></script>
-          `,
-        }}
-      />
+      <div dangerouslySetInnerHTML={{__html: `<script src="https://apis.openapi.sk.com/tmap/jsv2?version=1&appKey=${process.env.NEXT_PUBLIC_TMAP_APP_KEY}"></script>`,}}/>
       <div className="poi-details">
         {selectedHospital ? (
           <>
@@ -314,7 +308,6 @@ export const PetMap = (page) => {
 
       <div id="map_div"></div>
 
-      {/* 모달창 */}
       {isModalOpen && (
         <div className="modal" onClick={handleBackgroundClick}>
           <span className="close" onClick={closeModal}>
