@@ -206,7 +206,7 @@ const DeviceConnector = ({
       }
 
       //
-      if (dataBox.length >= 70) {
+      if (dataBox.length >= 560) {
         // 웹소켓 보내기 560묶음
         await sendWebSocketMessage({ senserData: dataBox });
 

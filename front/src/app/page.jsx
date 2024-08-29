@@ -17,7 +17,6 @@ export default function Page() {
           router.push("/main");
         }
       } catch (e) {
-        console.log("자동로그인 실패");
       }
     };
     checkUser();
@@ -31,7 +30,7 @@ export default function Page() {
   return (
     <Screen>
       <div className={topDivClasses}>
-        <AppTitle />
+        <AppTitle/>
       </div>
       <div className={bottomDivClasses}>
         <Button

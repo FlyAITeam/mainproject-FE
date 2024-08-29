@@ -77,7 +77,6 @@ const getUserInfo = async () => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error("사용자 정보 조회 실패:", errorData);
       throw new Error("사용자 정보 조회 실패");
     }
 
