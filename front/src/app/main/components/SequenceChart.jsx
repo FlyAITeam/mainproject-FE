@@ -101,7 +101,11 @@ export const SequenceChart = ({ sequenceData }) => {
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <Scatter data={chartData} options={options} />
+      <Scatter
+        data={chartData}
+        options={options}
+        style={{ pointerEvents: 'none' }} // 여기서 pointer-events 속성을 none으로 설정
+      />
     </div>
   );
 };

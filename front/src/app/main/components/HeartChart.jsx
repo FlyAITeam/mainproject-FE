@@ -6,9 +6,9 @@ import 'chartjs-adapter-moment';
 ChartJS.register(PointElement, LinearScale, Title, Tooltip, Legend, TimeScale, LineElement);
 
 export const HeartChart = ({ bcgData }) => {
-  try{
+  try {
     const testData = bcgData.map(entry => ({ x: entry.time, y: entry.heart }));
-  }catch(e){
+  } catch (e) {
     bcgData = [{time: 1000, heartRate: 0}];
   }
 
@@ -67,7 +67,11 @@ export const HeartChart = ({ bcgData }) => {
 
   return (
     <div className="w-full h-full">
-      <Scatter data={data} options={options} />
+      <Scatter
+        data={data}
+        options={options}
+        style={{ pointerEvents: "none" }} // 여기서 pointer-events 속성을 none으로 설정
+      />
     </div>
   );
 };

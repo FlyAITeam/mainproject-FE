@@ -34,8 +34,8 @@ export const ExerciseChart = ({ target = 100, today = 0 }) => {
 
   return (
     <div className="w-full h-full flex justify-center items-center relative">
-      <Pie data={data} options={options} />
-      <div className="absolute text-center">
+      <Pie data={data} options={options} style={{ pointerEvents: "none" }} />
+      <div className="absolute text-center" style={{ pointerEvents: "auto" }}>
         <p className="text-lg font-bold">{percentage.toFixed(1)}%</p>
         <p className="text-sm text-gray-600">of Target</p>
       </div>
